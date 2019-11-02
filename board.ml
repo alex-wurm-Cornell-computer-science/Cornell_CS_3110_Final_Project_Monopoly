@@ -34,9 +34,9 @@ type square = {
   name : string ; 
   cost : int ;
   color : squareColor option ;
-  squaretype : squareType ;
+  squareType : squareType ;
   owner : string option;
-  rent : string
+  rent : int
 }
 
 
@@ -48,13 +48,39 @@ let uniq lst =
   List.iter (fun x -> Hashtbl.replace unique_set x ()) lst;
   Hashtbl.fold (fun x () xs -> x :: xs) unique_set []
 
+(** [parse_color col] parses [col] into a valid monopoly color *)
+let parse_color col = 
+  if col = "Brown" then Some Brown else 
+  if col = "Light Blue" then Some LBlue else 
+  if col = "Pink" then Some Pink else 
+  if col = "Orange" then Some Orange else 
+  if col = "Red" then Some Red else 
+  if col = "Yellow" then Some Yellow else 
+  if col = "Green" then Some Green else 
+  if col = "Dark Blue" then Some DBlue else 
+  if col = "RailRoad" then Some RR else 
+  if col = "Utility" then Some Util else None
 
+(** [parse_type s] parses [s] into a valid square type *)
+let parse_type s = 
+  if s = "GO" then Go else 
+  if s = "Jail" then Jail else 
+  if s = "Parking" then Parking else 
+  if s = "GoToJail" then GoToJail else 
+  if s = "Property" then Property else 
+  if s = "Chance" then Chance else 
+  if s = "Chest" then Chest else Tax
 
+(**[square_of_json json] Parses [json] into a valid monopoly square *)
 let square_of_json json= 
   { 
     name = json |> member "name" |> to_string;
     cost = json |> member "cost" |> to_string |> int_of_string;
-    color = json |> member "color" |> to_string;
+    color = json |> member "color" |> to_string |> parse_color;
+    owner = None;
+    squareType = json |> member "type" |> to_string |> parse_type;
+    rent = json |> member "rent" |> to_string |> int_of_string
+
   }
 
 
