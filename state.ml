@@ -61,6 +61,19 @@ let wallets st =
 let total_assets st = 
   st.total_assets
 
+let next_turn old_st res = 
+  match res with 
+  | Illegal -> old_st
+  | Legal t -> {
+      curr_player = (current_player old_st) + 1;
+      num_players = num_players old_st;
+      locations = locations old_st;
+      inventories = inventories old_st;
+      items = items old_st;
+      wallets = wallets old_st;
+      total_assets = total_assets old_st;
+    }
+
 let roll st = 
   let die1 = (Random.int 5) + 1 in 
   let die2 = (Random.int 5) + 1 in 

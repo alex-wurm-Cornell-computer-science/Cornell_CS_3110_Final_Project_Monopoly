@@ -42,6 +42,8 @@ val wallets : t -> (player * int) list
 
 val total_assets : t -> (player * int) list 
 
+val next_turn : t -> result -> t 
+
 val roll : t -> result
 
 val curr_player_inventory : t -> property list
