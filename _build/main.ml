@@ -83,7 +83,7 @@ let rec interp_command brd st command =
                                                     take more input. *)
     interp_command brd st (user_input ())
   | Inventory -> print_string "\n Your own the following properties: \n";
-    disp_inv st; 
+    (* disp_inv st;  *)
     interp_command brd st (user_input ())
   | Wallet -> print_string "\n You currently have $%d in cash: \n"; 
     (* add functionality then take more input*)
