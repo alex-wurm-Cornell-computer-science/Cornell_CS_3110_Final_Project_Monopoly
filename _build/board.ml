@@ -1,37 +1,47 @@
 open Yojson.Basic.Util
 
-type room_id = string
-type exit_name = string
-type item_name = string
-exception UnknownRoom of room_id
-exception UnknownExit of exit_name
-exception UnknownItem of item_name
+type squareType = 
+  | Go
+  | Jail 
+  | Parking
+  | GoToJail
+  | Property
+  | Chance
+  | Chest
+  | Tax 
 
-type item = {
-  item_name: item_name;
-  room: room_id;
-  score: int;
+type squareColor = 
+  | Brown
+  | LBlue
+  | Pink
+  | Orange
+  | Red
+  | Yellow
+  | Green
+  | DBlue
+  | RR
+  | Util
+
+
+type card = 
+  { 
+    name : string;
+    description : string;
+    payment : string
+  }
+
+type square = { 
+  name : string ; 
+  cost : int ;
+  color : squareColor option ;
+  squaretype : squareType ;
+  owner : string ;
+  rent : string
 }
 
-type exit = {
-  name: exit_name;
-  id: room_id;
-}
 
-type room = {
-  id: room_id;
-  description: string;
-  score: int;
-  exits: exit list;
-}
 
-type t = {
-  start_room: room_id;
-  rooms: room list;
-  items: item list;
-  treasure_room: room_id;
-  win_msg: string;
-}
+type board  = square list
 
 (** [uniq lst] is the set-like list composed of the elements from [lst] *)
 let uniq lst =

@@ -1,37 +1,46 @@
 open Yojson.Basic.Util
 
-type room_id = string
-type exit_name = string
-type item_name = string
-exception UnknownRoom of room_id
-exception UnknownExit of exit_name
-exception UnknownItem of item_name
+type squareType = 
+  | Go
+  | Jail 
+  | Parking
+  | GoToJail
+  | Property
+  | Chance
+  | Chest
+  | Tax 
 
-type item = {
-  item_name: item_name;
-  room: room_id;
-  score: int;
+type squareColor = 
+  | Brown
+  | LBlue
+  | Pink
+  | Orange
+  | Red
+  | Yellow
+  | Green
+  | DBlue
+  | RR
+  | Util
+
+
+type card = 
+  { 
+    name : string;
+    description : string;
+    payment : string
+  }
+
+type square = { 
+  name : string ; 
+  cost : int ;
+  color : squareColor option ;
+  squaretype : squareType ;
+  owner : string option;
+  rent : string
 }
 
-type exit = {
-  name: exit_name;
-  id: room_id;
-}
 
-type room = {
-  id: room_id;
-  description: string;
-  score: int;
-  exits: exit list;
-}
-
-type t = {
-  start_room: room_id;
-  rooms: room list;
-  items: item list;
-  treasure_room: room_id;
-  win_msg: string;
-}
+type board  = square list
 
 (** [uniq lst] is the set-like list composed of the elements from [lst] *)
 let uniq lst =
@@ -39,46 +48,19 @@ let uniq lst =
   List.iter (fun x -> Hashtbl.replace unique_set x ()) lst;
   Hashtbl.fold (fun x () xs -> x :: xs) unique_set []
 
-(** [map f lst] is the application of function [f] to every element in [lst] *)
-let rec map f (lst:'a list) = 
-  match lst with
-  | [] -> []
-  | h::t -> (f h)::(map f t)
+
+
+let square_of_json json= 
+  { 
+    name = json |> member "name" |> to_string;
+    cost = json |> member "cost" |> to_string |> int_of_string;
+    color = json |> member "color" |> to_string;
+  }
+
 
 let from_json j = 
+  failwith ""
 
-  let item_of_json j ={
-    item_name = j |> member "name" |> to_string;
-    room = j |> member "starting room" |> to_string;
-    score = j |> member "score" |> to_int;
-  } in
-
-  let exit_of_json j = {
-    name = j |> member "name" |> to_string;
-    id = j |> member "room id" |> to_string;
-  } in 
-
-  let room_of_json j = {
-    id = j |> member "id" |> to_string;
-    description = j |> member "description" |> to_string;
-    score = j |> member "score" |> to_int;
-    exits = j |> member "exits" |> to_list |> List.map exit_of_json;
-  } in
-
-  let adventure_of_json j = {
-    start_room = j |> member "start room" |> to_string;
-    rooms = j |> member "rooms" |> to_list |> List.map room_of_json;
-    items = j |> member "items" |> to_list |> List.map item_of_json;
-    treasure_room = j |> member "treasure room" |> to_string;
-    win_msg = j |> member "win msg" |> to_string;
-  } in
-
-  let parse j =
-    try adventure_of_json j
-    with Type_error (s, _) -> failwith ("Parsing error: " ^ s) 
-  in
-
-  parse j
 
 let start_room adv =
   adv.start_room

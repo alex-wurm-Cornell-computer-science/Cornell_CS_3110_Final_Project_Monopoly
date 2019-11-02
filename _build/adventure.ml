@@ -1,4 +1,3 @@
-(* Note: You may introduce new code anywhere in this file. *) 
 open Yojson.Basic.Util
 
 type room_id = string
