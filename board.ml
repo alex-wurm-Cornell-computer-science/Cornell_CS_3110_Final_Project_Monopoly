@@ -141,4 +141,7 @@ let chest_card_description b cd =
   with 
   | exn -> failwith "Unknown card"
 
+let size b =
+  List.length b.squares
+
 
