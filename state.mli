@@ -16,14 +16,14 @@ type player
 (** The abstract type of values representing the game state. *)
 type t 
 
-(** [init_state a] is the initial state of the game when playing adventure [a]. 
+(** [init_state brd n] is the initial state of the game when playing adventure [a]. 
     In that state the adventurer is currently located in the starting room,
     and they have visited only that room. *)
-val init_state : Adventure.t -> t
+val init_state : Board.t -> int -> t
 
 (** [current_room_id st] is the identifier of the room in which the adventurer
     currently is located in state [st]. *)
-val current_room_id : t -> string
+val current_player : t -> player
 
 (** [visited st] is a set-like list of the room identifiers the adventurer has 
     visited in state [st]. The adventurer has visited a room [rm] if their

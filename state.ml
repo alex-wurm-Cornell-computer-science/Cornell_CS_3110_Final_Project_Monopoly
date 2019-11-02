@@ -6,30 +6,45 @@ exception UnknownProperty of Board.prop_name
 
 type player = int
 
+type property = {
+  name : Board.prop_name;
+  houses : int;
+  hotels : int;
+}
+
 type t = {
   curr_player : player;
+  num_players : int;
   locations : (player * int) list;
-  inventories : (player * Board.prop_name list) list;
+  inventories : (player * property list) list;
   items : (player * Board.card_name) list;
   wallets : (player * int) list;
   total_assets : (player * int) list;
 }
 
-let init_state adv =
-  let state start =
-    {
-      curr_player = 0;
-      visited = start::[];
-      score = Adventure.room_score adv start;
-      inventory = Adventure.items adv;
-    } in 
-  state (adv |> Adventure.start_room) 
+let rec init_lists n v acc =
+  match n with 
+  | 0 -> acc 
+  | _ -> init_lists (n-1) v ((n*v)::acc) 
 
-let current_room_id st =
-  st.curr
+let init_state brd n =
+  {
+    curr_player = 0;
+    num_players = n;
+    locations = init_lists (n-1) 0 [];
+    inventories = init_lists (n-1) [] [];
+    items = init_lists (n-1) [] [];
+    wallets = init_lists (n-1) 0 [];
+    total_assets = init_lists (n-1) 0 [];
+  } 
 
-let visited st =
-  st.visited
+let current_player st =
+  st.curr_player
+
+let num_players st = 
+  st.num_players
+
+let 
 
 type result = Legal of t | Illegal
 
