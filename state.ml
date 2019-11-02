@@ -17,10 +17,12 @@ type t = {
   num_players : int;
   locations : (player * int) list;
   inventories : (player * property list) list;
-  items : (player * Board.prop_name list) list;
+  items : (player * Board.card list) list;
   wallets : (player * int) list;
   total_assets : (player * int) list;
 }
+
+type result = Legal of t | Illegal
 
 let rec init_lists n v acc =
   match n with 
@@ -59,4 +61,46 @@ let wallets st =
 let total_assets st = 
   st.total_assets
 
-type result = Legal of t | Illegal
+let roll st = 
+  let die1 = (Random.int 5) + 1 in 
+  let die2 = (Random.int 5) + 1 in 
+  let curr_player = current_player st in 
+  let total_loc = locations st in 
+  let curr_loc = List.assoc curr_player total_loc in 
+  let trimmed = List.remove_assoc curr_player total_loc in 
+  let new_loc = (curr_player, curr_loc + die1 + die2)::trimmed in 
+  match (List.mem_assoc curr_player new_loc) with 
+  | false -> Illegal
+  | true -> Legal {
+      curr_player = curr_player;
+      num_players = num_players st;
+      locations = new_loc;
+      inventories = inventories st;
+      items = items st;
+      wallets = wallets st;
+      total_assets = total_assets st;
+    }
+
+let curr_player_inventory st = 
+  let curr_player = current_player st in
+  let total_inv = inventories st in 
+  List.assoc curr_player total_inv
+
+let curr_player_wallet st = 
+  let curr_player = current_player st in
+  let total_wallets = wallets st in 
+  List.assoc curr_player total_wallets
+
+let curr_player_items st = 
+  let curr_player = current_player st in
+  let total_items = items st in 
+  List.assoc curr_player total_items
+
+let buy st = 
+  failwith ("Unimplemented")
+
+let sell st = 
+  failwith ("Unimplemented")
+
+let auction st = 
+  failwith ("Unimplemented")

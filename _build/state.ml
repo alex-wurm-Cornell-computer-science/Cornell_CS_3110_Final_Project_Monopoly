@@ -59,4 +59,27 @@ let wallets st =
 let total_assets st = 
   st.total_assets
 
+let curr_player_inventory st = 
+  let curr_player = current_player st in
+  let total_inv = inventories st in 
+  List.assoc curr_player total_inv
+
+let roll st = 
+  let die1 = (Random.int 5) + 1 in 
+  let die2 = (Random.int 5) + 1 in 
+  let curr_player = current_player st in 
+  let total_loc = locations st in 
+  let curr_loc = List.assoc curr_player total_loc in 
+  let trimmed = List.remove_assoc curr_player total_loc in 
+  let new_loc = (curr_player, curr_loc + die1 + die2)::trimmed in 
+  {
+    curr_player = curr_player;
+    num_players = num_players st;
+    locations = new_loc;
+    inventories = inventories st;
+    items = items st;
+    wallets = wallets st;
+    total_assets = total_assets st;
+  }
+
 type result = Legal of t | Illegal
