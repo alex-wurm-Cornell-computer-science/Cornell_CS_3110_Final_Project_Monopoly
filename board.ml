@@ -105,7 +105,6 @@ let from_json j =
     chest_cards = j |> member "chest cards" |> to_list |> List.map card_of_json;
   }
 
-
 let cost (b : board) (prop : string) = 
   let rec cost' squares prop =
     match squares with 

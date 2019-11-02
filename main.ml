@@ -70,7 +70,7 @@ let disp_items st =
 *)
 
 let disp_inv st = 
-  State.curr_player_inventory st 
+  State.disp_curr_player_inventory st 
 
 let roll st = 
   State.roll st 

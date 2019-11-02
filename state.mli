@@ -36,7 +36,7 @@ val locations : t -> (player * int) list
 
 val inventories : t -> (player * property list) list
 
-val items : t -> (player * Board.prop_name list) list 
+val items : t -> (player * Board.card list) list 
 
 val wallets : t -> (player * int) list
 
@@ -44,13 +44,17 @@ val total_assets : t -> (player * int) list
 
 val next_turn : t -> result -> t 
 
-val roll : t -> result
+val roll : Board.board -> t -> result
 
 val curr_player_inventory : t -> property list
+
+val disp_curr_player_inventory : t -> unit
 
 val curr_player_wallet : t -> int 
 
 val curr_player_items : t -> Board.card list 
+
+val disp_curr_player_items : t -> unit 
 
 val buy : t -> result 
 

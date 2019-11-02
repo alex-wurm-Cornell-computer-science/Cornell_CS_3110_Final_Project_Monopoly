@@ -74,14 +74,14 @@ let next_turn old_st res =
       total_assets = total_assets old_st;
     }
 
-let roll st = 
+let roll brd st = 
   let die1 = (Random.int 5) + 1 in 
   let die2 = (Random.int 5) + 1 in 
   let curr_player = current_player st in 
   let total_loc = locations st in 
   let curr_loc = List.assoc curr_player total_loc in 
   let trimmed = List.remove_assoc curr_player total_loc in 
-  let new_loc = (curr_player, curr_loc + die1 + die2)::trimmed in 
+  let new_loc = (curr_player, (curr_loc + die1 + die2) mod Board.size brd)::trimmed in 
   match (List.mem_assoc curr_player new_loc) with 
   | false -> Illegal
   | true -> Legal {
@@ -99,6 +99,9 @@ let curr_player_inventory st =
   let total_inv = inventories st in 
   List.assoc curr_player total_inv
 
+let disp_curr_player_inventory st = 
+  List.iter (fun x -> print_string x.name) (curr_player_inventory st)
+
 let curr_player_wallet st = 
   let curr_player = current_player st in
   let total_wallets = wallets st in 
@@ -108,6 +111,10 @@ let curr_player_items st =
   let curr_player = current_player st in
   let total_items = items st in 
   List.assoc curr_player total_items
+
+let disp_curr_player_items st = 
+  failwith ("Need to get card names from board.ml")
+(* List.iter (fun x -> print_string x.c_name) (curr_player_items st) *)
 
 let buy st = 
   failwith ("Unimplemented")

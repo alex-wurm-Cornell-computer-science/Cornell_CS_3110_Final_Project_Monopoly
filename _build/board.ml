@@ -105,6 +105,11 @@ let from_json j =
     chest_cards = j |> member "chest cards" |> to_list |> List.map card_of_json;
   }
 
+let square_type b prop = 
+  failwith ("e")
+
+let all_squares b = 
+  failwith ("e")
 
 let cost (b : board) (prop : string) = 
   let rec cost' squares prop =
@@ -140,5 +145,8 @@ let chest_card_description b cd =
     card.description 
   with 
   | exn -> failwith "Unknown card"
+
+let size b =
+  List.length b.squares
 
 
