@@ -69,3 +69,7 @@ val chance_card_description : board -> string -> string
 (** [chest_card_description b cd] returns the description of card [cd]
       in board [b]. Raises [Not_Found] if [cd] is not in [b]  *)
 val chest_card_description : board -> string -> string 
+
+(** [num_squares b] returns the size of board [b], defined as the number of
+      squares in the board*)
+val size : board -> int 
