@@ -15,15 +15,14 @@ type square
 (** The abstract type of values representing cards. *)
 type card
 
+(** The type of property names *)
+type prop_name = string
 
 (** Raised when an unknown square is encountered. *)
-exception UnknownSquare of string
+exception UnknownSquare of prop_name
 
 (** The abstract type of values representing monopoly boards. *)
 type board
-
-(** Raised when an unknown property is encountered. *)
-exception UnknownProperty of string
 
 (** The abstract type representing square colors*)
 type squareColor 
@@ -34,6 +33,9 @@ type squareType
 (** [from_json j] is the adventure that [j] represents.
     Requires: [j] is a valid JSON adventure representation. *)
 val from_json : Yojson.Basic.t -> board
+
+(** [cost b prop] returns the cost of property [p] in board [b]  *)
+val cost : board -> int
 
 (*
 (** [start_room a] is the identifier of the starting room in adventure 

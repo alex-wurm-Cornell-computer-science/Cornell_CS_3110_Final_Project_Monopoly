@@ -1,5 +1,10 @@
 open Yojson.Basic.Util
 
+type card_name = string
+type prop_name = string
+exception UnknownSquare of prop_name
+
+
 type squareType = 
   | Go
   | Jail 
@@ -27,7 +32,7 @@ type card =
   { 
     name : string;
     description : string;
-    payment : string
+    payment : int
   }
 
 type square = { 
@@ -40,7 +45,12 @@ type square = {
 }
 
 
-type board  = square list
+type board  =  {
+  squares : square list;
+  chance_cards : card list;
+  chest_cards : card list
+}
+
 
 (** [uniq lst] is the set-like list composed of the elements from [lst] *)
 let uniq lst =
@@ -83,11 +93,32 @@ let square_of_json json=
 
   }
 
+(**[card_of_json json] parses [json] into a card type *)
+let card_of_json json = 
+  { 
+    name = json |> member "name" |> to_string;
+    description = json |> member "description" |> to_string;
+    payment = json |> member "payment" |> to_string |> int_of_string
+  }
 
 let from_json j = 
-  failwith ""
+  {
+    squares = j |> member "squares" |> to_list |> List.map square_of_json;
+    chance_cards = j |> member "chance cards" |> List.map card_of_json;
+    chest_cards = j |> member "chest cards" |> List.map card_of_json;
+  }
 
 
+let cost (b : board) (prop : string) = 
+  let rec cost' squares prop =
+    match squares with 
+    | [] -> raise (UnknownSquare prop)
+    | h :: t -> if h.name = prop then h.cost else cost' t prop
+  in cost' b.squares prop
+
+
+
+(*
 let start_room adv =
   adv.start_room
 
@@ -154,3 +185,5 @@ let item_score adv item =
   match items_lst with 
   | [] -> raise (UnknownItem item)
   | h::t -> h.score
+
+  *)
