@@ -3,12 +3,14 @@
 type object_phrase = string list
 
 type command = 
-  | Go of object_phrase
-  | Quit
-  | Score
-  | Take of object_phrase
-  | Drop of object_phrase
-  | Inventory
+  | Roll (* Used to initiate dice roll to move around the board on your turn. *)
+  | Quit (* Used to end the game -> will prompt player to confirm. *)
+  | Wallet (* Used to see current liquid assets of the player ($$$). *)
+  | Inventory (* Used to see current properties that the player owns. *)
+  | Buy (* Used to purchase a property that you are currently on. *) 
+  | Sell of object_phrase (* Used to sell any properties in the current inventory. *)
+  | Items (* Used to see what special cards the player holds. *)
+  | Auction of object_phrase (* Used to participate in property auctions. *)
 
 exception Empty
 
@@ -21,17 +23,22 @@ let parse str =
   let command =
     match parse_lst with
     | [] -> raise (Empty)
-    | h::t -> if h = "go" || h = "quit" || h = "score" || h = "take" || h = "drop" || h = "inventory" then h else raise (Malformed)
+    | h::t -> if h = "roll" || h = "quit" || h = "wallet" || h = "inventory" ||
+      h = "buy" || h = "sell" || h = "items" || h = "auction" then h 
+      else raise (Malformed)
   in 
   let words =
     match parse_lst with
     | [] -> []
     | h::t -> t
   in 
+
+  if command = "roll" && words = [] then Roll else
   if command = "quit" && words = [] then Quit else
-  if command = "score" && words = [] then Score else
-  if command = "go" && words != [] then Go words else 
-  if command = "take" && words != [] then Take words else
-  if command = "drop" && words != [] then Drop words else
+  if command = "wallet" && words = [] then Wallet else
   if command = "inventory" && words = [] then Inventory else
+  if command = "buy" && words = [] then Buy else
+  if command = "sell" && words != [] then Sell words else
+  if command = "items" && words = [] then Items else
+  if command = "auction" && words != [] then Auction words else
     raise (Malformed)
