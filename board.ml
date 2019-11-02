@@ -101,8 +101,8 @@ let card_of_json json =
 let from_json j = 
   {
     squares = j |> member "squares" |> to_list |> List.map square_of_json;
-    chance_cards = j |> member "chance cards" |> List.map card_of_json;
-    chest_cards = j |> member "chest cards" |> List.map card_of_json;
+    chance_cards = j |> member "chance cards" |> to_list |> List.map card_of_json;
+    chest_cards = j |> member "chest cards" |> to_list |> List.map card_of_json;
   }
 
 
