@@ -39,5 +39,9 @@ val wallets : t -> (player * int) list
 
 val total_assets : t -> (player * int) list 
 
+val curr_player_inventory : t -> property list
+
+val roll : t -> t 
+
 (** The type representing the result of an attempted movement. *)
 type result = Legal of t | Illegal

@@ -18,6 +18,9 @@ type property
 (** The abstract type of values representing the game state. *)
 type t 
 
+(** The type representing the result of an attempted movement. *)
+type result = Legal of t | Illegal
+
 (** [init_state brd n] is the initial state of the game when playing adventure [a]. 
     In that state the adventurer is currently located in the starting room,
     and they have visited only that room. *)
@@ -39,5 +42,16 @@ val wallets : t -> (player * int) list
 
 val total_assets : t -> (player * int) list 
 
-(** The type representing the result of an attempted movement. *)
-type result = Legal of t | Illegal
+val roll : t -> result
+
+val curr_player_inventory : t -> property list
+
+val curr_player_wallet : t -> int 
+
+val curr_player_items : t -> Board.card list 
+
+val buy : t -> result 
+
+val sell : t -> result 
+
+val auction : t -> result 

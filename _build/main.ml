@@ -69,6 +69,12 @@ let disp_items st =
   print_string "\n"
 *)
 
+let disp_inv st = 
+  State.curr_player_inventory st 
+
+let roll st = 
+  State.roll st 
+
 (** [interp_command brd st command] allows the user to play the game by
     printing an exit message if the input command is [Quit] or by inspecting a 
     [Go] message to determine what action to perform. If the command is [Legal]
@@ -83,7 +89,7 @@ let rec interp_command brd st command =
                                                     take more input. *)
     interp_command brd st (user_input ())
   | Inventory -> print_string "\n Your own the following properties: \n";
-    (* disp_inv st;  *)
+    disp_inv st;  
     interp_command brd st (user_input ())
   | Wallet -> print_string "\n You currently have $%d in cash: \n"; 
     (* add functionality then take more input*)
@@ -134,19 +140,19 @@ let rec interp_command brd st command =
 let play_game f =
   (*failwith "Unimplemented"*)
   let brd = get_board f in
-  let st = init_state brd in
-  update_desc brd st;
+  let st = init_state brd 6 in
+  (* update_desc brd st; *)
 
   let response = user_input () in
 
-  let _ = interp_command adv st (response) in
+  let _ = interp_command brd st (response) in
 
   Stdlib.exit 0
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
-  ANSITerminal.(print_string [red]
-                  "\n\nWelcome to the 3110 Monopoly Game Engine.\n");
+  print_string 
+    "\n\nWelcome to the 3110 Monopoly Game Engine.\n";
   print_endline "Please enter the name of the board file you want to load.\n";
   print_string  "> ";
   match read_line () with
