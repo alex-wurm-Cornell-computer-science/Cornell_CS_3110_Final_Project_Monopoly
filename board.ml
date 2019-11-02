@@ -1,5 +1,6 @@
 open Yojson.Basic.Util
 
+type card_name = string
 type prop_name = string
 exception UnknownSquare of prop_name
 
