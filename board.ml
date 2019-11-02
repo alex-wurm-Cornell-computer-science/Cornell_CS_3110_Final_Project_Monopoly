@@ -106,18 +106,6 @@ let from_json j =
   }
 
 
-let all_squares b = 
-  let rec all' b acc = 
-    match b with 
-    | [] -> acc
-    | h :: t -> all' t (h.name :: acc) in 
-  all' b.squares []
-
-(** [valid_square b n] returns true if [n] is a square in [b] and false 
-    otherwsie*)
-let valid_square b n = 
-  List.mem n (all_squares b)
-
 let cost (b : board) (prop : string) = 
   let rec cost' squares prop =
     match squares with 
@@ -140,19 +128,17 @@ let chest_cards b =
   List.map (fun x -> x.c_name) b.chest_cards 
 
 let chance_card_description b cd = 
-  let card = List.find (fun k -> k.c_name = cd) b.chance_cards in 
-  card.description 
-
+  try 
+    let card = List.find (fun k -> k.c_name = cd) b.chance_cards in 
+    card.description 
+  with 
+  | exn -> failwith "Unknown card"
 
 let chest_card_description b cd = 
-  let card = List.find (fun k -> k.c_name = cd) b.chest_cards in 
-  card.description 
-
-
-let square_type b s_name = 
-  if valid_square b s_name then
-    (List.find (fun x -> x.name = s_name) b.squares).squareType else
-    raise (UnknownSquare s_name)
-
+  try 
+    let card = List.find (fun k -> k.c_name = cd) b.chest_cards in 
+    card.description 
+  with 
+  | exn -> failwith "Unknown card"
 
 

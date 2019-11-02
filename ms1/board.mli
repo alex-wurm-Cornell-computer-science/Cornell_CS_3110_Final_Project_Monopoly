@@ -21,6 +21,7 @@ type prop_name = string
 (** Raised when an unknown square is encountered. *)
 exception UnknownSquare of prop_name
 
+
 (** The abstract type of values representing monopoly boards. *)
 type board
 
@@ -34,61 +35,37 @@ type squareType
     Requires: [j] is a valid JSON adventure representation. *)
 val from_json : Yojson.Basic.t -> board
 
-(** [cost b prop] returns the cost of property [p] in board [b]  *)
+(** [cost b prop] returns the cost of property [p] in board [b]. 
+    Raises [UnknownSquare prop] if prop is not a square
+      in [b].*)
 val cost : board -> int
 
-(*
-(** [start_room a] is the identifier of the starting room in adventure 
-    [a]. *)
-val start_room : t -> room_id
+(** [square_type b s_name] returns the type of property with name 
+    [s_name] in [b]. Raises [UnknownSquare s_name] if s_name is not a square
+      in [b]. *)
+val square_type  : board -> prop_name -> squareType
 
-(** [room_ids a] is a set-like list of all of the room identifiers in 
-    adventure [a]. *)
-val room_ids : t -> room_id list
+(** [all_squares b] returns a list of the names of all squares in [b]*)
+val all_squares : board -> string list
 
-(** [description a r] is the description of room [r] in adventure [a]. 
-    Raises [UnknownRoom r] if [r] is not a room identifier in [a]. *)
-val description : t -> room_id -> string
+(** [cost b p] returns the cost of property [p] in [b]. Raises 
+    [UnknownSquare p] if [p] is not a property in [b]*)
+val cost : board -> string -> int 
 
-(** [exits a r] is a set-like list of all exit names from room [r] in 
-    adventure [a].
-    Raises [UnknownRoom r] if [r] is not a room identifier in [a]. *)
-val exits : t -> room_id -> exit_name list
+(** [rent b p] returns the rent of property [p] in [b]. Raises 
+    [UnknownSquare p] if [p] is not a property in [b]*)
+val rent : board -> string -> int 
 
-(** [next_room a r e] is the room to which [e] exits from room [r] in
-    adventure [a].  
-    Raises [UnknownRoom r] if [r] is not a room identifier in [a].
-    Raises [UnknownExit e] if [e] is not an exit from room [r] in [a]. *)
-val next_room : t -> room_id -> exit_name -> room_id
+(** [chance_cards b] returns a list of the deck of chance cards in [b]*)
+val chance_cards : board -> string list 
 
-(** [next_rooms a r] is a set-like list of all rooms to which there is an exit 
-    from [r] in adventure [a]. 
-    Raises [UnknownRoom r] if [r] is not a room identifier in [a].*)
-val next_rooms : t -> room_id -> room_id list
+(** [chest_cards b] returns a list of the deck of chest cards in [b]*)
+val chest_cards : board -> string list 
 
-(* END DO NOT CHANGE
- **********************************************************************)
+(** [chance_card_description b cd] returns the description of card [cd]
+      in board [b]. Raises [Not_Found] if [cd] is not in [b]  *)
+val chance_card_description : board -> string -> string 
 
-(* You are free to add more code here. *)
-
-(** [treasure_room adv] is the identifier of the starting room in adventure 
-    [adv]. *)
-val treasure_room : t -> room_id
-
-(** [win_msg adv] is the string displayed when the game is won in adventure 
-    [adv]. *)
-val win_msg : t -> string
-
-(** [items adv room] is the list representation of all items currently in 
-    [room].
-    Raise [UnknownRoom r] if [r] is not a room identifier in [a].*)
-val items : t -> (item_name * room_id) list
-
-(** [room_score adv room] is the score value of room [room] in adventure [adv].
-      Raise [UnknownRoom room] if [room] is not a room identifier in [adv]. *)
-val room_score : t -> room_id -> int 
-
-(** [item_score adv item] is the score value of item [item] in adventure [adv].
-      Raise [UnknownItem item] if [item] is not an item identifier in [adv]. *)
-val item_score : t -> item_name -> int 
-*)
+(** [chest_card_description b cd] returns the description of card [cd]
+      in board [b]. Raises [Not_Found] if [cd] is not in [b]  *)
+val chest_card_description : board -> string -> string 

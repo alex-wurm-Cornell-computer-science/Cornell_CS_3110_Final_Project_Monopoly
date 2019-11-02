@@ -2,7 +2,7 @@ default:
 	utop -init enigma.ml
 	
 build:
-	ocamlbuild -use-ocamlfind enigma.cmo enigma_test.cmo
+	ocamlbuild -use-ocamlfind enigma.cmo enigma_test.cmo board.cmo 
 
 test:
 	ocamlbuild -use-ocamlfind -tag 'debug' enigma_test.byte && ./enigma_test.byte
