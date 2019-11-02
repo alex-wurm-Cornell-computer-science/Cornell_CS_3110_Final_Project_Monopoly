@@ -8,6 +8,21 @@
 
 (* You are free to add more code here. *)
 
+(** The abstract type of values representing items. *)
+type item 
+
+(** The abstract type of values representing exits. *)
+type exit 
+
+(** The abstract type of values representing rooms. *)
+type room
+
+(** The type of item names. *)
+type item_name = string
+
+(** Raised when an unknown item is encountered. *)
+exception UnknownItem of item_name
+
 (**********************************************************************
  * DO NOT CHANGE THIS CODE
  * It is part of the interface the course staff will use to test your 
@@ -65,3 +80,24 @@ val next_rooms : t -> room_id -> room_id list
  **********************************************************************)
 
 (* You are free to add more code here. *)
+
+(** [treasure_room adv] is the identifier of the starting room in adventure 
+    [adv]. *)
+val treasure_room : t -> room_id
+
+(** [win_msg adv] is the string displayed when the game is won in adventure 
+    [adv]. *)
+val win_msg : t -> string
+
+(** [items adv room] is the list representation of all items currently in 
+    [room].
+    Raise [UnknownRoom r] if [r] is not a room identifier in [a].*)
+val items : t -> (item_name * room_id) list
+
+(** [room_score adv room] is the score value of room [room] in adventure [adv].
+      Raise [UnknownRoom room] if [room] is not a room identifier in [adv]. *)
+val room_score : t -> room_id -> int 
+
+(** [item_score adv item] is the score value of item [item] in adventure [adv].
+      Raise [UnknownItem item] if [item] is not an item identifier in [adv]. *)
+val item_score : t -> item_name -> int 

@@ -1,0 +1,209 @@
+{
+  "rooms": [
+    {
+      "id": "Duffield",
+      "description": "You are in the heart of the engineering quad. Mattins is to the east. Upson is to the south. The pit is to the north. The great outdoors is to the west. You find an open table next to an outlet — score!",
+      "score": 0,
+      "exits": [
+        {
+          "name": "east",
+          "room id": "Mattins"
+        },
+        {
+          "name": "mattins",
+          "room id": "Mattins"
+        },
+        {
+          "name": "Mattins",
+          "room id": "Mattins"
+        },
+        {
+          "name": "south",
+          "room id": "Upson"
+        },
+        {
+          "name": "upson",
+          "room id": "Upson"
+        },
+        {
+          "name": "Upson",
+          "room id": "Upson"
+        },
+        {
+          "name": "north",
+          "room id": "the pit"
+        },
+        {
+          "name": "the pit",
+          "room id": "the pit"
+        },
+        {
+          "name": "pit",
+          "room id": "the pit"
+        },
+        {
+          "name": "west",
+          "room id": "outside"
+        },
+        {
+          "name": "outdoors",
+          "room id": "outside"
+        }
+      ]
+    },
+    {
+      "id": "Mattins",
+      "description": "You are in almost every engineers' favorite place to grab food. Duffield is to the west. The pit is to the north. Upson is to the south. You notice the pastry cabinet just got restocked - you eye a s'mores cookie.",
+      "score": 5,
+      "exits": [
+        {
+          "name": "west",
+          "room id": "Duffield"
+        },
+        {
+          "name": "duffield",
+          "room id": "Duffield"
+        },
+        {
+          "name": "Duffield",
+          "room id": "Duffield"
+        },
+        {
+          "name": "north",
+          "room id": "the pit"
+        },
+        {
+          "name": "the pit",
+          "room id": "the pit"
+        },
+        {
+          "name": "pit",
+          "room id": "the pit"
+        },
+        {
+          "name": "south",
+          "room id": "Upson"
+        },
+        {
+          "name": "upson",
+          "room id": "Upson"
+        },
+        {
+          "name": "Upson",
+          "room id": "Upson"
+        }
+      ]
+    },
+    {
+      "id": "Upson",
+      "description": "You find yourself in Upson Hall. Duffield is the north. The great outdoors are to the east and west. You peer down at the Rapid Prototyping Lab to see a series of 3D printers chugging along – you wonder what they're making.",
+      "score": 161,
+      "exits": [
+        {
+          "name": "north",
+          "room id": "Duffield"
+        },
+        {
+          "name": "duffield",
+          "room id": "Duffield"
+        },
+        {
+          "name": "Duffield",
+          "room id": "Duffield"
+        },
+        {
+          "name": "east",
+          "room id": "outside"
+        },
+        {
+          "name": "west",
+          "room id": "outside"
+        }
+      ]
+    },
+    {
+      "id": "the pit",
+      "description": "You're now standing in the pit. Duffield is to the east. The great outdoors are to the southwest. You peer from behind a row of plants to see people walking by, dropping quartercards on tables - you wonder if you should take a nap in one of the chairs.",
+      "score": 1000000,
+      "exits": [
+        {
+          "name": "east",
+          "room id": "Duffield"
+        },
+        {
+          "name": "duffield",
+          "room id": "Duffield"
+        },
+        {
+          "name": "Duffield",
+          "room id": "Duffield"
+        },
+        {
+          "name": "southwest",
+          "room id": "outside"
+        },
+        {
+          "name": "south west",
+          "room id": "outside"
+        }
+      ]
+    },
+    {
+      "id": "outside",
+      "description": "You're outside, on the engineering quad. Duffield is behind you, to the east. You feel the sun on your face and watch a squirrel dart behind a rock - the fresh air smells good.",
+      "score": 1000000,
+      "exits": [
+        {
+          "name": "east",
+          "room id": "Duffield"
+        },
+        {
+          "name": "behind",
+          "room id": "Duffield"
+        },
+        {
+          "name": "back",
+          "room id": "Duffield"
+        },
+        {
+          "name": "duffield",
+          "room id": "Duffield"
+        },
+        {
+          "name": "Duffield",
+          "room id": "Duffield"
+        }
+      ]
+    }
+  ],
+  "start room": "Duffield",
+  "items": [
+    {
+      "name": "graphing calculator",
+      "starting room": "Upson",
+      "score": 10
+    },
+    {
+      "name": "charger",
+      "starting room": "Upson",
+      "score": 50
+    },
+    {
+      "name": "mac n cheese",
+      "starting room": "Mattins",
+      "score": 30
+    },
+    {
+      "name": "chair",
+      "starting room": "the pit",
+      "score": 20
+    },
+    {
+      "name": "quartercard",
+      "starting room": "Duffield",
+      "score": 40
+    }
+  ],
+  "treasure room": "Duffield",
+  "win msg": "CONGRATULATIONS! You're an amazing engineer :)"
+}

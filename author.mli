@@ -1,6 +1,6 @@
 (**
    Metadata about this submission.
-   @author TODO Name (netid). 
+   @author Caitlin Stanton (cs968). 
 *)
 
 (** [hours_worked] is the number of hours you worked on this assignment. *)

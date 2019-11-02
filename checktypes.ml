@@ -2,8 +2,10 @@ module type AdventureSig = sig
   type t
   type room_id = string
   type exit_name = string
+  type item_name = string
   exception UnknownRoom of room_id
   exception UnknownExit of exit_name
+  exception UnknownItem of item_name
   val from_json : Yojson.Basic.t -> t
   val start_room : t -> room_id
   val room_ids : t -> room_id list
@@ -17,7 +19,7 @@ module AdventureCheck : AdventureSig = Adventure
 
 module type CommandSig = sig
   type object_phrase = string list
-  type command = Go of object_phrase | Quit
+  type command = Go of object_phrase | Quit | Score | Take of object_phrase | Drop of object_phrase | Inventory
   exception Empty
   exception Malformed
   val parse : string -> command

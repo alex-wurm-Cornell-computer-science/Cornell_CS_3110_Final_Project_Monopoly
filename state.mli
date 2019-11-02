@@ -8,6 +8,9 @@
 
 (* You are free to add more code here. *)
 
+(** Raised when an unknown item is encountered. *)
+exception UnknownItem of Adventure.item_name
+
 (**********************************************************************
  * DO NOT CHANGE THIS CODE
  * It is part of the interface the course staff will use to test your 
@@ -46,3 +49,49 @@ val go : Adventure.exit_name -> Adventure.t -> t -> result
  **********************************************************************)
 
 (* You are free to add more code here. *)
+
+(** [score st] is the score in state [st]. *)
+val score : t -> int
+
+(** [get_current_room old_state result] is the current room of [st] if [result] 
+    is [Legal st], otherwise if [result] is [Illegal] it's the current 
+    room_id from [old_state]. *)
+val get_current_room : t -> result -> string
+
+(** [update_state old_state result] is [st] from [result] if [result] is 
+    [Legal st], otherwise if [result] is [Illegal] it's [old_state]. *)
+val update_state : t -> result -> t 
+
+(** [print_inventory st room] is the string representation of all items in the 
+    adventurer's inventory in state [st] that are in room [room]. *)
+val print_inventory : t -> Adventure.room_id -> string
+
+(*  [get_inventory st] is the adventurer's inventory in state [st]. *)
+val get_inventory : t -> (Adventure.item_name * Adventure.room_id) list
+
+(** [update_items st item room] is the inventory list of tuples from [st] 
+    with the room attributed to [item] being changed to [room]. *)
+val update_items : t -> Adventure.t -> Adventure.item_name ->  Adventure.room_id -> (Adventure.item_name * Adventure.room_id) list
+
+(*  [updated_item_score st adv item] is the updated score for [item], which 
+    updates only if the adventurer's current room in state [st] is the treasure 
+    room of adventure [adv]. *)
+val update_item_score : t -> Adventure.item_name -> Adventure.t -> int
+
+(* [take item adv st] is [r] if attempting to add item [item] to inventory in 
+   state [st] and adventure [adv] results in [r]. If [item] is an item from the 
+   adventurer's current room, then [r] is [Legal st'], where in [st'] the 
+   adventurer's inventory has been updated with [item] in room inventory. 
+   Otherwise the result is [Illegal]. 
+   Effects: none. [take] is not permitted to do any printing. *)
+val take : string -> Adventure.t -> t -> result
+
+(* [drop item adv st] is [r] if attempting to drop item [item] from inventory to 
+   the adventurer's current room in state [st] and adventure [adv] results in [r]. 
+   If [item] is an item in room inventory, then [r] is [Legal st'], where in 
+   [st'] the adventurer's inventory has been updated with [item] in the 
+   adventurer's current room in state [st] (or removed from inventory if 
+   the adventurer's current room in state [st] is the treasure room of adventure 
+   [adv]. Otherwise the result is [Illegal].
+   Effects: none. [drop] is not permitted to do any printing. *)
+val drop : string -> Adventure.t -> t -> result

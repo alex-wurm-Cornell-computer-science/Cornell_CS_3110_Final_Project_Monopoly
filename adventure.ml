@@ -3,10 +3,17 @@ open Yojson.Basic.Util
 
 type room_id = string
 type exit_name = string
+type item_name = string
 exception UnknownRoom of room_id
 exception UnknownExit of exit_name
+exception UnknownItem of item_name
 
-(* TODO: replace [unit] with a type of your own design. *)
+type item = {
+  item_name: item_name;
+  room: room_id;
+  score: int;
+}
+
 type exit = {
   name: exit_name;
   id: room_id;
@@ -15,25 +22,37 @@ type exit = {
 type room = {
   id: room_id;
   description: string;
+  score: int;
   exits: exit list;
 }
 
 type t = {
   start_room: room_id;
   rooms: room list;
+  items: item list;
+  treasure_room: room_id;
+  win_msg: string;
 }
 
+(** [uniq lst] is the set-like list composed of the elements from [lst] *)
 let uniq lst =
   let unique_set = Hashtbl.create (List.length lst) in
   List.iter (fun x -> Hashtbl.replace unique_set x ()) lst;
   Hashtbl.fold (fun x () xs -> x :: xs) unique_set []
 
-let rec map f lst = 
+(** [map f lst] is the application of function [f] to every element in [lst] *)
+let rec map f (lst:'a list) = 
   match lst with
   | [] -> []
   | h::t -> (f h)::(map f t)
 
 let from_json j = 
+
+  let item_of_json j ={
+    item_name = j |> member "name" |> to_string;
+    room = j |> member "starting room" |> to_string;
+    score = j |> member "score" |> to_int;
+  } in
 
   let exit_of_json j = {
     name = j |> member "name" |> to_string;
@@ -43,17 +62,22 @@ let from_json j =
   let room_of_json j = {
     id = j |> member "id" |> to_string;
     description = j |> member "description" |> to_string;
+    score = j |> member "score" |> to_int;
     exits = j |> member "exits" |> to_list |> List.map exit_of_json;
   } in
 
   let adventure_of_json j = {
     start_room = j |> member "start room" |> to_string;
     rooms = j |> member "rooms" |> to_list |> List.map room_of_json;
+    items = j |> member "items" |> to_list |> List.map item_of_json;
+    treasure_room = j |> member "treasure room" |> to_string;
+    win_msg = j |> member "win msg" |> to_string;
   } in
 
   let parse j =
     try adventure_of_json j
-    with Type_error (s, _) -> failwith ("Parsing error: " ^ s) in
+    with Type_error (s, _) -> failwith ("Parsing error: " ^ s) 
+  in
 
   parse j
 
@@ -61,11 +85,8 @@ let start_room adv =
   adv.start_room
 
 let room_ids adv = 
-  let get_name room =
-    room.id
-  in
+  let get_name room = room.id in
   uniq (map get_name adv.rooms)
-
 
 let description adv room =
   let rooms_lst = List.filter (fun x -> x.id = room) adv.rooms in
@@ -74,9 +95,7 @@ let description adv room =
   | h::t -> h.description
 
 let exits adv room = 
-  let get_exit_name exit = 
-    exit.name
-  in 
+  let get_exit_name exit = exit.name in 
   let rooms_lst = List.filter (fun x -> x.id = room) adv.rooms in
   match rooms_lst with
   | [] -> raise (UnknownRoom room)
@@ -101,7 +120,30 @@ let next_rooms adv room =
     | [] -> raise (UnknownRoom room)
     | h::t -> h.exits
   in 
-  let get_next_room (exit:exit) =
-    exit.id
-  in 
+  let get_next_room (exit:exit) = exit.id in 
   uniq (map get_next_room possible)
+
+let treasure_room adv = 
+  adv.treasure_room
+
+let win_msg adv = 
+  adv.win_msg
+
+let items adv =
+  let get_item_info item = (item.item_name,item.room) in
+  let items_lst = adv.items in 
+  match items_lst with
+  | [] -> []
+  | h::t -> (get_item_info h)::(map get_item_info t)
+
+let room_score adv room =
+  let rooms_lst = List.filter (fun x -> x.id = room) adv.rooms in
+  match rooms_lst with
+  | [] -> raise (UnknownRoom room)
+  | h::t -> h.score
+
+let item_score adv item = 
+  let items_lst = List.filter (fun x -> x.item_name = item) adv.items in 
+  match items_lst with 
+  | [] -> raise (UnknownItem item)
+  | h::t -> h.score
