@@ -16,29 +16,21 @@ exception Empty
 
 exception Malformed
 
-let parse str =
-  let parse_lst = 
-    List.filter (fun x -> (x = "") = false) (String.split_on_char ' ' str) 
-  in 
-  let command =
-    match parse_lst with
-    | [] -> raise (Empty)
-    | h::t -> if h = "roll" || h = "quit" || h = "wallet" || h = "inventory" ||
-      h = "buy" || h = "sell" || h = "items" || h = "auction" then h 
-      else raise (Malformed)
-  in 
-  let words =
-    match parse_lst with
-    | [] -> []
-    | h::t -> t
-  in 
+let format_command lst = 
+  match lst with 
+  | [] -> raise (Empty)
+  | h::t when h = "roll" -> if t = [] then Roll else raise (Malformed)
+  | h::t when h = "quit" -> if t = [] then Quit else raise (Malformed)
+  | h::t when h = "wallet" -> if t = [] then Wallet else raise (Malformed)
+  | h::t when h = "inventory" -> if t = [] then Inventory else raise (Malformed)
+  | h::t when h = "buy" -> if t = [] then Buy else raise (Malformed)
+  | h::t when h = "sell" -> if t = [] then raise (Malformed) else Sell t
+  | h::t when h = "items" -> if t = [] then Items else raise (Malformed)
+  | h::t when h = "auction" -> if t = [] then raise (Malformed) else Auction t
+  | _ -> raise (Malformed)
 
-  if command = "roll" && words = [] then Roll else
-  if command = "quit" && words = [] then Quit else
-  if command = "wallet" && words = [] then Wallet else
-  if command = "inventory" && words = [] then Inventory else
-  if command = "buy" && words = [] then Buy else
-  if command = "sell" && words != [] then Sell words else
-  if command = "items" && words = [] then Items else
-  if command = "auction" && words != [] then Auction words else
-    raise (Malformed)
+let parse str = 
+  let comm = String.trim str in 
+  let comm_list = String.split_on_char ' ' comm in 
+  let filtered_list = List.filter (fun x -> (x = "") = false) comm_list in 
+  format_command filtered_list
