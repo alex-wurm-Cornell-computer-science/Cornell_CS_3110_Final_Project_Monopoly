@@ -1,0 +1,245 @@
+{
+  "squares": [
+    {
+      "name": "GO",
+      "color": "None",
+      "cost": 0,
+      "type": "GO"
+    },
+    {
+      "name": "Mediterranean Avenue",
+      "color": "Brown",
+      "cost": 60,
+      "type": "Property"
+    },
+    {
+      "name": "Community Chest",
+      "color": "None",
+      "cost": 0,
+      "type": "Chest"
+    },
+    {
+      "name": "Baltic Avenue",
+      "color": "Brown",
+      "cost": 60,
+      "type": "Property"
+    },
+    {
+      "name": "Income Tax",
+      "color": "None",
+      "cost": 200,
+      "type": "Tax"
+    },
+    {
+      "name": "Reading Railroad",
+      "color": "Railroad",
+      "cost": 200,
+      "type": "Property"
+    },
+    {
+      "name": "Oriental Avenue",
+      "color": "Light Blue",
+      "cost": 100,
+      "type": "Property"
+    },
+    {
+      "name": "Chance",
+      "color": "None",
+      "cost": 0,
+      "type": "Chance"
+    },
+    {
+      "name": "Vermont Avenue",
+      "color": "Light Blue",
+      "cost": 100,
+      "type": "Property"
+    },
+    {
+      "name": "Connecticut Avenue",
+      "color": "Light Blue",
+      "cost": 120,
+      "type": "Property"
+    },
+    {
+      "name": "Jail",
+      "color": "None",
+      "cost": 0,
+      "type": "Jail"
+    },
+    {
+      "name": "St. Charles Place",
+      "color": "Pink",
+      "cost": 140,
+      "type": "Property"
+    },
+    {
+      "name": "Electric Company",
+      "color": "Utility",
+      "cost": 150,
+      "type": "Property"
+    },
+    {
+      "name": "States Avenue",
+      "color": "Pink",
+      "cost": 140,
+      "type": "Property"
+    },
+    {
+      "name": "Virginia Avenue",
+      "color": "Pink",
+      "cost": 160,
+      "type": "Property"
+    },
+    {
+      "name": "Pennsylvania Railroad",
+      "color": "Railroad",
+      "cost": 200,
+      "type": "Property"
+    },
+    {
+      "name": "St. James Place",
+      "color": "Orange",
+      "cost": 180,
+      "type": "Property"
+    },
+    {
+      "name": "Community Chest",
+      "color": "None",
+      "cost": 0,
+      "type": "Chest"
+    },
+    {
+      "name": "Tennessee Avenue",
+      "color": "Orange",
+      "cost": 180,
+      "type": "Property"
+    },
+    {
+      "name": "New York Avenue",
+      "color": "Orange",
+      "cost": 200,
+      "type": "Property"
+    },
+    {
+      "name": "Free Parking",
+      "color": "None",
+      "cost": 0,
+      "type": "Parking"
+    },
+    {
+      "name": "Kentucky Avenue",
+      "color": "Red",
+      "cost": 220,
+      "type": "Property"
+    },
+    {
+      "name": "Chance",
+      "color": "None",
+      "cost": 0,
+      "type": "Chance"
+    },
+    {
+      "name": "Indiana Avenue",
+      "color": "Red",
+      "cost": 220,
+      "type": "Property"
+    },
+    {
+      "name": "Illinois Avenue",
+      "color": "Red",
+      "cost": 240,
+      "type": "Property"
+    },
+    {
+      "name": "B. & O. Railroad",
+      "color": "Railroad",
+      "cost": 200,
+      "type": "Property"
+    },
+    {
+      "name": "Atlantic Avenue",
+      "color": "Yellow",
+      "cost": 260,
+      "type": "Property"
+    },
+    {
+      "name": "Ventnor Avenue",
+      "color": "Yellow",
+      "cost": 260,
+      "type": "Property"
+    },
+    {
+      "name": "Water Works",
+      "color": "Utility",
+      "cost": 150,
+      "type": "Property"
+    },
+    {
+      "name": "Marvin Gardens",
+      "color": "Yellow",
+      "cost": 280,
+      "type": "Property"
+    },
+    {
+      "name": "Go To Jail",
+      "color": "None",
+      "cost": 0,
+      "type": "GoToJail"
+    },
+    {
+      "name": "Pacific Avenue",
+      "color": "Green",
+      "cost": 300,
+      "type": "Property"
+    },
+    {
+      "name": "North Carolina Avenue",
+      "color": "Green",
+      "cost": 300,
+      "type": "Property"
+    },
+    {
+      "name": "Community Chest",
+      "color": "None",
+      "cost": 0,
+      "type": "Chest"
+    },
+    {
+      "name": "Pennsylvania Avenue",
+      "color": "Green",
+      "cost": 320,
+      "type": "Property"
+    },
+    {
+      "name": "Short Line",
+      "color": "Railroad",
+      "cost": 200,
+      "type": "Property"
+    },
+    {
+      "name": "Chance",
+      "color": "None",
+      "cost": 0,
+      "type": "Chance"
+    },
+    {
+      "name": "Park Place",
+      "color": "Dark Blue",
+      "cost": 350,
+      "type": "Property"
+    },
+    {
+      "name": "Luxury Tax",
+      "color": "None",
+      "cost": 100,
+      "type": "Tax"
+    },
+    {
+      "name": "Boardwalk",
+      "color": "Dark Blue",
+      "cost": 400,
+      "type": "Property"
+    }
+  ],
+  "cards": []
+}
