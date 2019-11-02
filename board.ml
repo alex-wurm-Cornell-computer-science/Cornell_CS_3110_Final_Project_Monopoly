@@ -30,7 +30,7 @@ type squareColor =
 
 type card = 
   { 
-    name : string;
+    c_name : string;
     description : string;
     payment : int
   }
@@ -40,7 +40,6 @@ type square = {
   cost : int ;
   color : squareColor option ;
   squareType : squareType ;
-  owner : string option;
   rent : int
 }
 
@@ -87,16 +86,14 @@ let square_of_json json=
     name = json |> member "name" |> to_string;
     cost = json |> member "cost" |> to_string |> int_of_string;
     color = json |> member "color" |> to_string |> parse_color;
-    owner = None;
     squareType = json |> member "type" |> to_string |> parse_type;
-    rent = json |> member "rent" |> to_string |> int_of_string
-
+    rent = json |> member "rent" |> to_string |> int_of_string;
   }
 
 (**[card_of_json json] parses [json] into a card type *)
 let card_of_json json = 
   { 
-    name = json |> member "name" |> to_string;
+    c_name = json |> member "name" |> to_string;
     description = json |> member "description" |> to_string;
     payment = json |> member "payment" |> to_string |> int_of_string
   }
@@ -116,74 +113,32 @@ let cost (b : board) (prop : string) =
     | h :: t -> if h.name = prop then h.cost else cost' t prop
   in cost' b.squares prop
 
+let rent b prop = 
+  let rec rent' squares prop = 
+    match squares with 
+    | [] -> raise (UnknownSquare prop)
+    | h :: t -> if h.name = prop then h.rent else rent' t prop
+  in rent' b.squares prop
 
 
-(*
-let start_room adv =
-  adv.start_room
+let chance_cards b = 
+  List.map (fun x -> x.c_name) b.chance_cards 
 
-let room_ids adv = 
-  let get_name room = room.id in
-  uniq (map get_name adv.rooms)
+let chest_cards b = 
+  List.map (fun x -> x.c_name) b.chest_cards 
 
-let description adv room =
-  let rooms_lst = List.filter (fun x -> x.id = room) adv.rooms in
-  match rooms_lst with
-  | [] -> raise (UnknownRoom room)
-  | h::t -> h.description
+let chance_card_description b cd = 
+  try 
+    let card = List.find (fun k -> k.c_name = cd) b.chance_cards in 
+    card.description 
+  with 
+  | exn -> failwith "Unknown card"
 
-let exits adv room = 
-  let get_exit_name exit = exit.name in 
-  let rooms_lst = List.filter (fun x -> x.id = room) adv.rooms in
-  match rooms_lst with
-  | [] -> raise (UnknownRoom room)
-  | h::t -> uniq(map get_exit_name h.exits)
+let chest_card_description b cd = 
+  try 
+    let card = List.find (fun k -> k.c_name = cd) b.chest_cards in 
+    card.description 
+  with 
+  | exn -> failwith "Unknown card"
 
-let next_room adv room ex =
-  let rooms_lst = List.filter (fun x -> x.id = room) adv.rooms in
-  let exit_lst = 
-    match rooms_lst with
-    | [] -> raise (UnknownRoom room)
-    | h::t -> h.exits
-  in 
-  let does_it_exist = List.filter (fun x -> x.name = ex) exit_lst in 
-  match does_it_exist with
-  | [] -> raise (UnknownExit ex)
-  | h::t -> h.id
 
-let next_rooms adv room =
-  let exits_lst = List.filter (fun x -> x.id = room) adv.rooms in
-  let possible =
-    match exits_lst with
-    | [] -> raise (UnknownRoom room)
-    | h::t -> h.exits
-  in 
-  let get_next_room (exit:exit) = exit.id in 
-  uniq (map get_next_room possible)
-
-let treasure_room adv = 
-  adv.treasure_room
-
-let win_msg adv = 
-  adv.win_msg
-
-let items adv =
-  let get_item_info item = (item.item_name,item.room) in
-  let items_lst = adv.items in 
-  match items_lst with
-  | [] -> []
-  | h::t -> (get_item_info h)::(map get_item_info t)
-
-let room_score adv room =
-  let rooms_lst = List.filter (fun x -> x.id = room) adv.rooms in
-  match rooms_lst with
-  | [] -> raise (UnknownRoom room)
-  | h::t -> h.score
-
-let item_score adv item = 
-  let items_lst = List.filter (fun x -> x.item_name = item) adv.items in 
-  match items_lst with 
-  | [] -> raise (UnknownItem item)
-  | h::t -> h.score
-
-  *)
