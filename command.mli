@@ -27,12 +27,14 @@ type object_phrase = string list
 (** The type [command] represents a player command that is decomposed
     into a verb and possibly an object phrase. *)
 type command = 
-  | Go of object_phrase
-  | Quit
-  | Score 
-  | Take of object_phrase 
-  | Drop of object_phrase
-  | Inventory
+  | Roll (* Used to initiate dice roll to move around the board on your turn. *)
+  | Quit (* Used to end the game -> will prompt player to confirm. *)
+  | Wallet (* Used to see current liquid assets of the player ($$$). *)
+  | Inventory (* Used to see current properties that the player owns. *)
+  | Buy (* Used to purchase a property that you are currently on. *) 
+  | Sell of object_phrase (* Used to sell any properties in the current inventory. *)
+  | Items (* Used to see what special cards the player holds. *)
+  | Auction of object_phrase (* Used to participate in property auctions. *)
 
 (** Raised when an empty command is parsed. *)
 exception Empty
