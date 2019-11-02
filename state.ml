@@ -1,20 +1,24 @@
 (* Note: You may introduce new code anywhere in this file. *) 
 
-(* TODO: replace [unit] with a type of your own design. *)
+open Board
 
-exception UnknownItem of Adventure.item_name
+exception UnknownProperty of Board.prop_name
+
+type player = int
 
 type t = {
-  curr : string;
-  visited : string list;
-  score: int;
-  inventory : (Adventure.item_name * Adventure.room_id) list;
+  curr_player : player;
+  locations : (player * int) list;
+  inventories : (player * Board.prop_name list) list;
+  items : (player * Board.card_name) list;
+  wallets : (player * int) list;
+  total_assets : (player * int) list;
 }
 
 let init_state adv =
   let state start =
     {
-      curr = start;
+      curr_player = 0;
       visited = start::[];
       score = Adventure.room_score adv start;
       inventory = Adventure.items adv;

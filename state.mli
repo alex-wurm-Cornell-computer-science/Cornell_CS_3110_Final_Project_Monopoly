@@ -9,13 +9,9 @@
 (* You are free to add more code here. *)
 
 (** Raised when an unknown item is encountered. *)
-exception UnknownItem of Adventure.item_name
+exception UnknownProperty of Board.prop_name
 
-(**********************************************************************
- * DO NOT CHANGE THIS CODE
- * It is part of the interface the course staff will use to test your 
- * submission.
-*)
+type player
 
 (** The abstract type of values representing the game state. *)
 type t 
