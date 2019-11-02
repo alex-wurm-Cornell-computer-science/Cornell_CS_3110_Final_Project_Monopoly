@@ -1,7 +1,0 @@
-"Resource: /Users/caitlinstanton/Desktop/CS 3110/cs3110-project/adventure.mli": "\214\184\244\2359\175\203c\170\219\150\181\172k\022\202"
-"Rule: ocaml: mli -> cmi (%=adventure )": "I*\136\029\153\190sw\234\n\172\226\244\030ew"
-"Rule: ocaml dependencies mli (%=adventure )": "&Q/T\0309F\t\143O9Q\134}\243L"
-"Rule: ocaml: ml & cmi -> cmo (%=adventure )": "Y\238s\024\197\206\221X\192\237\243\031ML\206\196"
-"Resource: /Users/caitlinstanton/Desktop/CS 3110/cs3110-project/adventure.ml": "#S\2032\165\157UO\193\237\015\181\239T$m"
-"Rule: ocaml dependencies ml (%=adventure )": "\014\003v\\\161g\154\176E(\207\248&\234\183\253"
-"Resource: /Users/caitlinstanton/Desktop/CS 3110/cs3110-project/command.mli": "'\025I\007)?*\182\249MA[\131/\023\014"

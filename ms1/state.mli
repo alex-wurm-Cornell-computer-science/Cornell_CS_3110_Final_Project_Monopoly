@@ -13,6 +13,8 @@ exception UnknownProperty of Board.prop_name
 
 type player
 
+type property
+
 (** The abstract type of values representing the game state. *)
 type t 
 
@@ -25,10 +27,17 @@ val init_state : Board.t -> int -> t
     currently is located in state [st]. *)
 val current_player : t -> player
 
-(** [visited st] is a set-like list of the room identifiers the adventurer has 
-    visited in state [st]. The adventurer has visited a room [rm] if their
-    current room location is or has ever been [rm]. *)
-val visited : t -> string list
+val num_players : t -> int
+
+val locations : t -> (player * int) list
+
+val inventories : t -> (player * property list) list
+
+val items : t -> (player * Board.card_name list) list 
+
+val wallets : t -> (player * int) list
+
+val total_assets : t -> (player * int) list 
 
 (** The type representing the result of an attempted movement. *)
 type result = Legal of t | Illegal

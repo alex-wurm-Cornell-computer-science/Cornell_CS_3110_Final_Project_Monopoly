@@ -33,4 +33,5 @@ WARNING: Unable to find a working MD5 command
 EOF
 fi
 
-$MD5 adventure.zip
+$MD5 enigma.ml
+$MD5 enigma_test.ml

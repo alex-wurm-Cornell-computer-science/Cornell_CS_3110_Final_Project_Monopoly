@@ -44,7 +44,20 @@ let current_player st =
 let num_players st = 
   st.num_players
 
-let 
+let locations st = 
+  st.locations
+
+let inventories st =
+  st.inventories
+
+let items st = 
+  st.items
+
+let wallets st =
+  st.wallets
+
+let total_assets st = 
+  st.total_assets
 
 type result = Legal of t | Illegal
 
