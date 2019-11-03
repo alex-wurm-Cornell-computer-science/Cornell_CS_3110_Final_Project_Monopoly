@@ -144,3 +144,13 @@ let size b =
   List.length b.squares
 
 
+let all_squares b = 
+  List.map (fun s -> s.name) b.squares
+
+
+let square_type b prop = 
+  try 
+    let card = List.find (fun k -> k.name = prop) b.squares in 
+    card.squareType 
+  with 
+  | exn -> raise (UnknownSquare prop)

@@ -1,50 +1,42 @@
 ### Starting build.
 # Target: command.mli.depends, tags: { package(oUnit), package(yojson), extension:mli, file:command.mli, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -modules command.mli > command.mli.depends
+ocamlfind ocamldep -package oUnit -package yojson -modules command.mli > command.mli.depends # cached
 # Target: command.cmi, tags: { package(oUnit), package(yojson), byte, compile, extension:mli, file:command.mli, interf, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -o command.cmi command.mli
+ocamlfind ocamlc -c -package oUnit -package yojson -o command.cmi command.mli # cached
 # Target: command.ml.depends, tags: { package(oUnit), package(yojson), extension:ml, file:command.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -modules command.ml > command.ml.depends
+ocamlfind ocamldep -package oUnit -package yojson -modules command.ml > command.ml.depends # cached
 # Target: command.cmo, tags: { package(oUnit), package(yojson), byte, compile, extension:cmo, extension:ml, file:command.cmo, file:command.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -o command.cmo command.ml
+ocamlfind ocamlc -c -package oUnit -package yojson -o command.cmo command.ml # cached
 # Target: state.mli.depends, tags: { package(oUnit), package(yojson), extension:mli, file:state.mli, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -modules state.mli > state.mli.depends
+ocamlfind ocamldep -package oUnit -package yojson -modules state.mli > state.mli.depends # cached
 # Target: board.mli.depends, tags: { package(oUnit), package(yojson), extension:mli, file:board.mli, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -modules board.mli > board.mli.depends
+ocamlfind ocamldep -package oUnit -package yojson -modules board.mli > board.mli.depends # cached
 # Target: board.cmi, tags: { package(oUnit), package(yojson), byte, compile, extension:mli, file:board.mli, interf, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -o board.cmi board.mli
+ocamlfind ocamlc -c -package oUnit -package yojson -o board.cmi board.mli # cached
 # Target: state.cmi, tags: { package(oUnit), package(yojson), byte, compile, extension:mli, file:state.mli, interf, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -o state.cmi state.mli
+ocamlfind ocamlc -c -package oUnit -package yojson -o state.cmi state.mli # cached
 # Target: state.ml.depends, tags: { package(oUnit), package(yojson), extension:ml, file:state.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -modules state.ml > state.ml.depends
+ocamlfind ocamldep -package oUnit -package yojson -modules state.ml > state.ml.depends # cached
 # Target: state.cmo, tags: { package(oUnit), package(yojson), byte, compile, extension:cmo, extension:ml, file:state.cmo, file:state.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -o state.cmo state.ml
+ocamlfind ocamlc -c -package oUnit -package yojson -o state.cmo state.ml # cached
 # Target: main.mli.depends, tags: { package(oUnit), package(yojson), extension:mli, file:main.mli, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -modules main.mli > main.mli.depends
+ocamlfind ocamldep -package oUnit -package yojson -modules main.mli > main.mli.depends # cached
 # Target: main.cmi, tags: { package(oUnit), package(yojson), byte, compile, extension:mli, file:main.mli, interf, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -o main.cmi main.mli
+ocamlfind ocamlc -c -package oUnit -package yojson -o main.cmi main.mli # cached
 # Target: main.ml.depends, tags: { package(oUnit), package(yojson), extension:ml, file:main.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -modules main.ml > main.ml.depends
+ocamlfind ocamldep -package oUnit -package yojson -modules main.ml > main.ml.depends # cached
 # Target: main.cmo, tags: { package(oUnit), package(yojson), byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -o main.cmo main.ml
+ocamlfind ocamlc -c -package oUnit -package yojson -o main.cmo main.ml # cached
 # Target: author.mli.depends, tags: { package(oUnit), package(yojson), extension:mli, file:author.mli, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -modules author.mli > author.mli.depends
+ocamlfind ocamldep -package oUnit -package yojson -modules author.mli > author.mli.depends # cached
 # Target: author.cmi, tags: { package(oUnit), package(yojson), byte, compile, extension:mli, file:author.mli, interf, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -o author.cmi author.mli
+ocamlfind ocamlc -c -package oUnit -package yojson -o author.cmi author.mli # cached
 # Target: author.ml.depends, tags: { package(oUnit), package(yojson), extension:ml, file:author.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -modules author.ml > author.ml.depends
+ocamlfind ocamldep -package oUnit -package yojson -modules author.ml > author.ml.depends # cached
 # Target: author.cmo, tags: { package(oUnit), package(yojson), byte, compile, extension:cmo, extension:ml, file:author.cmo, file:author.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -o author.cmo author.ml
+ocamlfind ocamlc -c -package oUnit -package yojson -o author.cmo author.ml # cached
 # Target: board.ml.depends, tags: { package(oUnit), package(yojson), extension:ml, file:board.ml, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package oUnit -package yojson -modules board.ml > board.ml.depends
 # Target: board.cmo, tags: { package(oUnit), package(yojson), byte, compile, extension:cmo, extension:ml, file:board.cmo, file:board.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package oUnit -package yojson -o board.cmo board.ml
-+ ocamlfind ocamlc -c -package oUnit -package yojson -o board.cmo board.ml
-File "board.ml", line 1:
-Error: The implementation board.ml does not match the interface board.cmi:
-       The value `all_squares' is required but not provided
-       File "board.mli", line 49, characters 0-38: Expected declaration
-       The value `square_type' is required but not provided
-       File "board.mli", line 46, characters 0-51: Expected declaration
-Command exited with code 2.
-# Compilation unsuccessful.
+# Compilation successful.
