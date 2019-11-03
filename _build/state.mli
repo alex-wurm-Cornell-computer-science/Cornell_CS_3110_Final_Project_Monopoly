@@ -34,6 +34,8 @@ val num_players : t -> int
 
 val locations : t -> (player * int) list
 
+val current_location : t -> int
+
 val inventories : t -> (player * property list) list
 
 val items : t -> (player * Board.card list) list 

@@ -39,4 +39,12 @@ ocamlfind ocamlc -c -package oUnit -package yojson -o author.cmo author.ml
 ocamlfind ocamldep -package oUnit -package yojson -modules board.ml > board.ml.depends
 # Target: board.cmo, tags: { package(oUnit), package(yojson), byte, compile, extension:cmo, extension:ml, file:board.cmo, file:board.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package oUnit -package yojson -o board.cmo board.ml
-# Compilation successful.
++ ocamlfind ocamlc -c -package oUnit -package yojson -o board.cmo board.ml
+File "board.ml", line 1:
+Error: The implementation board.ml does not match the interface board.cmi:
+       The value `all_squares' is required but not provided
+       File "board.mli", line 49, characters 0-38: Expected declaration
+       The value `square_type' is required but not provided
+       File "board.mli", line 46, characters 0-51: Expected declaration
+Command exited with code 2.
+# Compilation unsuccessful.

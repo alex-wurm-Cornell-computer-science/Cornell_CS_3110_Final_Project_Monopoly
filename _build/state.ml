@@ -49,6 +49,9 @@ let num_players st =
 let locations st = 
   st.locations
 
+let current_location st = 
+  List.assoc (current_player st) (locations st)
+
 let inventories st =
   st.inventories
 
