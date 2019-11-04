@@ -1,6 +1,9 @@
-2019-11-04T21:28:45+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: Start test test suite for A2:0:test size.
-2019-11-04T21:28:45+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: Test test suite for A2:0:test size is successful.
-2019-11-04T21:28:45+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: End test test suite for A2:0:test size.
-2019-11-04T21:28:45+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: Start test test suite for A2:2:test rent.
-2019-11-04T21:28:45+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: Test test suite for A2:2:test rent is successful.
-2019-11-04T21:28:45+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: End test test suite for A2:2:test rent.
+2019-11-04T21:33:56+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: Start test test suite for A2:0:test size.
+2019-11-04T21:33:56+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: Test test suite for A2:0:test size is successful.
+2019-11-04T21:33:56+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: End test test suite for A2:0:test size.
+2019-11-04T21:33:56+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: Start test test suite for A2:3:test all squares.
+2019-11-04T21:33:56+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: Test test suite for A2:3:test all squares is successful.
+2019-11-04T21:33:56+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: End test test suite for A2:3:test all squares.
+2019-11-04T21:33:56+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: Start test test suite for A2:4:test monopoly.
+2019-11-04T21:33:56+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: Test test suite for A2:4:test monopoly is successful.
+2019-11-04T21:33:56+00:00 dhcp-hol-3243.redrover.cornell.edu#01 I: End test test suite for A2:4:test monopoly.

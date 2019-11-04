@@ -25,8 +25,16 @@ exception UnknownSquare of prop_name
 (** The abstract type of values representing monopoly boards. *)
 type board
 
-(** The abstract type representing square types*)
-type squareType
+(** The type representing square types*)
+type squareType = 
+  | Go
+  | Jail 
+  | Parking
+  | GoToJail
+  | Property
+  | Chance
+  | Chest
+  | Tax 
 
 (** [from_json j] is the adventure that [j] represents.
     Requires: [j] is a valid JSON adventure representation. *)
