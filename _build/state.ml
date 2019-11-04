@@ -2,8 +2,6 @@
 
 open Board
 
-exception UnknownProperty of Board.prop_name
-
 type player = int
 
 type property = {

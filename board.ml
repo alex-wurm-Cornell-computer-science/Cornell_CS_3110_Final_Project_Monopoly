@@ -101,8 +101,12 @@ let card_of_json json =
 let from_json j = 
   {
     squares = j |> member "squares" |> to_list |> List.map square_of_json;
-    chance_cards = j |> member "chance cards" |> to_list |> List.map card_of_json;
-    chest_cards = j |> member "chest cards" |> to_list |> List.map card_of_json;
+
+    chance_cards = if List.length (  j |> member "chance cards" |> to_list ) > 0 then
+        j |> member "chance cards" |> to_list |> List.map card_of_json else [];
+
+    chest_cards = if List.length (j |> member "chest cards" |> to_list) > 0 then
+        j |> member "chest cards" |> to_list |> List.map card_of_json else [];
   }
 
 let cost (b : board) (prop : string) = 
@@ -143,10 +147,8 @@ let chest_card_description b cd =
 let size b =
   List.length b.squares
 
-
 let all_squares b = 
   List.map (fun s -> s.name) b.squares
-
 
 let square_type b prop = 
   try 

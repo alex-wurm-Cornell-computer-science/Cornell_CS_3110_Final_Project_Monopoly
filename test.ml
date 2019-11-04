@@ -51,6 +51,8 @@ let cmp_demo =
     *)
   ]
 
+
+
 (********************************************************************
    End helper functions.
  ********************************************************************)
@@ -60,9 +62,22 @@ let cmp_demo =
    use them, too.  Any .json files in this directory will be included
    by [make zip] as part of your CMS submission. *)
 
+let test_board = from_json (Yojson.Basic.from_file "test_board.json")
+
+let board_tests_valid = [
+  "test size" >:: (fun _ -> assert_equal 8 (size test_board));
+  "test cost" >:: (fun _ -> assert_equal 100 (cost test_board "Baltic Avenue"));
+  "test rent" >:: (fun _ -> assert_equal 100 (rent test_board "Baltic Avenue"));
+  "test all squares" >:: (fun _ -> assert_equal true (
+      cmp_set_like_lists [ "GO"; "Mediterranean Avenue" ; "Community Chest" ; 
+                           "Baltic Avenue" ; "Income Tax" ; "Chance" ; "Jail" ; "Go To Jail"]
+        (all_squares test_board)
+    ))
+]
+
 let suite =
   "test suite for A2"  >::: List.flatten [
-
+    board_tests_valid
   ]
 
 let _ = run_test_tt_main suite

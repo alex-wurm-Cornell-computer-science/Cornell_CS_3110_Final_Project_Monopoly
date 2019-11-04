@@ -8,8 +8,6 @@
 
 (* You are free to add more code here. *)
 
-(** Raised when an unknown item is encountered. *)
-exception UnknownProperty of Board.prop_name
 
 type player
 
