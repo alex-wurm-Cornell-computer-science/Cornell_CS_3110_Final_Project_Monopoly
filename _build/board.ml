@@ -138,8 +138,8 @@ let all_squares b =
 
 let square_type b prop = 
   try 
-    let card = List.find (fun k -> k.name = prop) b.squares in 
-    card.squareType 
+    let square = List.find (fun k -> k.name = prop) b.squares in 
+    square.squareType 
   with 
   | exn -> raise (UnknownSquare prop)
 
