@@ -15,19 +15,6 @@ type squareType =
   | Chest
   | Tax 
 
-type squareColor = 
-  | Brown
-  | LBlue
-  | Pink
-  | Orange
-  | Red
-  | Yellow
-  | Green
-  | DBlue
-  | RR
-  | Util
-
-
 type card = 
   { 
     c_name : string;
@@ -38,7 +25,7 @@ type card =
 type square = { 
   name : string ; 
   cost : int ;
-  color : squareColor option ;
+  color : string option ;
   squareType : squareType ;
   rent : int
 }
@@ -47,7 +34,8 @@ type square = {
 type board  =  {
   squares : square list;
   chance_cards : card list;
-  chest_cards : card list
+  chest_cards : card list;
+  monopolies : string list list
 }
 
 
@@ -59,16 +47,8 @@ let uniq lst =
 
 (** [parse_color col] parses [col] into a valid monopoly color *)
 let parse_color col = 
-  if col = "Brown" then Some Brown else 
-  if col = "Light Blue" then Some LBlue else 
-  if col = "Pink" then Some Pink else 
-  if col = "Orange" then Some Orange else 
-  if col = "Red" then Some Red else 
-  if col = "Yellow" then Some Yellow else 
-  if col = "Green" then Some Green else 
-  if col = "Dark Blue" then Some DBlue else 
-  if col = "RailRoad" then Some RR else 
-  if col = "Utility" then Some Util else None
+  if col = "None" then None 
+  else Some col
 
 (** [parse_type s] parses [s] into a valid square type *)
 let parse_type s = 
@@ -98,6 +78,11 @@ let card_of_json json =
     payment = json |> member "payment" |> to_string |> int_of_string
   }
 
+(** [monopoly_of_json j] transforms [j] into a list of strings, where the strings 
+    are properties that together form a monopoly*)
+let monopoly_of_json j = 
+  j |> to_list |> List.map to_string
+
 let from_json j = 
   {
     squares = j |> member "squares" |> to_list |> List.map square_of_json;
@@ -107,6 +92,7 @@ let from_json j =
 
     chest_cards = if List.length (j |> member "chest cards" |> to_list) > 0 then
         j |> member "chest cards" |> to_list |> List.map card_of_json else [];
+    monopolies = j |> member "monopolies" |> to_list |> List.map monopoly_of_json
   }
 
 let cost (b : board) (prop : string) = 
@@ -156,3 +142,11 @@ let square_type b prop =
     card.squareType 
   with 
   | exn -> raise (UnknownSquare prop)
+
+
+let monopoly_group b prop = 
+  let monopolies = List.fold_left 
+      (fun acc k -> if List.mem prop k then k else acc) [] b.monopolies in 
+  match monopolies with
+  | [] -> raise (UnknownSquare prop)
+  | l -> l

@@ -25,9 +25,6 @@ exception UnknownSquare of prop_name
 (** The abstract type of values representing monopoly boards. *)
 type board
 
-(** The abstract type representing square colors*)
-type squareColor 
-
 (** The abstract type representing square types*)
 type squareType
 
@@ -73,3 +70,9 @@ val chest_card_description : board -> string -> string
 (** [num_squares b] returns the size of board [b], defined as the number of
       squares in the board*)
 val size : board -> int 
+
+(** [monopoly_group b prop] returns the list of properties in the same monopoly
+      group as [prop] in board [b]. A monopoly group is a set of properties
+      that when owned together form a monopoly. Raises [UnknownSquare prop] if 
+      [prop] is not in [b]. *)
+val monopoly_group : board -> string -> string list

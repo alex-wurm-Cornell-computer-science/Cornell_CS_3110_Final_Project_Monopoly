@@ -58,5 +58,11 @@
     }
   ],
   "chest cards": [],
-  "chance cards": []
+  "chance cards": [],
+  "monopolies": [
+    [
+      "Mediterranean Avenue",
+      "Baltic Avenue"
+    ]
+  ]
 }
