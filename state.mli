@@ -59,3 +59,5 @@ val buy : t -> result
 val sell : t -> result 
 
 val auction : t -> result 
+
+val earn_cash : t -> int -> result

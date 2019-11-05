@@ -30,7 +30,7 @@ val current_player : t -> int
 
 val num_players : t -> int
 
-val locations : t -> (int * int) list
+val locations : t -> (int * (int * bool)) list
 
 val current_location : t -> int
 
@@ -59,3 +59,5 @@ val buy : t -> result
 val sell : t -> result 
 
 val auction : t -> result 
+
+val earn_cash : t -> int -> result

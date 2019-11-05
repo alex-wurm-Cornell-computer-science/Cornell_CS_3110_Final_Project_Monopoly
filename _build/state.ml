@@ -13,7 +13,7 @@ type property = {
 type t = {
   curr_player : int;
   num_players : int;
-  locations : (int * int) list;
+  locations : (int * (int * bool)) list;
   inventories : (int * property list) list;
   items : (int * Board.card list) list;
   wallets : (int * int) list;
@@ -31,7 +31,7 @@ let init_state brd n =
   {
     curr_player = 1;
     num_players = n;
-    locations = init_lists (n) 0 [];
+    locations = init_lists (n) (0,false) [];
     inventories = init_lists (n) [] [];
     items = init_lists (n) [] [];
     wallets = init_lists (n) 0 [];
@@ -48,7 +48,7 @@ let locations st =
   st.locations
 
 let current_location st = 
-  List.assoc (current_player st) (locations st)
+  fst (List.assoc (current_player st) (locations st))
 
 let inventories st =
   st.inventories
@@ -67,29 +67,15 @@ let update_state old_st res =
   | Illegal -> old_st 
   | Legal t -> t 
 
-let next_turn t = 
-  Legal {
-    curr_player = ((current_player t) mod (num_players t)) + 1;
-    num_players = num_players t;
-    locations = locations t;
-    inventories = inventories t;
-    items = items t;
-    wallets = wallets t;
-    total_assets = total_assets t;
-  }
-
-let roll brd st = 
-  let die1 = (Random.int 5) + 1 in 
-  let die2 = (Random.int 5) + 1 in 
+let next_turn st = 
   let curr_player = current_player st in 
   let total_loc = locations st in 
   let curr_loc = List.assoc curr_player total_loc in 
-  let trimmed = List.remove_assoc curr_player total_loc in 
-  let new_loc = (curr_player, (curr_loc + die1 + die2) mod Board.size brd)::trimmed in 
-  match (List.mem_assoc curr_player new_loc) with 
-  | false -> Illegal
-  | true -> Legal {
-      curr_player = curr_player;
+  if snd curr_loc then (
+    let trimmed = List.remove_assoc curr_player total_loc in 
+    let new_loc = (curr_player, (fst curr_loc,false))::trimmed in 
+    Legal {
+      curr_player = ((current_player st) mod (num_players st)) + 1;
       num_players = num_players st;
       locations = new_loc;
       inventories = inventories st;
@@ -97,6 +83,29 @@ let roll brd st =
       wallets = wallets st;
       total_assets = total_assets st;
     }
+  ) else Legal st 
+
+let roll brd st = 
+  let die1 = (Random.int 5) + 1 in 
+  let die2 = (Random.int 5) + 1 in 
+  let curr_player = current_player st in 
+  let total_loc = locations st in 
+  let curr_loc = List.assoc curr_player total_loc in 
+  if snd curr_loc = false then (
+    let trimmed = List.remove_assoc curr_player total_loc in 
+    let new_loc = (curr_player, ((fst curr_loc + die1 + die2) mod Board.size brd,true))::trimmed in 
+    match (List.mem_assoc curr_player new_loc) with 
+    | false -> Illegal
+    | true -> Legal {
+        curr_player = curr_player;
+        num_players = num_players st;
+        locations = new_loc;
+        inventories = inventories st;
+        items = items st;
+        wallets = wallets st;
+        total_assets = total_assets st;
+      }
+  ) else Legal st
 
 let curr_player_inventory st = 
   let curr_player = current_player st in
@@ -121,3 +130,19 @@ let sell st =
 
 let auction st = 
   failwith ("Unimplemented")
+
+let earn_cash st amt =
+  let curr_player = current_player st in 
+  let total_cash = wallets st in 
+  let curr_cash = List.assoc curr_player total_cash in 
+  let trimmed = List.remove_assoc curr_player total_cash in 
+  let new_cash = (curr_player,curr_cash + amt)::trimmed in 
+  Legal {
+    curr_player = curr_player;
+    num_players = num_players st;
+    locations = locations st;
+    inventories = inventories st;
+    items = items st;
+    wallets = new_cash;
+    total_assets = total_assets st;
+  }

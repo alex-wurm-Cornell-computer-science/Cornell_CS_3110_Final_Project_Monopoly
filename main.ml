@@ -93,8 +93,14 @@ let disp_inv st =
 let roll brd st = 
   let res = State.roll brd st in 
   match res with 
-  | State.Illegal -> print_string "\nIllegal movement, please try again"; res
-  | State.Legal t -> Printf.printf "\n Player %d is now at space %d\n" (State.current_player t) (State.current_location t); res
+  | Illegal -> print_string "\nIllegal movement, please try again\n"; res
+  | Legal t -> Printf.printf "\nPlayer %d is now at space %d\n" (State.current_player t) (State.current_location t); res
+
+let pass_go brd st = 
+  let res = State.earn_cash st 200 in
+  match res with 
+  | Illegal -> print_string "\nIllegal movement, please try again\n"; res
+  | Legal t -> Printf.printf "\nPlayer %d now has $%d in cash\n" (State.current_player t) (State.curr_player_wallet t); res
 
 let next_turn res st =
   match res with 
@@ -112,15 +118,22 @@ let rec interp_command brd res st =
   Printf.printf "\nPlayer %d, it's your turn!\n" (State.current_player st);
   let command = user_input () in
   match command with
-  | Quit -> print_string "\n Thank you for playing the Monopoly Game Engine! \
+  | Quit -> print_string "\nThank you for playing the Monopoly Game Engine! \
                           \n\n"; exit 0
   | Roll -> (let res = roll brd st in 
              match res with 
-             | Illegal ->  print_string "\nSorry that didn't work, please try again.\n";
+             | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" (current_player st)
              | Legal st' ->
-               let moved = current_location st' - current_location st in  
-               Printf.printf "You rolled a %d\n" moved;
-               interp_command brd res st'
+               let moved = current_location st' - current_location st in 
+               if moved <= 0 then (
+                 Printf.printf "\nYou've passed GO, player %d!\n" (current_player st');
+                 let res' = pass_go brd st' in 
+                 interp_command brd res' st'
+               ) else (
+                 Printf.printf "\nYou rolled a %d\n" moved;
+                 interp_command brd res st'
+               )
+
             )
   | Inventory -> print_string "\nYou own the following properties:\n";
     disp_inv st;  

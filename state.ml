@@ -105,7 +105,7 @@ let roll brd st =
         wallets = wallets st;
         total_assets = total_assets st;
       }
-  ) else Illegal
+  ) else Legal st
 
 let curr_player_inventory st = 
   let curr_player = current_player st in
@@ -130,3 +130,19 @@ let sell st =
 
 let auction st = 
   failwith ("Unimplemented")
+
+let earn_cash st amt =
+  let curr_player = current_player st in 
+  let total_cash = wallets st in 
+  let curr_cash = List.assoc curr_player total_cash in 
+  let trimmed = List.remove_assoc curr_player total_cash in 
+  let new_cash = (curr_player,curr_cash + amt)::trimmed in 
+  Legal {
+    curr_player = curr_player;
+    num_players = num_players st;
+    locations = locations st;
+    inventories = inventories st;
+    items = items st;
+    wallets = new_cash;
+    total_assets = total_assets st;
+  }
