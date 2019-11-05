@@ -52,8 +52,6 @@ let format fmt d =
 
 let to_list f acc l = List.fold_left (fun acc (k,v) -> f k v acc) acc
 
-let 
-
 (*
 (** [update_items adv st] prints the loot of the [current_room] given
 the state and the adventure being played. If there is no loot in the [room]
