@@ -84,3 +84,7 @@ val size : board -> int
       that when owned together form a monopoly. Raises [UnknownSquare prop] if 
       [prop] is not in [b]. *)
 val monopoly_group : board -> string -> string list
+
+
+(** [nth_square bd n] returns the square at position [n] in [bd] *)
+val nth_square : board -> int -> string

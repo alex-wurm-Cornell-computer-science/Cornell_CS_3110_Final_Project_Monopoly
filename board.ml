@@ -150,3 +150,6 @@ let monopoly_group b prop =
   match monopolies with
   | [] -> raise (UnknownSquare prop)
   | l -> l
+
+let nth_square bd n = 
+  (List.nth bd.squares n).name
