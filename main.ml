@@ -10,22 +10,26 @@ exception NotValid
     If the command was malformed, the game will inform the player and ask
     for another command. *)
 let rec user_input _ = 
+  print_string " > ";
   try parse (read_line ()) with
-  | Empty -> print_string "\n No command was entered, please try again. \
+  | Empty -> print_string "\nNo command was entered, please try again. \
                            \n\n";
     user_input()
-  | Malformed -> print_string "\n Command unclear, please try again. \n\n"; 
+  | Malformed -> print_string "\nCommand unclear, please try again. \n\n"; 
     user_input()
 
 let rec number_of_players () =
-  print_string "\n Please enter a valid number of players for this game. \n";
+  print_string " > ";
   let n = read_line () in 
   if n = "2" then 2
   else if n = "3" then 3
   else if n = "4" then 4
   else if n = "5" then 5
   else if n = "6" then 6
-  else number_of_players ()
+  else begin 
+    print_string "\nInvalid number of players entered. Monopoly works with 2 to 6 players. Please try again!\n";
+    number_of_players ()
+  end 
 
 (** [get_board f] converts input file f to a Board. If any exceptions
     are raised from the conversion, the game will notify the player and ask for
@@ -88,7 +92,8 @@ let roll brd st =
   let res = State.roll brd st in 
   match res with 
   | State.Illegal -> print_string "\nIllegal movement, please try again"; st
-  | State.Legal t -> Printf.printf "\n Player %d is now at space %d\n" (State.current_player t) (State.current_location t);let next_turn = State.next_turn t res in State.update_state t next_turn
+  | State.Legal t -> Printf.printf "\n Player %d is now at space %d\n" (State.current_player t) (State.current_location t);
+    let next_turn = State.next_turn t res in State.update_state t next_turn
 
 (** [interp_command brd st command] allows the user to play the game by
     printing an exit message if the input command is [Quit] or by inspecting a 
@@ -96,7 +101,9 @@ let roll brd st =
     the state is updated and the user is prompted for another command. If the 
     command is [Illegal] the game prints an error message and asks the user
     for a new command. *)
-let rec interp_command brd st command = 
+let rec interp_command brd st = 
+  Printf.printf "\nPlayer %d, it's your turn!\n" (State.current_player st);
+  let command = user_input () in
   match command with
   | Quit -> print_string "\n Thank you for playing the Monopoly Game Engine! \
                           \n\n"; exit 0
@@ -105,16 +112,16 @@ let rec interp_command brd st command =
     (* if moved > 1 then (Printf.printf "\n You rolled a %d: " moved;
                        interp_command brd result (user_input ()))
        else  print_string "\n Sorry that didn't work, please try again. \n"; *)
-    interp_command brd res (user_input ())
-  | Inventory -> print_string "\n Your own the following properties: \n";
+    interp_command brd res
+  | Inventory -> print_string "\n You own the following properties: \n";
     disp_inv st;  
-    interp_command brd st (user_input ())
+    interp_command brd st
   | Wallet -> Printf.printf "\n You currently have $%d in cash. \n" 
                 (curr_player_wallet st); 
-    interp_command brd st (user_input ())    
+    interp_command brd st    
   | Items -> print_string "\n You currently have the following cards: \n"; 
     disp_curr_player_items st;
-    interp_command brd st (user_input ())              
+    interp_command brd st             
   | Buy -> print_string "\n Are you sure you would like to buy this property? \n";
     (* let response = read_line () in 
        if response = "yes" then (* try-catch to see if legal *)
@@ -123,7 +130,7 @@ let rec interp_command brd st command =
        else if response = "no" then print_string "\n Okay maybe next time! \n"
        (* Take more input. *)
        else print_string "\n Invalid response, please try again. \n"; *)
-    interp_command brd st (user_input ())
+    interp_command brd st
   | Sell p -> print_string "\n Are you sure you would like to sell this property? \n";
     (* let response = read_line () in 
        if response = "yes" then (* try-catch to see if legal *)
@@ -132,7 +139,7 @@ let rec interp_command brd st command =
        else if response = "no" then print_string "\n Okay maybe next time! \n"
        (* Take more input. *)
        else print_string "\n Invalid response, please try again. \n"; *)
-    interp_command brd st (user_input ())
+    interp_command brd st
   | Auction p -> print_string "\n Are you sure you would like to participate in \
                                the auction for this property? \n";
     (* let response = read_line () in 
@@ -142,7 +149,7 @@ let rec interp_command brd st command =
        else if response = "no" then print_string "\n Okay maybe next time! \n"
        (* Take more input. *)
        else print_string "\n Invalid response, please try again. \n"; *)
-    interp_command brd st (user_input ())
+    interp_command brd st
 
 (** [continue_game adv st result] updates the state of the game, prints the
     description, and prompts the user for another command to continue the game. *)
@@ -156,15 +163,11 @@ let rec interp_command brd st command =
 
 (** [play_game f] starts the adventure in file [f]. *)
 let play_game f =
-  (*failwith "Unimplemented"*)
   let brd = get_board f in
+  print_string "\nPlease enter a valid number of players for this game. \n";
   let n = number_of_players () in 
   let st = init_state brd n in
-  (* update_desc brd st; *)
-
-  let response = user_input () in
-
-  let _ = interp_command brd st (response) in
+  let _ = interp_command brd st in
 
   Stdlib.exit 0
 
