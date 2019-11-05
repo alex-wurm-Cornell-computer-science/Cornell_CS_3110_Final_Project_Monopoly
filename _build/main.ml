@@ -84,8 +84,11 @@ let disp_items st =
 let disp_inv st = 
   State.disp_curr_player_inventory st 
 
-let roll st = 
-  State.roll st 
+let roll brd st = 
+  let res = State.roll brd st in 
+  match res with 
+  | State.Illegal -> print_string "\nIllegal movement, please try again"; st
+  | State.Legal t -> Printf.printf "\n Player %d is now at space %d\n" (State.current_player t) (State.current_location t);let next_turn = State.next_turn t res in State.update_state t next_turn
 
 (** [interp_command brd st command] allows the user to play the game by
     printing an exit message if the input command is [Quit] or by inspecting a 
@@ -97,52 +100,48 @@ let rec interp_command brd st command =
   match command with
   | Quit -> print_string "\n Thank you for playing the Monopoly Game Engine! \
                           \n\n"; exit 0
-  | Roll -> let result = roll brd st in 
-            let st' = match result with
-                      | Illegal -> st
-                      | Legal t -> t
-            in
-            let moved = current_location st' - current_location st in 
-            if moved > 1 then (Printf.printf "\n You rolled a %d: " moved;
-                              interp_command brd st' (user_input ()))
-            else  print_string "\n Sorry that didn't work, please try again. \n";
-                  interp_command brd st (user_input ())
+  | Roll -> let res = roll brd st in 
+    (* let moved = current_location res - current_location st in  *)
+    (* if moved > 1 then (Printf.printf "\n You rolled a %d: " moved;
+                       interp_command brd result (user_input ()))
+       else  print_string "\n Sorry that didn't work, please try again. \n"; *)
+    interp_command brd res (user_input ())
   | Inventory -> print_string "\n Your own the following properties: \n";
-                disp_inv st;  
-                interp_command brd st (user_input ())
+    disp_inv st;  
+    interp_command brd st (user_input ())
   | Wallet -> Printf.printf "\n You currently have $%d in cash. \n" 
-              (curr_player_wallet st); 
-              interp_command brd st (user_input ())    
+                (curr_player_wallet st); 
+    interp_command brd st (user_input ())    
   | Items -> print_string "\n You currently have the following cards: \n"; 
-             disp_curr_player_items st;
-             interp_command brd st (user_input ())              
+    disp_curr_player_items st;
+    interp_command brd st (user_input ())              
   | Buy -> print_string "\n Are you sure you would like to buy this property? \n";
     (* let response = read_line () in 
-    if response = "yes" then (* try-catch to see if legal *)
-      print_string "\n Congratulations! You are \
+       if response = "yes" then (* try-catch to see if legal *)
+       print_string "\n Congratulations! You are \
                     the owner of %s. \n" (*add functionality then take more input*)
-    else if response = "no" then print_string "\n Okay maybe next time! \n"
-    (* Take more input. *)
-    else print_string "\n Invalid response, please try again. \n"; *)
+       else if response = "no" then print_string "\n Okay maybe next time! \n"
+       (* Take more input. *)
+       else print_string "\n Invalid response, please try again. \n"; *)
     interp_command brd st (user_input ())
   | Sell p -> print_string "\n Are you sure you would like to sell this property? \n";
     (* let response = read_line () in 
-    if response = "yes" then (* try-catch to see if legal *)
-      print_string "\n Congratulations! You have \
+       if response = "yes" then (* try-catch to see if legal *)
+       print_string "\n Congratulations! You have \
                     sold %s. \n" (*add functionality then take more input*)
-    else if response = "no" then print_string "\n Okay maybe next time! \n"
-    (* Take more input. *)
-    else print_string "\n Invalid response, please try again. \n"; *)
+       else if response = "no" then print_string "\n Okay maybe next time! \n"
+       (* Take more input. *)
+       else print_string "\n Invalid response, please try again. \n"; *)
     interp_command brd st (user_input ())
   | Auction p -> print_string "\n Are you sure you would like to participate in \
                                the auction for this property? \n";
     (* let response = read_line () in 
-    if response = "yes" then (* try-catch to see if legal *)
-      print_string "\n Congratulations! You are \
+       if response = "yes" then (* try-catch to see if legal *)
+       print_string "\n Congratulations! You are \
                     the owner of %s. \n" (*add functionality then take more input*)
-    else if response = "no" then print_string "\n Okay maybe next time! \n"
-    (* Take more input. *)
-    else print_string "\n Invalid response, please try again. \n"; *)
+       else if response = "no" then print_string "\n Okay maybe next time! \n"
+       (* Take more input. *)
+       else print_string "\n Invalid response, please try again. \n"; *)
     interp_command brd st (user_input ())
 
 (** [continue_game adv st result] updates the state of the game, prints the
@@ -158,8 +157,8 @@ let rec interp_command brd st command =
 (** [play_game f] starts the adventure in file [f]. *)
 let play_game f =
   (*failwith "Unimplemented"*)
-  let n = number_of_players () in 
   let brd = get_board f in
+  let n = number_of_players () in 
   let st = init_state brd n in
   (* update_desc brd st; *)
 
