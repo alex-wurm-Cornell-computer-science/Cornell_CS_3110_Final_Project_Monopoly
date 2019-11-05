@@ -92,8 +92,13 @@ let roll brd st =
   let res = State.roll brd st in 
   match res with 
   | State.Illegal -> print_string "\nIllegal movement, please try again"; st
-  | State.Legal t -> Printf.printf "\n Player %d is now at space %d\n" (State.current_player t) (State.current_location t);
-    let next_turn = State.next_turn t res in State.update_state t next_turn
+  | State.Legal t -> Printf.printf "\n Player %d is now at space %d\n" (State.current_player t) (State.current_location t); st
+let next_turn res st ui =
+    if ui = "next" then
+      let res' = State.next_turn st res in 
+      State.update_state st res'
+    else
+      st 
 
 (** [interp_command brd st command] allows the user to play the game by
     printing an exit message if the input command is [Quit] or by inspecting a 
@@ -112,6 +117,8 @@ let rec interp_command brd st =
     (* if moved > 1 then (Printf.printf "\n You rolled a %d: " moved;
                        interp_command brd result (user_input ()))
        else  print_string "\n Sorry that didn't work, please try again. \n"; *)
+    (* let move = read_line () in 
+    let curr_st = next_turn res st move in *)
     interp_command brd res
   | Inventory -> print_string "\n You own the following properties: \n";
     disp_inv st;  
