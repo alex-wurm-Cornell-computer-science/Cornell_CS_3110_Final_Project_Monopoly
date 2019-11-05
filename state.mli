@@ -34,9 +34,9 @@ val locations : t -> (int * (int * bool)) list
 
 val current_location : t -> int
 
-val inventories : t -> (int * property list) list
+val inventories : t -> (int * Board.prop_name list) list
 
-val items : t -> (int * Board.card list) list 
+val items : t -> (int * Board.card_name list) list 
 
 val wallets : t -> (int * int) list
 

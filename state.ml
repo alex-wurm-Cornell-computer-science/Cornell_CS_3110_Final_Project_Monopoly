@@ -14,8 +14,8 @@ type t = {
   curr_player : int;
   num_players : int;
   locations : (int * (int * bool)) list;
-  inventories : (int * property list) list;
-  items : (int * Board.card list) list;
+  inventories : (int * prop_name list) list;
+  items : (int * card_name list) list;
   wallets : (int * int) list;
   total_assets : (int * int) list;
 }

@@ -17,13 +17,13 @@ type squareType =
 
 type card = 
   { 
-    c_name : string;
+    c_name : card_name;
     description : string;
     payment : int
   }
 
 type square = { 
-  name : string ; 
+  name : prop_name ; 
   cost : int ;
   color : string option ;
   squareType : squareType ;

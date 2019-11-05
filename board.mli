@@ -17,6 +17,7 @@ type card
 
 (** The type of property names *)
 type prop_name = string
+type card_name = string
 
 (** Raised when an unknown square is encountered. *)
 exception UnknownSquare of prop_name
