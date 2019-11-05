@@ -67,18 +67,16 @@ let update_state old_st res =
   | Illegal -> old_st 
   | Legal t -> t 
 
-let next_turn old_st res = 
-  match res with 
-  | Illegal -> Illegal
-  | Legal t -> Legal {
-      curr_player = ((current_player t) mod (num_players t)) + 1;
-      num_players = num_players t;
-      locations = locations t;
-      inventories = inventories t;
-      items = items t;
-      wallets = wallets t;
-      total_assets = total_assets t;
-    }
+let next_turn t = 
+  Legal {
+    curr_player = ((current_player t) mod (num_players t)) + 1;
+    num_players = num_players t;
+    locations = locations t;
+    inventories = inventories t;
+    items = items t;
+    wallets = wallets t;
+    total_assets = total_assets t;
+  }
 
 let roll brd st = 
   let die1 = (Random.int 5) + 1 in 
@@ -105,9 +103,6 @@ let curr_player_inventory st =
   let total_inv = inventories st in 
   List.assoc curr_player total_inv
 
-let disp_curr_player_inventory st = 
-  List.iter (fun x -> print_string x.name) (curr_player_inventory st)
-
 let curr_player_wallet st = 
   let curr_player = current_player st in
   let total_wallets = wallets st in 
@@ -117,10 +112,6 @@ let curr_player_items st =
   let curr_player = current_player st in
   let total_items = items st in 
   List.assoc curr_player total_items
-
-let disp_curr_player_items st = 
-  failwith ("Need to get card names from board.ml")
-(* List.iter (fun x -> print_string x.c_name) (curr_player_items st) *)
 
 let buy st = 
   failwith ("Unimplemented")

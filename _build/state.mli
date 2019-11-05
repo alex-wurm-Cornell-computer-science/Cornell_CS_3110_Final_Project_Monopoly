@@ -44,19 +44,15 @@ val total_assets : t -> (int * int) list
 
 val update_state : t -> result -> t 
 
-val next_turn : t -> result -> result 
+val next_turn : t -> result 
 
 val roll : Board.board -> t -> result
 
 val curr_player_inventory : t -> property list
 
-val disp_curr_player_inventory : t -> unit
-
 val curr_player_wallet : t -> int 
 
 val curr_player_items : t -> Board.card list 
-
-val disp_curr_player_items : t -> unit 
 
 val buy : t -> result 
 
