@@ -32,5 +32,5 @@ ocamlfind ocamldep -package oUnit -package yojson -modules state.ml > state.ml.d
 # Target: state.cmo, tags: { package(oUnit), package(yojson), byte, compile, extension:cmo, extension:ml, file:state.cmo, file:state.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package oUnit -package yojson -o state.cmo state.ml # cached
 # Target: main.byte, tags: { package(oUnit), package(yojson), byte, dont_link_with, extension:byte, file:main.byte, link, ocaml, program, quiet, traverse }
-ocamlfind ocamlc -linkpkg -package oUnit -package yojson board.cmo command.cmo state.cmo main.cmo -o main.byte
+ocamlfind ocamlc -linkpkg -package oUnit -package yojson board.cmo command.cmo state.cmo main.cmo -o main.byte # cached
 # Compilation successful.

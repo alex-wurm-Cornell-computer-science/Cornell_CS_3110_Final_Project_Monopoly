@@ -122,7 +122,8 @@ let rec interp_command brd res st =
                           \n\n"; exit 0
   | Roll -> (let res = roll brd st in 
              match res with 
-             | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" (current_player st)
+             | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" (current_player st); 
+               interp_command brd (Legal st) st
              | Legal st' ->
                let moved = current_location st' - current_location st in 
                if moved <= 0 then (

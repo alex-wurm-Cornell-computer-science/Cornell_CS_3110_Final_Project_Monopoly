@@ -105,7 +105,7 @@ let roll brd st =
         wallets = wallets st;
         total_assets = total_assets st;
       }
-  ) else Legal st
+  ) else Illegal
 
 let curr_player_inventory st = 
   let curr_player = current_player st in
