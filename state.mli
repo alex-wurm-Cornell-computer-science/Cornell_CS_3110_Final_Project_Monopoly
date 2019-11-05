@@ -7,7 +7,7 @@
 *)
 
 (* You are free to add more code here. *)
-
+open Board
 
 (* type player *)
 
@@ -48,11 +48,11 @@ val next_turn : t -> result
 
 val roll : Board.board -> t -> result
 
-val curr_player_inventory : t -> property list
+val curr_player_inventory : t -> prop_name list
 
 val curr_player_wallet : t -> int 
 
-val curr_player_items : t -> Board.card list 
+val curr_player_items : t -> card_name list 
 
 val buy : t -> result 
 

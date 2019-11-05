@@ -3,6 +3,7 @@ open Yojson.Basic.Util
 type card_name = string
 type prop_name = string
 exception UnknownSquare of prop_name
+exception UnknownCard of card_name
 
 
 type squareType = 
@@ -17,13 +18,13 @@ type squareType =
 
 type card = 
   { 
-    c_name : string;
+    c_name : card_name;
     description : string;
     payment : int
   }
 
 type square = { 
-  name : string ; 
+  name : prop_name ; 
   cost : int ;
   color : string option ;
   squareType : squareType ;
@@ -121,14 +122,14 @@ let chance_card_description b cd =
     let card = List.find (fun k -> k.c_name = cd) b.chance_cards in 
     card.description 
   with 
-  | exn -> failwith "Unknown card"
+  | exn -> raise (UnknownCard cd)
 
 let chest_card_description b cd = 
   try 
     let card = List.find (fun k -> k.c_name = cd) b.chest_cards in 
     card.description 
   with 
-  | exn -> failwith "Unknown card"
+  | exn -> raise (UnknownCard cd)
 
 let size b =
   List.length b.squares

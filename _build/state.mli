@@ -7,7 +7,7 @@
 *)
 
 (* You are free to add more code here. *)
-
+open Board
 
 (* type player *)
 
@@ -34,9 +34,9 @@ val locations : t -> (int * (int * bool)) list
 
 val current_location : t -> int
 
-val inventories : t -> (int * property list) list
+val inventories : t -> (int * Board.prop_name list) list
 
-val items : t -> (int * Board.card list) list 
+val items : t -> (int * Board.card_name list) list 
 
 val wallets : t -> (int * int) list
 
@@ -48,11 +48,11 @@ val next_turn : t -> result
 
 val roll : Board.board -> t -> result
 
-val curr_player_inventory : t -> property list
+val curr_player_inventory : t -> prop_name list
 
 val curr_player_wallet : t -> int 
 
-val curr_player_items : t -> Board.card list 
+val curr_player_items : t -> card_name list 
 
 val buy : t -> result 
 
