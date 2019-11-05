@@ -2,7 +2,7 @@
 
 open Board
 
-type player = int
+(* type player = int *)
 
 type property = {
   name : Board.prop_name;
@@ -11,13 +11,13 @@ type property = {
 }
 
 type t = {
-  curr_player : player;
+  curr_player : int;
   num_players : int;
-  locations : (player * int) list;
-  inventories : (player * property list) list;
-  items : (player * Board.card list) list;
-  wallets : (player * int) list;
-  total_assets : (player * int) list;
+  locations : (int * int) list;
+  inventories : (int * property list) list;
+  items : (int * Board.card list) list;
+  wallets : (int * int) list;
+  total_assets : (int * int) list;
 }
 
 type result = Legal of t | Illegal
@@ -29,13 +29,13 @@ let rec init_lists n v acc =
 
 let init_state brd n =
   {
-    curr_player = 0;
+    curr_player = 1;
     num_players = n;
-    locations = init_lists (n-1) 0 [];
-    inventories = init_lists (n-1) [] [];
-    items = init_lists (n-1) [] [];
-    wallets = init_lists (n-1) 0 [];
-    total_assets = init_lists (n-1) 0 [];
+    locations = init_lists (n) 0 [];
+    inventories = init_lists (n) [] [];
+    items = init_lists (n) [] [];
+    wallets = init_lists (n) 0 [];
+    total_assets = init_lists (n) 0 [];
   } 
 
 let current_player st =
@@ -62,17 +62,22 @@ let wallets st =
 let total_assets st = 
   st.total_assets
 
+let update_state old_st res = 
+  match res with 
+  | Illegal -> old_st 
+  | Legal t -> t 
+
 let next_turn old_st res = 
   match res with 
-  | Illegal -> old_st
-  | Legal t -> {
-      curr_player = (current_player old_st) + 1;
-      num_players = num_players old_st;
-      locations = locations old_st;
-      inventories = inventories old_st;
-      items = items old_st;
-      wallets = wallets old_st;
-      total_assets = total_assets old_st;
+  | Illegal -> Illegal
+  | Legal t -> Legal {
+      curr_player = ((current_player t) mod (num_players t)) + 1;
+      num_players = num_players t;
+      locations = locations t;
+      inventories = inventories t;
+      items = items t;
+      wallets = wallets t;
+      total_assets = total_assets t;
     }
 
 let roll brd st = 

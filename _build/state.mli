@@ -9,7 +9,7 @@
 (* You are free to add more code here. *)
 
 
-type player
+(* type player *)
 
 type property
 
@@ -26,23 +26,25 @@ val init_state : Board.board -> int -> t
 
 (** [current_room_id st] is the identifier of the room in which the adventurer
     currently is located in state [st]. *)
-val current_player : t -> player
+val current_player : t -> int
 
 val num_players : t -> int
 
-val locations : t -> (player * int) list
+val locations : t -> (int * int) list
 
 val current_location : t -> int
 
-val inventories : t -> (player * property list) list
+val inventories : t -> (int * property list) list
 
-val items : t -> (player * Board.card list) list 
+val items : t -> (int * Board.card list) list 
 
-val wallets : t -> (player * int) list
+val wallets : t -> (int * int) list
 
-val total_assets : t -> (player * int) list 
+val total_assets : t -> (int * int) list 
 
-val next_turn : t -> result -> t 
+val update_state : t -> result -> t 
+
+val next_turn : t -> result -> result 
 
 val roll : Board.board -> t -> result
 
