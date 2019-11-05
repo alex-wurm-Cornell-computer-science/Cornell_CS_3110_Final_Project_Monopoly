@@ -27,7 +27,7 @@ let rec number_of_players () =
   else if n = "5" then 5
   else if n = "6" then 6
   else begin 
-    print_string "\nInvalid number of players entered. Please try again!\n";
+    print_string "\nInvalid number of players entered. Monopoly works with 2 to 6 players. Please try again!\n";
     number_of_players ()
   end 
 
@@ -92,7 +92,8 @@ let roll brd st =
   let res = State.roll brd st in 
   match res with 
   | State.Illegal -> print_string "\nIllegal movement, please try again"; st
-  | State.Legal t -> Printf.printf "\n Player %d is now at space %d\n" (State.current_player t) (State.current_location t);let next_turn = State.next_turn t res in State.update_state t next_turn
+  | State.Legal t -> Printf.printf "\n Player %d is now at space %d\n" (State.current_player t) (State.current_location t);
+    let next_turn = State.next_turn t res in State.update_state t next_turn
 
 (** [interp_command brd st command] allows the user to play the game by
     printing an exit message if the input command is [Quit] or by inspecting a 
