@@ -40,6 +40,20 @@ let rec get_board f =
     | _ -> print_string "Invalid adventure. Try again. \n";
       get_board (read_line ())  
 
+
+(* let format_assoc_list format_key format_val fmt lst =
+  Format.fprintf fmt "[";
+  List.iter (fun (k,v) -> Format.fprintf fmt "%a -> %a;"
+                format_key k format_val v) lst;
+  Format.fprintf fmt "]"
+
+let format fmt d =
+      format_assoc_list Key.format Value.format fmt d *)
+
+let to_list f acc l = List.fold_left (fun acc (k,v) -> f k v acc) acc
+
+let 
+
 (*
 (** [update_items adv st] prints the loot of the [current_room] given
 the state and the adventure being played. If there is no loot in the [room]
