@@ -182,7 +182,7 @@ let rec interp_command brd res st =
                if (current_location st' - current_location st) <= 0 then (
                  Printf.printf "\nYou rolled %d\n" moved;
                  Printf.printf "\nYou are at %s\n" 
-                              (Board.nth_square brd (current_location st));
+                              (Board.nth_square brd (current_location st'));
                  Printf.printf "\nYou've passed GO, player %d!\n" 
                               (current_player st');
                  let res' = pass_go brd st' in 
@@ -190,7 +190,7 @@ let rec interp_command brd res st =
                ) else (
                  Printf.printf "\nYou rolled %d\n" moved;
                  Printf.printf "\nYou are at %s\n" 
-                              (Board.nth_square brd (current_location st));
+                              (Board.nth_square brd (current_location st'));
                  interp_command brd res st'
                )
 
