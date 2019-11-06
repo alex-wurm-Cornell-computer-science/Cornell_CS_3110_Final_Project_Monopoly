@@ -37,8 +37,56 @@ let rec number_of_players () =
 let rec get_board f = 
   if f = "quit" then (print_string "\n Goodbye! \n\n"; Stdlib.exit 0)
   else try f |> Yojson.Basic.from_file |> from_json with
-    | _ -> print_string "Invalid adventure. Try again. \n";
+    | Not_found -> print_string "Invalid adventure. Try again. \n";
       get_board (read_line ())  
+
+
+(* let format_assoc_list format_key format_val fmt lst =
+   Format.fprintf fmt "[";
+   List.iter (fun (k,v) -> Format.fprintf fmt "%a -> %a;"
+                format_key k format_val v) lst;
+   Format.fprintf fmt "]"
+
+   let format fmt d =
+      format_assoc_list Key.format Value.format fmt d *)
+
+let to_list f acc l = List.fold_left (fun acc (k,v) -> f k v acc) acc
+
+let rec print_string_list l = 
+  print_string "[";
+  match l with
+  | [] -> print_string "]";
+  | [h] -> Printf.printf "%s" h;
+  | h::t -> Printf.printf "%s, " h; print_string_list t
+
+let rec print_int_list l = 
+  print_string "[";
+  match l with
+  | [] -> print_string "]";
+  | [h] -> Printf.printf "%d" h;
+  | h::t -> Printf.printf "%d, " h; print_int_list t
+
+let rec disp_wallet wals = 
+  print_endline "\n";
+  match wals with 
+  | [] -> print_endline "\n";
+  | (a,b) :: t -> Printf.printf "Player %d has $%d." a b; print_endline "\n";
+    disp_wallet t
+
+let rec disp_inventories invs = 
+  print_endline "\n";
+  match invs with
+  | [] -> print_endline "\n";
+  | (a,b) :: t -> Printf.printf "Player %d has the following properties:" a; 
+    print_string_list b; print_endline "\n"; disp_inventories t
+
+
+let rec disp_items itms = 
+  print_endline "\n";
+  match itms with
+  | [] -> print_endline "\n";
+  | (a,b) :: t -> Printf.printf "Player %d has the following cards:" a;
+    print_string_list b; print_endline "\n"; disp_inventories t
 
 (*
 (** [update_items adv st] prints the loot of the [current_room] given
@@ -137,13 +185,13 @@ let rec interp_command brd res st =
 
             )
   | Inventory -> print_string "\nYou own the following properties:\n";
-    disp_inv st;  
+    disp_inventories (State.inventories st);  
     interp_command brd res st
   | Wallet -> Printf.printf "\nYou currently have $%d in cash.\n" 
                 (curr_player_wallet st); 
     interp_command brd res st    
   | Items -> print_string "\nYou currently have the following cards:\n"; 
-    disp_inv st;
+    disp_items (State.items st);
     interp_command brd res st             
   | Buy -> print_string "\nAre you sure you would like to buy this property?\n";
     (* let response = read_line () in 

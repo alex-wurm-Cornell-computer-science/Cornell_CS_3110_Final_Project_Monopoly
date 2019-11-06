@@ -37,17 +37,17 @@ let rec number_of_players () =
 let rec get_board f = 
   if f = "quit" then (print_string "\n Goodbye! \n\n"; Stdlib.exit 0)
   else try f |> Yojson.Basic.from_file |> from_json with
-    | _ -> print_string "Invalid adventure. Try again. \n";
+    | Not_found -> print_string "Invalid adventure. Try again. \n";
       get_board (read_line ())  
 
 
 (* let format_assoc_list format_key format_val fmt lst =
-  Format.fprintf fmt "[";
-  List.iter (fun (k,v) -> Format.fprintf fmt "%a -> %a;"
+   Format.fprintf fmt "[";
+   List.iter (fun (k,v) -> Format.fprintf fmt "%a -> %a;"
                 format_key k format_val v) lst;
-  Format.fprintf fmt "]"
+   Format.fprintf fmt "]"
 
-let format fmt d =
+   let format fmt d =
       format_assoc_list Key.format Value.format fmt d *)
 
 let to_list f acc l = List.fold_left (fun acc (k,v) -> f k v acc) acc
@@ -71,14 +71,14 @@ let rec disp_wallet wals =
   match wals with 
   | [] -> print_endline "\n";
   | (a,b) :: t -> Printf.printf "Player %d has $%d." a b; print_endline "\n";
-                  disp_wallet t
+    disp_wallet t
 
 let rec disp_inventories invs = 
   print_endline "\n";
   match invs with
   | [] -> print_endline "\n";
   | (a,b) :: t -> Printf.printf "Player %d has the following properties:" a; 
-                  print_string_list b; print_endline "\n"; disp_inventories t
+    print_string_list b; print_endline "\n"; disp_inventories t
 
 
 let rec disp_items itms = 
@@ -86,7 +86,7 @@ let rec disp_items itms =
   match itms with
   | [] -> print_endline "\n";
   | (a,b) :: t -> Printf.printf "Player %d has the following cards:" a;
-                  print_string_list b; print_endline "\n"; disp_inventories t
+    print_string_list b; print_endline "\n"; disp_inventories t
 
 (*
 (** [update_items adv st] prints the loot of the [current_room] given

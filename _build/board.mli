@@ -79,10 +79,9 @@ val size : board -> int
 
 (** [monopoly_group b col] returns the list of properties in the monopoly group
     with color [col] in [b]. A monopoly group is a set of properties
-      that when owned together form a monopoly. Raises [UnknownSquare prop] if 
-      [prop] is not in [b]. *)
+      that when owned together form a monopoly. Raises [UnknownSquare col] if 
+      [col] is not in b. *)
 val monopoly_group : board -> string -> string list
-
 
 (** [nth_square bd n] returns the square at position [n] in [bd] *)
 val nth_square : board -> int -> string
