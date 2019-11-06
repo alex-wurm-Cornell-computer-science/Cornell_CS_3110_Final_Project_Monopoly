@@ -173,7 +173,11 @@ let rec interp_command brd res st =
              | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" (current_player st); 
                interp_command brd (Legal st) st
              | Legal st' ->
-               let moved = current_location st' - current_location st in 
+               let moved = if (current_location st' - current_location st) > 0
+                           then current_location st' - current_location st
+                           else Board.size brd + 
+                                (current_location st' - current_location st) 
+              in 
                if moved <= 0 then (
                  Printf.printf "\nYou've passed GO, player %d!\n" (current_player st');
                  let res' = pass_go brd st' in 
