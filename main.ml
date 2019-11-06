@@ -178,12 +178,12 @@ let rec interp_command brd res st =
                            else Board.size brd + 
                                 (current_location st' - current_location st) 
               in 
-               if moved <= 0 then (
+               if (current_location st' - current_location st) <= 0 then (
                  Printf.printf "\nYou've passed GO, player %d!\n" (current_player st');
                  let res' = pass_go brd st' in 
                  interp_command brd res' st'
                ) else (
-                 Printf.printf "\nYou rolled a %d\n" moved;
+                 Printf.printf "\nYou rolled %d\n" moved;
                  interp_command brd res st'
                )
 
