@@ -170,7 +170,8 @@ let rec interp_command brd res st =
                           \n\n"; exit 0
   | Roll -> (let res = roll brd st in 
              match res with 
-             | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" (current_player st); 
+             | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" 
+                          (current_player st); 
                interp_command brd (Legal st) st
              | Legal st' ->
                let moved = if (current_location st' - current_location st) > 0
@@ -179,11 +180,17 @@ let rec interp_command brd res st =
                                 (current_location st' - current_location st) 
               in 
                if (current_location st' - current_location st) <= 0 then (
-                 Printf.printf "\nYou've passed GO, player %d!\n" (current_player st');
+                 Printf.printf "\nYou rolled %d\n" moved;
+                 Printf.printf "\nYou are at %s\n" 
+                              (Board.nth_square brd (current_location st));
+                 Printf.printf "\nYou've passed GO, player %d!\n" 
+                              (current_player st');
                  let res' = pass_go brd st' in 
                  interp_command brd res' st'
                ) else (
                  Printf.printf "\nYou rolled %d\n" moved;
+                 Printf.printf "\nYou are at %s\n" 
+                              (Board.nth_square brd (current_location st));
                  interp_command brd res st'
                )
 
