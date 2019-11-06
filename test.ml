@@ -65,13 +65,14 @@ let cmp_demo =
 let test_board = from_json (Yojson.Basic.from_file "test_board.json")
 
 let board_tests_valid = [
-  "test size" >:: (fun _ -> assert_equal 8 (size test_board));
+  "test size" >:: (fun _ -> assert_equal 12 (size test_board));
   "test cost" >:: (fun _ -> assert_equal 100 (cost test_board "Baltic Avenue"));
   "test rent" >:: (fun _ -> assert_equal 100 (rent test_board "Baltic Avenue"));
   "test all squares" >:: (fun _ -> assert_equal true (
       cmp_set_like_lists [ "GO"; "Mediterranean Avenue" ; "Community Chest" ; 
-                           "Baltic Avenue" ; "Income Tax" ; "Chance" ; "Jail" ; "Go To Jail"]
-        (all_squares test_board)
+                           "Baltic Avenue" ; "Income Tax" ; "Chance" ; "Jail" ; "Go To Jail"
+                         ; "Park Place" ; "Boardwalk" ; "Luxury Tax"] 
+        (all_squares test_board |> List.sort_uniq compare)
     ));
   "test monopoly" >:: (fun _ -> assert_equal true 
                           (cmp_set_like_lists ["Mediterranean Avenue" ; 

@@ -5,7 +5,7 @@
       "color": "None",
       "cost": "0",
       "type": "GO",
-      "rent": "100"
+      "rent": "0"
     },
     {
       "name": "Mediterranean Avenue",
@@ -54,6 +54,34 @@
       "color": "None",
       "cost": "0",
       "type": "GoToJail",
+      "rent": "100"
+    },
+    {
+      "name": "Park Place",
+      "color": "Dark Blue",
+      "cost": "50",
+      "type": "Property",
+      "rent": "100"
+    },
+    {
+      "name": "Luxury Tax",
+      "color": "None",
+      "cost": "100",
+      "type": "Tax",
+      "rent": "100"
+    },
+    {
+      "name": "Chance",
+      "color": "None",
+      "cost": "50",
+      "type": "Chance",
+      "rent": "100"
+    },
+    {
+      "name": "Boardwalk",
+      "color": "Dark Blue",
+      "cost": "50",
+      "type": "Property",
       "rent": "100"
     }
   ],
