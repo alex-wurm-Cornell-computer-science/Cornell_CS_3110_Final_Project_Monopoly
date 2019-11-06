@@ -1,1 +1,1 @@
-board.ml: Hashtbl List Yojson
+board.ml: Hashtbl List Map Stdlib__map String Yojson

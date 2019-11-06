@@ -76,7 +76,7 @@ let board_tests_valid = [
   "test monopoly" >:: (fun _ -> assert_equal true 
                           (cmp_set_like_lists ["Mediterranean Avenue" ; 
                                                "Baltic Avenue"] 
-                             (monopoly_group test_board "Baltic Avenue")));
+                             (monopoly_group test_board "Brown")));
 ]
 
 let suite =

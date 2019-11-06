@@ -36,7 +36,7 @@ type board  =  {
   squares : square list;
   chance_cards : card list;
   chest_cards : card list;
-  monopolies : string list list
+  monopolies : prop_name list Stdlib__map.Make(String).t
 }
 
 
@@ -79,22 +79,46 @@ let card_of_json json =
     payment = json |> member "payment" |> to_string |> int_of_string
   }
 
-(** [monopoly_of_json j] transforms [j] into a list of strings, where the strings 
-    are properties that together form a monopoly*)
-let monopoly_of_json j = 
-  j |> to_list |> List.map to_string
+
+(** [opt_match op] Returns the v if [op] is Some v and fails 
+    with Empty otherwise *)
+let opt_match op =
+  match op with 
+  | None -> failwith "Empty"
+  | Some x -> x
+
+(** A module to represent a dictionary with strings as keys *)
+module MonopDict = Map.Make(String)
+
+(** [init_monopolies sqs] returns a map with keys as colors and 
+    elements as the list of properties [sqs] with that given color *)
+let init_monopolies sqs = 
+  let rec init' sqs acc = 
+    match sqs with 
+    | [] -> acc
+    | h :: t -> if MonopDict.mem (opt_match h.color) acc then 
+        let vals = MonopDict.find (opt_match h.color) acc in 
+        init' t (MonopDict.add (opt_match h.color) (h.name :: vals) acc)
+      else 
+        init' t (MonopDict.add (opt_match h.color) [h.name] acc) in
+  init' sqs MonopDict.empty
+
+
 
 let from_json j = 
+  let sqs = j |> member "squares" |> to_list |> List.map square_of_json in 
   {
-    squares = j |> member "squares" |> to_list |> List.map square_of_json;
-
+    squares = sqs;
     chance_cards = if List.length (  j |> member "chance cards" |> to_list ) > 0 then
         j |> member "chance cards" |> to_list |> List.map card_of_json else [];
-
     chest_cards = if List.length (j |> member "chest cards" |> to_list) > 0 then
         j |> member "chest cards" |> to_list |> List.map card_of_json else [];
-    monopolies = j |> member "monopolies" |> to_list |> List.map monopoly_of_json
+    monopolies = init_monopolies (List.filter (fun k -> 
+        match k.squareType with 
+        | Property -> true
+        | _ -> false) sqs)
   }
+
 
 let cost (b : board) (prop : string) = 
   let rec cost' squares prop =
@@ -144,13 +168,8 @@ let square_type b prop =
   with 
   | exn -> raise (UnknownSquare prop)
 
-
-let monopoly_group b prop = 
-  let monopolies = List.fold_left 
-      (fun acc k -> if List.mem prop k then k else acc) [] b.monopolies in 
-  match monopolies with
-  | [] -> raise (UnknownSquare prop)
-  | l -> l
+let monopoly_group b col = 
+  MonopDict.find col b.monopolies
 
 let nth_square bd n = 
   (List.nth bd.squares n).name

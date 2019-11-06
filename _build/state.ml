@@ -110,7 +110,7 @@ let roll brd st =
 let curr_player_inventory st = 
   let curr_player = current_player st in
   let total_inv = inventories st in 
-  List.assoc curr_player total_inv
+  List.assoc curr_player total_inv 
 
 let curr_player_wallet st = 
   let curr_player = current_player st in
