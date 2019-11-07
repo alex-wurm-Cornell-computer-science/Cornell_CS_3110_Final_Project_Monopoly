@@ -145,11 +145,11 @@ let roll brd st =
   | Legal t -> Printf.printf "\nPlayer %d is now at space %d\n" (State.current_player t) (State.current_location t); res
 
 let pass_go st = 
-  State.earn_cash st 200 
-(* match res with 
-   | Illegal -> print_string "\nIllegal movement, please try again\n"; st
-   | Legal t -> Printf.printf "\nPlayer %d now has $%d in cash\n" (State.current_player t) (State.curr_player_wallet t); 
-   t *)
+  let res = State.earn_cash st 200 in
+  match res with 
+  | Illegal -> print_string "\nIllegal movement, please try again\n"; st
+  | Legal t -> Printf.printf "\nPlayer %d now has $%d in cash\n" (State.current_player t) (State.curr_player_wallet t); 
+    t
 
 
 let next_turn res st =

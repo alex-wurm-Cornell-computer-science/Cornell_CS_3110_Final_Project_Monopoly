@@ -137,7 +137,7 @@ let earn_cash st amt =
   let curr_cash = List.assoc curr_player total_cash in 
   let trimmed = List.remove_assoc curr_player total_cash in 
   let new_cash = (curr_player,curr_cash + amt)::trimmed in 
-  {
+  Legal {
     curr_player = curr_player;
     num_players = num_players st;
     locations = locations st;
