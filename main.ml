@@ -183,8 +183,9 @@ let rec interp_command brd res st =
                    (Board.nth_square brd (current_location st'));
                  Printf.printf "\nYou've passed GO, player %d!\n" 
                    (current_player st');
-                 let st'' = pass_go st' in 
-                 interp_command brd res st''
+                 let res' = earn_cash st' 200 in 
+                 let st'' = update_state st' res' in 
+                 interp_command brd res' st''
                ) else (
                  Printf.printf "\nYou rolled %d\n" moved;
                  Printf.printf "\nYou are at %s\n" 
