@@ -26,7 +26,7 @@ finalcheck: check
 	bash finalcheck.sh
 
 zip:
-	zip monopoly.zip *.ml* *.json _tags Makefile INSTALL.md
+	zip adventure.zip *.ml* *.json _tags Makefile
 	
 docs: docs-public docs-private
 	
