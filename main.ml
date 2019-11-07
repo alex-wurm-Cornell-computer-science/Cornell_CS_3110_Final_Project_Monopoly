@@ -145,7 +145,7 @@ let roll brd st =
   | Legal t -> Printf.printf "\nPlayer %d is now at space %d\n" (State.current_player t) (State.current_location t); res
 
 let pass_go st = 
-  State.earn_cash st 20
+  State.earn_cash st 200
 
 
 let next_turn res st =
