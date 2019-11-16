@@ -133,6 +133,12 @@ let rent b prop =
     | h :: t -> if h.name = prop then h.rent else rent' t prop
   in rent' b.squares prop
 
+let square_color (b : board) (prop : string) = 
+  let rec color' squares prop =
+    match squares with 
+    | [] -> raise (UnknownSquare prop)
+    | h :: t -> if h.name = prop then h.cost else color' t prop
+  in color' b.squares prop
 
 let chance_cards b = 
   List.map (fun x -> x.c_name) b.chance_cards 
