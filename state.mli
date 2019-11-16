@@ -32,6 +32,8 @@ val num_players : t -> int
 
 val locations : t -> (int * (int * bool)) list
 
+val doubles_rolled : t -> int
+
 val current_location : t -> int
 
 val inventories : t -> (int * Board.prop_name list) list
@@ -54,9 +56,9 @@ val curr_player_wallet : t -> int
 
 val curr_player_items : t -> card_name list 
 
-val buy : prop_name -> t -> result 
+val buy : Board.board -> prop_name -> t -> result 
 
-val sell : prop_name -> t -> result 
+val sell : Board.board -> prop_name -> t -> result 
 
 val auction : prop_name -> t -> result 
 
