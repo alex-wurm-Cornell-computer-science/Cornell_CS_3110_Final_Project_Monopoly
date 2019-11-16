@@ -122,10 +122,18 @@ let curr_player_items st =
   let total_items = items st in 
   List.assoc curr_player total_items
 
-let buy prop st = 
-  failwith ("Unimplemented")
+(** [prop_available prop st] returns false if [prop] is already owned *)
+let prop_available prop st = 
+  let all_owned = List.fold_left (fun acc (a,b) -> b @ acc) [] st.inventories in 
+  not (List.mem prop all_owned) 
 
-let sell prop st = 
+(** [enough_funds prop st] returns true if the current player has enough money 
+    to buy [prop] in [bd] *)
+let enough_funds bd prop st = 
+  let price = cost bd prop in (List.assoc st.curr_player st.wallets) > price
+
+
+let sell bd prop st = 
   failwith ("Unimplemented")
 
 let auction prop st = 
@@ -146,3 +154,26 @@ let earn_cash st amt =
     wallets = new_cash;
     total_assets = total_assets st;
   } 
+
+let buy bd prop st = 
+  if (prop_available prop st) && (enough_funds bd prop st) then 
+    match (current_location st = square_pos bd prop) with 
+    | false -> Illegal 
+    | true -> begin 
+        match (earn_cash st ((-1) *(cost bd prop))) with 
+        | Legal st' -> 
+          let curr_invent = List.assoc st.curr_player st.inventories in 
+          let trimmed = List.remove_assoc st.curr_player st.inventories in 
+          let new_inv = (st.curr_player, prop ::curr_invent) :: trimmed in 
+          Legal {
+            curr_player = st.curr_player;
+            num_players = num_players st';
+            locations = locations st';
+            inventories = new_inv;
+            items = items st';
+            wallets = wallets st';
+            total_assets = total_assets st';
+          }
+        | _ -> failwith "should never happen" 
+      end
+  else Illegal
