@@ -90,8 +90,8 @@ let opt_match op =
 (** A module to represent a dictionary with strings as keys *)
 module MonopDict = Map.Make(String)
 
-(** [init_monopolies sqs] returns a map with keys as colors and 
-    elements as the list of properties [sqs] with that given color *)
+(** [init_monopolies sqs] creates a map from colors to property name lists
+    where each color is associated with the properties that are of that color.*)
 let init_monopolies sqs = 
   let rec init' sqs acc = 
     match sqs with 
@@ -102,7 +102,6 @@ let init_monopolies sqs =
       else 
         init' t (MonopDict.add (opt_match h.color) [h.name] acc) in
   init' sqs MonopDict.empty
-
 
 
 let from_json j = 

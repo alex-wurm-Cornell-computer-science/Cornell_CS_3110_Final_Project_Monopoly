@@ -54,10 +54,10 @@ val curr_player_wallet : t -> int
 
 val curr_player_items : t -> card_name list 
 
-val buy : t -> result 
+val buy : prop_name -> t -> result 
 
-val sell : t -> result 
+val sell : prop_name -> t -> result 
 
-val auction : t -> result 
+val auction : prop_name -> t -> result 
 
 val earn_cash : t -> int -> result 
