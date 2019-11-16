@@ -36,6 +36,7 @@ type command =
   | Items (* Used to see what special cards the player holds. *)
   | Auction of object_phrase (* Used to participate in property auctions. *)
   | Next
+  | Build of object_phrase
 
 (** Raised when an empty command is parsed. *)
 exception Empty
