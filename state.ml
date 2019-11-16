@@ -132,10 +132,6 @@ let prop_available prop st =
 let enough_funds bd prop st = 
   let price = cost bd prop in (List.assoc st.curr_player st.wallets) > price
 
-
-let sell bd prop st = 
-  failwith ("Unimplemented")
-
 let auction prop st = 
   failwith ("Unimplemented")
 
@@ -177,3 +173,58 @@ let buy bd prop st =
         | _ -> failwith "should never happen" 
       end
   else Illegal
+
+let sell bd prop st = 
+  if (List.mem prop (List.assoc st.curr_player st.inventories)) then 
+    match (earn_cash st (cost bd prop)) with 
+    | Legal st' -> 
+      let curr_invent = List.assoc st.curr_player st.inventories in 
+      let trimmed = List.remove_assoc st.curr_player st.inventories in 
+      let new_inv = (st.curr_player, List.filter (fun p -> p <> prop) curr_invent) 
+                    :: trimmed in 
+      Legal {
+        curr_player = st.curr_player;
+        num_players = num_players st';
+        locations = locations st';
+        inventories = new_inv;
+        items = items st';
+        wallets = wallets st';
+        total_assets = total_assets st';
+      }
+    | _ -> failwith "should never happen" 
+
+  else Illegal
+
+
+let pay_rent bd prop st =  
+  let lst = inventories st in 
+  let rec owner prop lst =
+    match lst with
+    | [] -> 0
+    | h::t -> if List.mem prop (snd h) then fst h else  
+        owner prop t
+  in
+  let pay_to = owner prop lst in
+
+  if pay_to = 0 then Legal st else 
+    match earn_cash st ((-1) * (rent bd prop)) with 
+    | Legal st1 -> 
+      let total_cash = wallets st in 
+      let curr_cash = List.assoc pay_to total_cash in 
+      let trimmed = List.remove_assoc pay_to total_cash in 
+      let new_cash = (pay_to,curr_cash + (rent bd prop))::trimmed in 
+      Legal {
+        curr_player = st.curr_player;
+        num_players = num_players st;
+        locations = locations st;
+        inventories = inventories st;
+        items = items st;
+        wallets = new_cash;
+        total_assets = total_assets st;
+      } 
+    | _ -> failwith "shouldn't happen"
+
+
+
+
+

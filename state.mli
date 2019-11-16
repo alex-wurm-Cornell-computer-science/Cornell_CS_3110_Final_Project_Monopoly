@@ -61,3 +61,5 @@ val sell : prop_name -> t -> result
 val auction : prop_name -> t -> result 
 
 val earn_cash : t -> int -> result 
+
+val pay_rent : board -> prop_name -> t -> result
