@@ -14,6 +14,7 @@ type t = {
   curr_player : int;
   num_players : int;
   locations : (int * (int * bool)) list;
+  doubles_rolled : int;
   inventories : (int * prop_name list) list;
   items : (int * prop_name list) list;
   wallets : (int * int) list;
@@ -33,6 +34,7 @@ let init_state brd n =
     curr_player = 1;
     num_players = n;
     locations = init_lists (n) (0,false) [];
+    doubles_rolled = 0;
     inventories = init_lists (n) [] [];
     items = init_lists (n) [] [];
     wallets = init_lists (n) 0 [];
@@ -48,6 +50,9 @@ let num_players st =
 
 let locations st = 
   st.locations
+
+let doubles_rolled st =
+  st.doubles_rolled
 
 let current_location st = 
   fst (List.assoc (current_player st) (locations st))
@@ -80,6 +85,7 @@ let next_turn st =
       curr_player = ((current_player st) mod (num_players st)) + 1;
       num_players = num_players st;
       locations = new_loc;
+      doubles_rolled = 0;
       inventories = inventories st;
       items = items st;
       wallets = wallets st;
@@ -89,26 +95,59 @@ let next_turn st =
   ) else Legal st 
 
 let roll brd st = 
+  Random.self_init ();
   let die1 = (Random.int 5) + 1 in 
   let die2 = (Random.int 5) + 1 in 
+  (* let die1 = 5 in 
+     let die2 = 5 in  *)
+  let rolled = die1 + die2 in 
   let curr_player = current_player st in 
   let total_loc = locations st in 
   let curr_loc = List.assoc curr_player total_loc in 
   if snd curr_loc = false then (
     let trimmed = List.remove_assoc curr_player total_loc in 
-    let new_loc = (curr_player, ((fst curr_loc + die1 + die2) mod Board.size brd,true))::trimmed in 
-    match (List.mem_assoc curr_player new_loc) with 
-    | false -> Illegal
-    | true -> Legal {
+    if (die1 = die2) && ((doubles_rolled st) < 3) then (
+      let new_loc = (curr_player, ((fst curr_loc + rolled) mod Board.size brd,false))::trimmed in 
+      Legal {
         curr_player = curr_player;
         num_players = num_players st;
         locations = new_loc;
+        doubles_rolled = (doubles_rolled st) + 1;
+        inventories = inventories st;
+        items = items st;
+        wallets = wallets st;
+        total_assets = total_assets st;
+        buildings = st.buildings
+      } 
+    )
+    else if (die1 = die2) && ((doubles_rolled st) >= 3) then (
+      let new_loc = (curr_player, (Board.square_pos brd "Jail",true))::trimmed in 
+      Legal {
+        curr_player = curr_player;
+        num_players = num_players st;
+        locations = new_loc;
+        doubles_rolled = 0;
+        inventories = inventories st;
+        items = items st;
+        wallets = wallets st;
+        total_assets = total_assets st;
+        buildings = st.buildings
+      } 
+    ) 
+    else if (die1 != die2) then (
+      let new_loc = (curr_player, ((fst curr_loc + rolled) mod Board.size brd,true))::trimmed in 
+      Legal {
+        curr_player = curr_player;
+        num_players = num_players st;
+        locations = new_loc;
+        doubles_rolled = 0;
         inventories = inventories st;
         items = items st;
         wallets = wallets st;
         total_assets = total_assets st;
         buildings = st.buildings
       }
+    ) else Illegal 
   ) else Illegal
 
 let curr_player_inventory st = 
@@ -149,6 +188,7 @@ let earn_cash st amt =
     curr_player = curr_player;
     num_players = num_players st;
     locations = locations st;
+    doubles_rolled = doubles_rolled st;
     inventories = inventories st;
     items = items st;
     wallets = new_cash;
@@ -170,6 +210,7 @@ let buy bd prop st =
             curr_player = st.curr_player;
             num_players = num_players st';
             locations = locations st';
+            doubles_rolled = doubles_rolled st;
             inventories = new_inv;
             items = items st';
             wallets = wallets st';
@@ -192,6 +233,7 @@ let sell bd prop st =
         curr_player = st.curr_player;
         num_players = num_players st';
         locations = locations st';
+        doubles_rolled = doubles_rolled st';
         inventories = new_inv;
         items = items st';
         wallets = wallets st';
@@ -223,6 +265,7 @@ let pay_rent bd prop st =
         curr_player = st.curr_player;
         num_players = num_players st;
         locations = locations st;
+        doubles_rolled = doubles_rolled st;
         inventories = inventories st;
         items = items st;
         wallets = new_cash;
@@ -245,6 +288,7 @@ let rec build_houses bd st prop n  =
           curr_player = st.curr_player;
           num_players = num_players st;
           locations = locations st;
+          doubles_rolled = st.doubles_rolled;
           inventories = inventories st;
           items = items st;
           wallets = wallets st;
@@ -274,6 +318,7 @@ let rec build_hotels bd st prop n  =
           num_players = num_players st;
           locations = locations st;
           inventories = inventories st;
+          doubles_rolled = st.doubles_rolled;
           items = items st;
           wallets = wallets st;
           total_assets = total_assets st;

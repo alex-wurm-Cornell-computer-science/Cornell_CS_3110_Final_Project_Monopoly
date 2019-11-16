@@ -138,11 +138,23 @@ let disp_inv st =
   (* List.iter print_endline (st |> curr_player_inventory); //NEED TO GET PROPERTY NAMES, NOT PROPERTY OBJ*) 
   print_string "\n"
 
-let roll brd st = 
+let rec roll brd st = 
   let res = State.roll brd st in 
   match res with 
-  | Illegal -> print_string "\nIllegal movement, please try again\n"; res
-  | Legal t -> Printf.printf "\nPlayer %d is now at space %d\n" (State.current_player t) (State.current_location t); res
+  | Illegal -> Printf.printf "\nYou've already rolled";res
+  | Legal t -> (
+      if (doubles_rolled t) >= 3 then (
+        Printf.printf "\nPlayer %d rolled 3 doubles, so they're now in Jail\n" (State.current_player t); res
+      ) else if (doubles_rolled t > 0 && doubles_rolled t < 3) then (
+        Printf.printf "\nPlayer %d rolled a double and is at %s\n" (State.current_player t) (Board.nth_square brd (current_location t)); 
+        Printf.printf "\nYou will roll again automatically.\n"; roll brd t 
+      ) else (
+        let loc_lst = State.locations t in 
+        if snd (List.assoc (current_player t) loc_lst) then Illegal
+        else (Printf.printf "\nPlayer %d is at %s\n" (State.current_player t) (Board.nth_square brd (current_location t)); res)
+      )
+    )
+
 
 let pass_go st = 
   State.earn_cash st 200
@@ -166,6 +178,8 @@ let rec interp_command brd res st =
   match command with
   | Quit -> print_string "\nThank you for playing the Monopoly Game Engine! \
                           \n\n"; exit 0
+  | Build obj -> print_string "\nCan't build yet! \
+                               \n\n";
   | Roll -> (let res = roll brd st in  
              match res with 
              | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" 

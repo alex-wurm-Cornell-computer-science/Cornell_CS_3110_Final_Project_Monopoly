@@ -92,4 +92,4 @@ val square_pos : board -> prop_name -> int
 
 (** [prop_color b p] returns the color of [p] in [b]. Raises 
     [UnknownProp p] if [p] is not in [b] *)
-val prop_color : board -> prop_name -> string option
+val square_color : board -> prop_name -> string option
