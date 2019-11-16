@@ -205,7 +205,6 @@ let pay_rent bd prop st =
         owner prop t
   in
   let pay_to = owner prop lst in
-
   if pay_to = 0 then Legal st else 
     match earn_cash st ((-1) * (rent bd prop)) with 
     | Legal st1 -> 
