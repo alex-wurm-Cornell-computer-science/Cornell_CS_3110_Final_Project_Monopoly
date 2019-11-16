@@ -150,6 +150,13 @@ let roll brd st =
     ) else Illegal 
   ) else Illegal
 
+let houses st prop = 
+  List.find (fun s -> (fst s) = prop) st.buildings |> snd |> fst
+
+let hotels st prop : int = 
+  List.find (fun s -> (fst s) = prop) st.buildings |> snd |> snd
+
+
 let curr_player_inventory st = 
   let curr_player = current_player st in
   let total_inv = inventories st in 
@@ -255,7 +262,7 @@ let pay_rent bd prop st =
   in
   let pay_to = owner prop lst in
   if pay_to = 0 then Legal st else 
-    match earn_cash st ((-1) * (rent bd prop)) with 
+    match earn_cash st ((-1) * ((rent bd prop) + (rent bd prop) * (houses st prop)/2)) with 
     | Legal st1 -> 
       let total_cash = wallets st in 
       let curr_cash = List.assoc pay_to total_cash in 
@@ -278,57 +285,46 @@ let rec build_houses bd st prop n  =
   let house_cost = (cost bd prop) * n /2 in 
   if not (List.assoc st.curr_player st.wallets >= house_cost) then Illegal else
     let curr_houses = List.assoc prop st.buildings |> fst in 
-    match n with 
-    | 0 -> Legal st 
-    | s -> if not (curr_houses < 3) then Illegal else
-        let curr_hotels = List.assoc prop st.buildings |> snd in 
-        let trimmed = List.remove_assoc prop st.buildings in 
-        let new_buildings = (prop, (curr_houses+1, curr_hotels)) :: trimmed in 
-        let st1 = {
-          curr_player = st.curr_player;
-          num_players = num_players st;
-          locations = locations st;
-          doubles_rolled = st.doubles_rolled;
-          inventories = inventories st;
-          items = items st;
-          wallets = wallets st;
-          total_assets = total_assets st;
-          buildings = new_buildings
-        } in 
-        begin 
-          match earn_cash st1 (-1 * house_cost) with 
-          | Legal st2 -> build_houses bd st2 prop (s-1)
-          | _ -> Illegal
-        end
+    if (curr_houses + n) <= 3 then 
+      let curr_hotels = List.assoc prop st.buildings |> snd in 
+      let trimmed = List.remove_assoc prop st.buildings in 
+      let new_buildings = (prop, (curr_houses+1, curr_hotels)) :: trimmed in 
+      let st1 = {
+        curr_player = st.curr_player;
+        num_players = num_players st;
+        locations = locations st;
+        doubles_rolled = st.doubles_rolled;
+        inventories = inventories st;
+        items = items st;
+        wallets = wallets st;
+        total_assets = total_assets st;
+        buildings = new_buildings
+      } in 
+      earn_cash st1 (-1 * house_cost) 
+    else Illegal
 
 
 
 let rec build_hotels bd st prop n  = 
   let hotel_cost = (cost bd prop) * n  in 
   if not (List.assoc st.curr_player st.wallets >= hotel_cost) then Illegal else
-    let curr_hotels = List.assoc prop st.buildings |> snd in 
-    match n with 
-    | 0 -> Legal st 
-    | s -> if not (curr_hotels < 3) then Illegal else
-        let curr_houses = List.assoc prop st.buildings |> fst in 
-        let trimmed = List.remove_assoc prop st.buildings in 
-        let new_buildings = (prop, (curr_houses, curr_hotels+1)) :: trimmed in 
-        let st1 = {
-          curr_player = st.curr_player;
-          num_players = num_players st;
-          locations = locations st;
-          inventories = inventories st;
-          doubles_rolled = st.doubles_rolled;
-          items = items st;
-          wallets = wallets st;
-          total_assets = total_assets st;
-          buildings = new_buildings
-        } in 
-        begin 
-          match earn_cash st1 (-1 * hotel_cost) with 
-          | Legal st2 -> build_hotels bd st2 prop (s-1)
-          | _ -> Illegal
-        end
+    let curr_hotels = List.assoc prop st.buildings |> snd in
+    if (curr_hotels + n) <= 3 then 
+      let curr_houses = List.assoc prop st.buildings |> fst in 
+      let trimmed = List.remove_assoc prop st.buildings in 
+      let new_buildings = (prop, (curr_houses, curr_hotels+1)) :: trimmed in 
+      let st1 = {
+        curr_player = st.curr_player;
+        num_players = num_players st;
+        locations = locations st;
+        inventories = inventories st;
+        doubles_rolled = st.doubles_rolled;
+        items = items st;
+        wallets = wallets st;
+        total_assets = total_assets st;
+        buildings = new_buildings
+      } in 
+      earn_cash st1 (-1 * hotel_cost) else Illegal
 
 
 
