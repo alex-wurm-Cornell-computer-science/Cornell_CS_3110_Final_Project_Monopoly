@@ -85,3 +85,6 @@ val monopoly_group : board -> string -> string list
 
 (** [nth_square bd n] returns the square at position [n] in [bd] *)
 val nth_square : board -> int -> string
+
+(** [square_pos b p] returns the position of property [p] in [b] *)
+val square_pos : board -> prop_name -> int

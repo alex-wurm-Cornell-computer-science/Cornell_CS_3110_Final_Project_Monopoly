@@ -172,3 +172,10 @@ let monopoly_group b col =
 
 let nth_square bd n = 
   (List.nth bd.squares n).name
+
+let square_pos b p = 
+  let rec pos' squares prop acc = 
+    match squares with 
+    | [] -> raise (UnknownSquare prop)
+    | h :: t -> if (h.name = prop) then acc else pos' t prop (acc + 1) in
+  pos' b.squares p 0
