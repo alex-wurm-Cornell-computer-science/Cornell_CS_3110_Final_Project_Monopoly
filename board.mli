@@ -85,3 +85,11 @@ val monopoly_group : board -> string -> string list
 
 (** [nth_square bd n] returns the square at position [n] in [bd] *)
 val nth_square : board -> int -> string
+
+(** [square_pos b p] returns the position of property [p] in [b]. Raises 
+    [UnknownProp p] if [p] is not in [b] *)
+val square_pos : board -> prop_name -> int
+
+(** [prop_color b p] returns the color of [p] in [b]. Raises 
+    [UnknownProp p] if [p] is not in [b] *)
+val prop_color : board -> prop_name -> string option

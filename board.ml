@@ -90,8 +90,8 @@ let opt_match op =
 (** A module to represent a dictionary with strings as keys *)
 module MonopDict = Map.Make(String)
 
-(** [init_monopolies sqs] returns a map with keys as colors and 
-    elements as the list of properties [sqs] with that given color *)
+(** [init_monopolies sqs] creates a map from colors to property name lists
+    where each color is associated with the properties that are of that color.*)
 let init_monopolies sqs = 
   let rec init' sqs acc = 
     match sqs with 
@@ -102,7 +102,6 @@ let init_monopolies sqs =
       else 
         init' t (MonopDict.add (opt_match h.color) [h.name] acc) in
   init' sqs MonopDict.empty
-
 
 
 let from_json j = 
@@ -134,6 +133,12 @@ let rent b prop =
     | h :: t -> if h.name = prop then h.rent else rent' t prop
   in rent' b.squares prop
 
+let square_color (b : board) (prop : string) = 
+  let rec color' squares prop =
+    match squares with 
+    | [] -> raise (UnknownSquare prop)
+    | h :: t -> if h.name = prop then h.cost else color' t prop
+  in color' b.squares prop
 
 let chance_cards b = 
   List.map (fun x -> x.c_name) b.chance_cards 
@@ -173,3 +178,10 @@ let monopoly_group b col =
 
 let nth_square bd n = 
   (List.nth bd.squares n).name
+
+let square_pos b p = 
+  let rec pos' squares prop acc = 
+    match squares with 
+    | [] -> raise (UnknownSquare prop)
+    | h :: t -> if (h.name = prop) then acc else pos' t prop (acc + 1) in
+  pos' b.squares p 0

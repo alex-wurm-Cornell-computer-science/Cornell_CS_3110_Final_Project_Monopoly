@@ -122,13 +122,13 @@ let curr_player_items st =
   let total_items = items st in 
   List.assoc curr_player total_items
 
-let buy st = 
+let buy prop st = 
   failwith ("Unimplemented")
 
-let sell st = 
+let sell prop st = 
   failwith ("Unimplemented")
 
-let auction st = 
+let auction prop st = 
   failwith ("Unimplemented")
 
 let earn_cash st amt =
