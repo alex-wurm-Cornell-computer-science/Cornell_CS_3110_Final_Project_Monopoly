@@ -18,6 +18,7 @@ type t = {
   items : (int * prop_name list) list;
   wallets : (int * int) list;
   total_assets : (int * int) list;
+  buildings : (prop_name * ( int * int)) list 
 }
 
 type result = Legal of t | Illegal
@@ -36,6 +37,7 @@ let init_state brd n =
     items = init_lists (n) [] [];
     wallets = init_lists (n) 0 [];
     total_assets = init_lists (n) 0 [];
+    buildings = []
   } 
 
 let current_player st =
@@ -82,6 +84,7 @@ let next_turn st =
       items = items st;
       wallets = wallets st;
       total_assets = total_assets st;
+      buildings = st.buildings
     }
   ) else Legal st 
 
@@ -104,6 +107,7 @@ let roll brd st =
         items = items st;
         wallets = wallets st;
         total_assets = total_assets st;
+        buildings = st.buildings
       }
   ) else Illegal
 
@@ -149,6 +153,7 @@ let earn_cash st amt =
     items = items st;
     wallets = new_cash;
     total_assets = total_assets st;
+    buildings = st.buildings
   } 
 
 let buy bd prop st = 
@@ -169,6 +174,7 @@ let buy bd prop st =
             items = items st';
             wallets = wallets st';
             total_assets = total_assets st';
+            buildings = st.buildings
           }
         | _ -> failwith "should never happen" 
       end
@@ -190,6 +196,7 @@ let sell bd prop st =
         items = items st';
         wallets = wallets st';
         total_assets = total_assets st';
+        buildings = st.buildings
       }
     | _ -> failwith "should never happen" 
 
@@ -220,9 +227,63 @@ let pay_rent bd prop st =
         items = items st;
         wallets = new_cash;
         total_assets = total_assets st;
+        buildings = st.buildings
       } 
     | _ -> failwith "shouldn't happen"
 
+let rec build_houses bd st prop n  = 
+  let house_cost = (cost bd prop) * n /2 in 
+  if not (List.assoc st.curr_player st.wallets >= house_cost) then Illegal else
+    let curr_houses = List.assoc prop st.buildings |> fst in 
+    match n with 
+    | 0 -> Legal st 
+    | s -> if not (curr_houses < 3) then Illegal else
+        let curr_hotels = List.assoc prop st.buildings |> snd in 
+        let trimmed = List.remove_assoc prop st.buildings in 
+        let new_buildings = (prop, (curr_houses+1, curr_hotels)) :: trimmed in 
+        let st1 = {
+          curr_player = st.curr_player;
+          num_players = num_players st;
+          locations = locations st;
+          inventories = inventories st;
+          items = items st;
+          wallets = wallets st;
+          total_assets = total_assets st;
+          buildings = new_buildings
+        } in 
+        begin 
+          match earn_cash st1 (-1 * house_cost) with 
+          | Legal st2 -> build_houses bd st2 prop (s-1)
+          | _ -> Illegal
+        end
+
+
+
+let rec build_hotels bd st prop n  = 
+  let hotel_cost = (cost bd prop) * n  in 
+  if not (List.assoc st.curr_player st.wallets >= hotel_cost) then Illegal else
+    let curr_hotels = List.assoc prop st.buildings |> snd in 
+    match n with 
+    | 0 -> Legal st 
+    | s -> if not (curr_hotels < 3) then Illegal else
+        let curr_houses = List.assoc prop st.buildings |> fst in 
+        let trimmed = List.remove_assoc prop st.buildings in 
+        let new_buildings = (prop, (curr_houses, curr_hotels+1)) :: trimmed in 
+        let st1 = {
+          curr_player = st.curr_player;
+          num_players = num_players st;
+          locations = locations st;
+          inventories = inventories st;
+          items = items st;
+          wallets = wallets st;
+          total_assets = total_assets st;
+          buildings = new_buildings
+        } in 
+        begin 
+          match earn_cash st1 (-1 * hotel_cost) with 
+          | Legal st2 -> build_hotels bd st2 prop (s-1)
+          | _ -> Illegal
+        end
 
 
 
