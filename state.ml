@@ -308,7 +308,7 @@ let rec build_houses bd st prop n  =
           total_assets = total_assets st;
           buildings = new_buildings
         } in 
-        earn_cash st1 (-1 * house_cost) 
+        earn_cash st1 (-n * house_cost) 
       else Illegal
   else Illegal
 
@@ -334,7 +334,10 @@ let rec build_hotels bd st prop n  =
           total_assets = total_assets st;
           buildings = new_buildings
         } in 
-        earn_cash st1 (-1 * hotel_cost) else Illegal
+        match house_cost bd prop with 
+        | None -> raise (UnknownCard prop)
+        | Some i -> 
+          earn_cash st1 ((-n * hotel_cost) + 3 * i) else Illegal
 
   else Illegal
 
