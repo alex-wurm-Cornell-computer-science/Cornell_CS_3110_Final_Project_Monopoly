@@ -157,10 +157,17 @@ let roll brd st =
   ) else  let _ = print_string "here2" in Illegal
 
 let houses st prop = 
-  List.find (fun s -> (fst s) = prop) st.buildings |> snd |> fst
+  try 
+    List.find (fun s -> (fst s) = prop) st.buildings |> snd |> fst
+  with 
+  | Not_found -> raise (UnknownSquare prop)
 
 let hotels st prop : int = 
-  List.find (fun s -> (fst s) = prop) st.buildings |> snd |> snd
+  try 
+    List.find (fun s -> (fst s) = prop) st.buildings |> snd |> snd
+  with 
+  | Not_found -> raise (UnknownSquare prop)
+
 
 
 let curr_player_inventory st = 
@@ -199,17 +206,17 @@ let earn_cash st amt =
   let inc_cash = curr_cash + amt in 
   let new_cash = (curr_player,inc_cash)::trimmed in 
   if inc_cash > 500 then Win else
-  Legal {
-    curr_player = curr_player;
-    num_players = num_players st;
-    locations = locations st;
-    doubles_rolled = doubles_rolled st;
-    inventories = inventories st;
-    items = items st;
-    wallets = new_cash;
-    total_assets = total_assets st;
-    buildings = st.buildings
-  } 
+    Legal {
+      curr_player = curr_player;
+      num_players = num_players st;
+      locations = locations st;
+      doubles_rolled = doubles_rolled st;
+      inventories = inventories st;
+      items = items st;
+      wallets = new_cash;
+      total_assets = total_assets st;
+      buildings = st.buildings
+    } 
 
 let buy bd prop st = 
   if is_buyable bd prop then 
@@ -223,17 +230,17 @@ let buy bd prop st =
             let trimmed = List.remove_assoc st.curr_player st.inventories in 
             let new_inv = (st.curr_player, prop ::curr_invent) :: trimmed in 
             if List.length new_inv > 1 then Win else
-            Legal {
-              curr_player = st.curr_player;
-              num_players = num_players st';
-              locations = locations st';
-              doubles_rolled = doubles_rolled st;
-              inventories = new_inv;
-              items = items st';
-              wallets = wallets st';
-              total_assets = total_assets st';
-              buildings = st.buildings
-            }
+              Legal {
+                curr_player = st.curr_player;
+                num_players = num_players st';
+                locations = locations st';
+                doubles_rolled = doubles_rolled st;
+                inventories = new_inv;
+                items = items st';
+                wallets = wallets st';
+                total_assets = total_assets st';
+                buildings = st.buildings
+              }
           | _ -> Illegal
         end
     else Illegal
