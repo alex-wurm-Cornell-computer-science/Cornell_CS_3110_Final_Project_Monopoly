@@ -88,6 +88,10 @@ let rec disp_items itms =
   | (a,b) :: t -> Printf.printf "Player %d has the following cards:" a;
     print_string_list b; print_endline "\n"; disp_inventories t
 
+let parse_obj_phrase lst = 
+  let new_str = List.fold_left (fun p n -> p ^ " " ^ n) "" lst in
+  String.trim new_str
+
 (*
 (** [update_items adv st] prints the loot of the [current_room] given
 the state and the adventure being played. If there is no loot in the [room]
@@ -218,6 +222,22 @@ let rec interp_command brd res st =
     disp_items (State.items st);
     interp_command brd res st             
   | Buy -> print_string "\nAre you sure you would like to buy this property?\n";
+            let confirmation = read_line() in 
+            if confirmation = "yes" then
+              (let prop = (State.current_location st) |> Board.nth_square brd in 
+              let res = State.buy brd prop st in
+              match res with
+              | Illegal -> Printf.printf "\nUnfortunately this property cannot
+                           be purchased at this time.\n"; interp_command brd (Legal st) st
+              | Legal st' -> Printf.printf "\n Congratulations! You are \
+                    the owner of %s." prop; interp_command brd (Legal st') st)
+            else if confirmation = "no" then
+              (Printf.printf "Okay, what would you like to do instead?\n"; 
+              interp_command brd (Legal st) st)
+            else 
+              (Printf.printf "\n Invalid response, please try again. \n";
+              interp_command brd (Legal st) st)
+
     (* let response = read_line () in 
        if response = "yes" then (* try-catch to see if legal *)
        print_string "\n Congratulations! You are \
@@ -225,8 +245,22 @@ let rec interp_command brd res st =
        else if response = "no" then print_string "\n Okay maybe next time! \n"
        (* Take more input. *)
        else print_string "\n Invalid response, please try again. \n"; *)
-    interp_command brd res st
   | Sell p -> print_string "\nAre you sure you would like to sell this property?\n";
+        let confirmation = read_line() in 
+        if confirmation = "yes" then
+              (let prop = parse_obj_phrase p in 
+              let res = State.sell brd prop st in
+              match res with
+              | Illegal -> Printf.printf "\nUnfortunately this property cannot
+                           be sold at this time.\n"; interp_command brd (Legal st) st
+              | Legal st' -> Printf.printf "\n Congratulations! You have successfully \
+                    sold %s." prop; interp_command brd (Legal st') st)
+            else if confirmation = "no" then
+              (Printf.printf "Okay, what would you like to do instead?\n"; 
+              interp_command brd (Legal st) st)
+            else 
+              (Printf.printf "\n Invalid response, please try again. \n";
+              interp_command brd (Legal st) st)
     (* let response = read_line () in 
        if response = "yes" then (* try-catch to see if legal *)
        print_string "\n Congratulations! You have \
@@ -234,7 +268,6 @@ let rec interp_command brd res st =
        else if response = "no" then print_string "\n Okay maybe next time! \n"
        (* Take more input. *)
        else print_string "\n Invalid response, please try again. \n"; *)
-    interp_command brd res st
   | Auction p -> print_string "\nAre you sure you would like to participate in
                                the auction for this property?\n";
     (* let response = read_line () in 
