@@ -169,7 +169,11 @@ let chance_cards b =
   List.map (fun x -> x.c_name) b.chance_cards 
 
 let chest_cards b = 
-  List.map (fun x -> x.c_name) b.chest_cards 
+  List.map (fun x -> x.c_name) b.chest_cards
+
+let next_chance bd = List.hd (chance_cards bd)
+
+let next_chest bd = List.hd (chest_cards bd)
 
 let chance_card_description b cd = 
   try 
@@ -215,10 +219,30 @@ let hotel_cost b p =
   try let prop = List.find (fun pr -> pr.name = p) b.squares in 
     prop.hotel
   with 
-  | Not_found -> raise (UnknownCard p)
+  | Not_found -> raise (UnknownSquare p)
 
 let house_cost b p = 
   try let prop = List.find (fun pr -> pr.name = p) b.squares in 
     prop.house
   with 
-  | Not_found -> raise (UnknownCard p)
+  | Not_found -> raise (UnknownSquare p)
+
+let is_buildable bd prop = 
+  try 
+    let p = List.find (fun s -> s.name = prop) bd.squares in 
+    match p.squareType with 
+    | Property -> if  opt_match p.color <> "Railroad" && 
+                      opt_match p.color <> "Utility" then true else false 
+    | _ -> false
+  with 
+  | Not_found -> raise (UnknownSquare prop)
+
+
+let is_buyable bd prop = 
+  try 
+    let p = List.find (fun s -> s.name = prop) bd.squares in 
+    match p.squareType with 
+    | Property -> true 
+    | _ -> false 
+  with 
+  | Not_found -> raise (UnknownSquare prop)

@@ -137,7 +137,7 @@ let roll brd st =
         buildings = st.buildings
       } 
     ) 
-    else if (die1 != die2) then (
+    else if (die1 <> die2) then (
       let new_loc = (curr_player, ((fst curr_loc + rolled) mod Board.size brd,true))::trimmed in 
       Legal {
         curr_player = curr_player;
@@ -207,51 +207,55 @@ let earn_cash st amt =
   } 
 
 let buy bd prop st = 
-  if (prop_available prop st) && (enough_funds bd prop st) then 
-    match (current_location st = square_pos bd prop) with 
-    | false -> Illegal 
-    | true -> begin 
-        match (earn_cash st ((-1) *(cost bd prop))) with 
-        | Legal st' -> 
-          let curr_invent = List.assoc st.curr_player st.inventories in 
-          let trimmed = List.remove_assoc st.curr_player st.inventories in 
-          let new_inv = (st.curr_player, prop ::curr_invent) :: trimmed in 
-          Legal {
-            curr_player = st.curr_player;
-            num_players = num_players st';
-            locations = locations st';
-            doubles_rolled = doubles_rolled st;
-            inventories = new_inv;
-            items = items st';
-            wallets = wallets st';
-            total_assets = total_assets st';
-            buildings = st.buildings
-          }
-        | _ -> failwith "should never happen" 
-      end
+  if is_buyable bd prop then 
+    if (prop_available prop st) && (enough_funds bd prop st) then 
+      match (current_location st = square_pos bd prop) with 
+      | false -> Illegal 
+      | true -> begin 
+          match (earn_cash st ((-1) *(cost bd prop))) with 
+          | Legal st' -> 
+            let curr_invent = List.assoc st.curr_player st.inventories in 
+            let trimmed = List.remove_assoc st.curr_player st.inventories in 
+            let new_inv = (st.curr_player, prop ::curr_invent) :: trimmed in 
+            Legal {
+              curr_player = st.curr_player;
+              num_players = num_players st';
+              locations = locations st';
+              doubles_rolled = doubles_rolled st;
+              inventories = new_inv;
+              items = items st';
+              wallets = wallets st';
+              total_assets = total_assets st';
+              buildings = st.buildings
+            }
+          | _ -> Illegal
+        end
+    else Illegal
   else Illegal
 
 let sell bd prop st = 
-  if (List.mem prop (List.assoc st.curr_player st.inventories)) then 
-    match (earn_cash st (cost bd prop)) with 
-    | Legal st' -> 
-      let curr_invent = List.assoc st.curr_player st.inventories in 
-      let trimmed = List.remove_assoc st.curr_player st.inventories in 
-      let new_inv = (st.curr_player, List.filter (fun p -> p <> prop) curr_invent) 
-                    :: trimmed in 
-      Legal {
-        curr_player = st.curr_player;
-        num_players = num_players st';
-        locations = locations st';
-        doubles_rolled = doubles_rolled st';
-        inventories = new_inv;
-        items = items st';
-        wallets = wallets st';
-        total_assets = total_assets st';
-        buildings = st.buildings
-      }
-    | _ -> failwith "should never happen" 
+  if is_buyable bd prop then 
+    if (List.mem prop (List.assoc st.curr_player st.inventories)) then 
+      match (earn_cash st (cost bd prop)) with 
+      | Legal st' -> 
+        let curr_invent = List.assoc st.curr_player st.inventories in 
+        let trimmed = List.remove_assoc st.curr_player st.inventories in 
+        let new_inv = (st.curr_player, List.filter (fun p -> p <> prop) curr_invent) 
+                      :: trimmed in 
+        Legal {
+          curr_player = st.curr_player;
+          num_players = num_players st';
+          locations = locations st';
+          doubles_rolled = doubles_rolled st';
+          inventories = new_inv;
+          items = items st';
+          wallets = wallets st';
+          total_assets = total_assets st';
+          buildings = st.buildings
+        }
+      | _ -> Illegal 
 
+    else Illegal
   else Illegal
 
 
@@ -282,63 +286,67 @@ let pay_rent bd prop st =
         total_assets = total_assets st;
         buildings = st.buildings
       } 
-    | _ -> failwith "shouldn't happen"
+    | _ -> Illegal
 
 let rec build_houses bd st prop n  = 
-  let monopoly_group = monopoly_group bd prop in 
-  let player_prps = List.assoc st.curr_player st.inventories in 
-  if List.for_all (fun s -> List.mem s player_prps) monopoly_group then 
-    let house_cost = match house_cost bd prop with 
-      | Some v -> v * n
-      | None -> raise (Unbuildable prop) in
-    if not (List.assoc st.curr_player st.wallets >= house_cost) then Illegal else
-      let curr_houses = List.assoc prop st.buildings |> fst in 
-      if (curr_houses + n) <= 3 then 
-        let curr_hotels = List.assoc prop st.buildings |> snd in 
-        let trimmed = List.remove_assoc prop st.buildings in 
-        let new_buildings = (prop, (curr_houses+n, curr_hotels)) :: trimmed in 
-        let st1 = {
-          curr_player = st.curr_player;
-          num_players = num_players st;
-          locations = locations st;
-          doubles_rolled = st.doubles_rolled;
-          inventories = inventories st;
-          items = items st;
-          wallets = wallets st;
-          total_assets = total_assets st;
-          buildings = new_buildings
-        } in 
-        earn_cash st1 (-n * house_cost) 
-      else Illegal
+  if is_buildable bd prop then 
+    let monopoly_group = monopoly_group bd prop in 
+    let player_prps = List.assoc st.curr_player st.inventories in 
+    if List.for_all (fun s -> List.mem s player_prps) monopoly_group then 
+      let house_cost = match house_cost bd prop with 
+        | Some v -> v * n
+        | None -> raise (Unbuildable prop) in
+      if not (List.assoc st.curr_player st.wallets >= house_cost) then Illegal else
+        let curr_houses = List.assoc prop st.buildings |> fst in 
+        if (curr_houses + n) <= 3 then 
+          let curr_hotels = List.assoc prop st.buildings |> snd in 
+          let trimmed = List.remove_assoc prop st.buildings in 
+          let new_buildings = (prop, (curr_houses+n, curr_hotels)) :: trimmed in 
+          let st1 = {
+            curr_player = st.curr_player;
+            num_players = num_players st;
+            locations = locations st;
+            doubles_rolled = st.doubles_rolled;
+            inventories = inventories st;
+            items = items st;
+            wallets = wallets st;
+            total_assets = total_assets st;
+            buildings = new_buildings
+          } in 
+          earn_cash st1 (-n * house_cost) 
+        else Illegal
+    else Illegal
   else Illegal
 
 let rec build_hotels bd st prop n  = 
-  if List.assoc prop st.buildings |> fst = 3 then 
-    let hotel_cost = match (hotel_cost bd prop) with 
-      | Some v -> n * v 
-      | None -> raise (Unbuildable prop) in  
-    if not (List.assoc st.curr_player st.wallets >= hotel_cost) then Illegal else
-      let curr_hotels = List.assoc prop st.buildings |> snd in
-      if (curr_hotels + n) <= 3 then 
-        let curr_houses = List.assoc prop st.buildings |> fst in 
-        let trimmed = List.remove_assoc prop st.buildings in 
-        let new_buildings = (prop, (curr_houses-3, curr_hotels+n)) :: trimmed in 
-        let st1 = {
-          curr_player = st.curr_player;
-          num_players = num_players st;
-          locations = locations st;
-          inventories = inventories st;
-          doubles_rolled = st.doubles_rolled;
-          items = items st;
-          wallets = wallets st;
-          total_assets = total_assets st;
-          buildings = new_buildings
-        } in 
-        match house_cost bd prop with 
-        | None -> raise (UnknownCard prop)
-        | Some i -> 
-          earn_cash st1 ((-n * hotel_cost) + 3 * i) else Illegal
+  if is_buildable bd prop then 
+    if List.assoc prop st.buildings |> fst = 3 then 
+      let hotel_cost = match (hotel_cost bd prop) with 
+        | Some v -> n * v 
+        | None -> raise (Unbuildable prop) in  
+      if not (List.assoc st.curr_player st.wallets >= hotel_cost) then Illegal else
+        let curr_hotels = List.assoc prop st.buildings |> snd in
+        if (curr_hotels + n) <= 3 then 
+          let curr_houses = List.assoc prop st.buildings |> fst in 
+          let trimmed = List.remove_assoc prop st.buildings in 
+          let new_buildings = (prop, (curr_houses-3, curr_hotels+n)) :: trimmed in 
+          let st1 = {
+            curr_player = st.curr_player;
+            num_players = num_players st;
+            locations = locations st;
+            inventories = inventories st;
+            doubles_rolled = st.doubles_rolled;
+            items = items st;
+            wallets = wallets st;
+            total_assets = total_assets st;
+            buildings = new_buildings
+          } in 
+          match house_cost bd prop with 
+          | None -> raise (UnknownCard prop)
+          | Some i -> 
+            earn_cash st1 ((-n * hotel_cost) + 3 * i) else Illegal
 
+    else Illegal
   else Illegal
 
 

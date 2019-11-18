@@ -65,6 +65,12 @@ val chance_cards : board -> string list
 (** [chest_cards b] returns a list of the deck of chest cards in [b]*)
 val chest_cards : board -> string list 
 
+(** [next_chance bd] returns the chance card at the top of the pile *)
+val next_chance : board -> string 
+
+(** [next_chest bd] returns the chance card at the top of the pile *)
+val next_chest : board -> string 
+
 (** [chance_card_description b cd] returns the description of card [cd]
       in board [b]. Raises [Not_Found] if [cd] is not in [b]  *)
 val chance_card_description : board -> string -> string 
@@ -104,3 +110,11 @@ val house_cost : board -> prop_name -> int option
       building a hotel on [prop]. Raises [UnknownCard prop] if [prop]
       is not in [bd]. *)
 val hotel_cost : board -> prop_name -> int option
+
+(** [is_buildable b p] returns true if players can build houses/hotels on [p]. 
+    Raises [UnknownCard prop] if [prop] is not in [bd].*)
+val is_buildable : board -> prop_name -> bool
+
+(**  [is_buildable b p] returns true if players can buy [p]. 
+     Raises [UnknownCard prop] if [prop] is not in [bd].*)
+val is_buyable : board -> prop_name -> bool 
