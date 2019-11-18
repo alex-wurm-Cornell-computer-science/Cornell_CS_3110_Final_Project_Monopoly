@@ -93,3 +93,15 @@ val square_pos : board -> prop_name -> int
 (** [prop_color b p] returns the color of [p] in [b]. Raises 
     [UnknownProp p] if [p] is not in [b] *)
 val square_color : board -> prop_name -> string option
+
+
+(** [house_cost bd prop] returns [Some i] where [i] is the cost of 
+      building a house on [prop]. Raises [UnknownCard prop] if [prop]
+      is not in [bd]. *)
+val house_cost : board -> prop_name -> int option
+
+
+(** [hotel_cost bd prop] returns [Some i] where [i] is the cost of 
+      building a hotel on [prop]. Raises [UnknownCard prop] if [prop]
+      is not in [bd]. *)
+val hotel_cost : board -> prop_name -> int option

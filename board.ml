@@ -210,3 +210,15 @@ let square_pos b p =
     | [] -> raise (UnknownSquare prop)
     | h :: t -> if (h.name = prop) then acc else pos' t prop (acc + 1) in
   pos' b.squares p 0
+
+let hotel_cost b p = 
+  try let prop = List.find (fun pr -> pr.name = p) b.squares in 
+    prop.hotel
+  with 
+  | Not_found -> raise (UnknownCard p)
+
+let house_cost b p = 
+  try let prop = List.find (fun pr -> pr.name = p) b.squares in 
+    prop.house
+  with 
+  | Not_found -> raise (UnknownCard p)
