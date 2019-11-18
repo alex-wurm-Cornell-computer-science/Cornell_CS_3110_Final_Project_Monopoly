@@ -25,7 +25,7 @@ type t = {
   buildings : (prop_name * ( int * int)) list 
 }
 
-type result = Legal of t | Illegal
+type result = Legal of t | Illegal | Win
 
 let rec init_lists n v acc =
   match n with 
@@ -76,6 +76,7 @@ let update_state old_st res =
   match res with 
   | Illegal -> old_st 
   | Legal t -> t 
+  | Win -> old_st
 
 let next_turn st = 
   let curr_player = current_player st in 
@@ -195,7 +196,9 @@ let earn_cash st amt =
   let total_cash = wallets st in 
   let curr_cash = List.assoc curr_player total_cash in 
   let trimmed = List.remove_assoc curr_player total_cash in 
-  let new_cash = (curr_player,curr_cash + amt)::trimmed in 
+  let inc_cash = curr_cash + amt in 
+  let new_cash = (curr_player,inc_cash)::trimmed in 
+  if inc_cash > 500 then Win else
   Legal {
     curr_player = curr_player;
     num_players = num_players st;
@@ -219,6 +222,7 @@ let buy bd prop st =
             let curr_invent = List.assoc st.curr_player st.inventories in 
             let trimmed = List.remove_assoc st.curr_player st.inventories in 
             let new_inv = (st.curr_player, prop ::curr_invent) :: trimmed in 
+            if List.length new_inv > 1 then Win else
             Legal {
               curr_player = st.curr_player;
               num_players = num_players st';

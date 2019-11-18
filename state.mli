@@ -19,7 +19,7 @@ type property
 type t 
 
 (** The type representing the result of an attempted movement. *)
-type result = Legal of t | Illegal
+type result = Legal of t | Illegal | Win
 
 (** [init_state brd n] is the initial state of the game when playing adventure [a]. 
     In that state the adventurer is currently located in the starting room,
