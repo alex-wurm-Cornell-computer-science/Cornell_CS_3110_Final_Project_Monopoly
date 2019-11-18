@@ -98,6 +98,7 @@ let next_turn st =
   ) else Legal st 
 
 let roll brd st = 
+  let _ = print_string "here3" in 
   Random.self_init ();
   let die1 = (Random.int 5) + 1 in 
   let die2 = (Random.int 5) + 1 in 
@@ -150,8 +151,9 @@ let roll brd st =
         total_assets = total_assets st;
         buildings = st.buildings
       }
-    ) else Illegal 
-  ) else Illegal
+    ) else
+      let _ = print_string "here" in Illegal 
+  ) else  let _ = print_string "here2" in Illegal
 
 let houses st prop = 
   List.find (fun s -> (fst s) = prop) st.buildings |> snd |> fst
