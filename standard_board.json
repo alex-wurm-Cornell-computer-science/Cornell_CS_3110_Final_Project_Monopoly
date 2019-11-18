@@ -12,7 +12,9 @@
       "color": "Brown",
       "cost": "60",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Community Chest",
@@ -26,7 +28,9 @@
       "color": "Brown",
       "cost": "60",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Income Tax",
@@ -47,7 +51,9 @@
       "color": "Light Blue",
       "cost": "100",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Chance",
@@ -61,14 +67,18 @@
       "color": "Light Blue",
       "cost": "100",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Connecticut Avenue",
       "color": "Light Blue",
       "cost": "120",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Jail",
@@ -82,7 +92,9 @@
       "color": "Pink",
       "cost": "140",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Electric Company",
@@ -96,14 +108,18 @@
       "color": "Pink",
       "cost": "140",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Virginia Avenue",
       "color": "Pink",
       "cost": "160",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Pennsylvania Railroad",
@@ -117,7 +133,9 @@
       "color": "Orange",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Community Chest",
@@ -131,14 +149,18 @@
       "color": "Orange",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "New York Avenue",
       "color": "Orange",
       "cost": "200",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Free Parking",
@@ -152,7 +174,9 @@
       "color": "Red",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Chance",
@@ -166,14 +190,18 @@
       "color": "Red",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Illinois Avenue",
       "color": "Red",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "B. & O. Railroad",
@@ -187,14 +215,18 @@
       "color": "Yellow",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Ventnor Avenue",
       "color": "Yellow",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Water Works",
@@ -208,7 +240,9 @@
       "color": "Yellow",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Go To Jail",
@@ -222,14 +256,18 @@
       "color": "Green",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "North Carolina Avenue",
       "color": "Green",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Community Chest",
@@ -243,7 +281,9 @@
       "color": "Green",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Short Line",
@@ -264,7 +304,9 @@
       "color": "Dark Blue",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Luxury Tax",
@@ -278,7 +320,9 @@
       "color": "Dark Blue",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     }
   ],
   "chest cards": [],

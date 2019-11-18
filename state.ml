@@ -307,10 +307,6 @@ let rec build_houses bd st prop n  =
       else Illegal
   else Illegal
 
-
-
-
-
 let rec build_hotels bd st prop n  = 
   if List.assoc prop st.buildings |> fst = 3 then 
     let hotel_cost = (cost bd prop) * n  in 

@@ -28,7 +28,9 @@ type square = {
   cost : int ;
   color : string option ;
   squareType : squareType ;
-  rent : int
+  rent : int;
+  house : int option;
+  hotel : int option;
 }
 
 
@@ -61,6 +63,25 @@ let parse_type s =
   if s = "Chance" then Chance else 
   if s = "Chest" then Chest else Tax
 
+(** [get_house j] returns the house field of the given json square [j] *)
+let get_house j = 
+  match j |> member "type" |> to_string |> parse_type with 
+  | Property -> if ( to_string (member "color" j) = "Railroad")  ||
+                   ( to_string (member "color" j) = "Utility")
+    then None else 
+      Some (j |> member "house" |> to_string |> int_of_string)
+  | _ -> None 
+
+(** [get_house j] returns the hotel field of the given json square [j] *)
+let get_hotel j = 
+  match j |> member "type" |> to_string |> parse_type with 
+  | Property -> if ( to_string (member "color" j) = "Railroad") ||
+                   ( to_string (member "color" j) = "Utility")
+    then None else 
+      Some (j |> member "hotel" |> to_string |> int_of_string)
+  | _ -> None 
+
+
 (**[square_of_json json] Parses [json] into a valid monopoly square *)
 let square_of_json json= 
   { 
@@ -69,6 +90,8 @@ let square_of_json json=
     color = json |> member "color" |> to_string |> parse_color;
     squareType = json |> member "type" |> to_string |> parse_type;
     rent = json |> member "rent" |> to_string |> int_of_string;
+    house = get_house json ;
+    hotel = get_hotel json 
   }
 
 (**[card_of_json json] parses [json] into a card type *)
@@ -78,6 +101,7 @@ let card_of_json json =
     description = json |> member "description" |> to_string;
     payment = json |> member "payment" |> to_string |> int_of_string
   }
+
 
 
 (** [opt_match op] Returns the v if [op] is Some v and fails 
@@ -102,6 +126,7 @@ let init_monopolies sqs =
       else 
         init' t (MonopDict.add (opt_match h.color) [h.name] acc) in
   init' sqs MonopDict.empty
+
 
 
 let from_json j = 
