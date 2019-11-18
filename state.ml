@@ -2,6 +2,9 @@
 
 open Board
 
+
+exception Unbuildable of prop_name
+
 (* type player = int *)
 
 type property = {
@@ -285,7 +288,9 @@ let rec build_houses bd st prop n  =
   let monopoly_group = monopoly_group bd prop in 
   let player_prps = List.assoc st.curr_player st.inventories in 
   if List.for_all (fun s -> List.mem s player_prps) monopoly_group then 
-    let house_cost = (cost bd prop) * n /2 in 
+    let house_cost = match house_cost bd prop with 
+      | Some v -> v * n
+      | None -> raise (Unbuildable prop) in
     if not (List.assoc st.curr_player st.wallets >= house_cost) then Illegal else
       let curr_houses = List.assoc prop st.buildings |> fst in 
       if (curr_houses + n) <= 3 then 
@@ -309,7 +314,9 @@ let rec build_houses bd st prop n  =
 
 let rec build_hotels bd st prop n  = 
   if List.assoc prop st.buildings |> fst = 3 then 
-    let hotel_cost = (cost bd prop) * n  in 
+    let hotel_cost = match (hotel_cost bd prop) with 
+      | Some v -> n * v 
+      | None -> raise (Unbuildable prop) in  
     if not (List.assoc st.curr_player st.wallets >= hotel_cost) then Illegal else
       let curr_hotels = List.assoc prop st.buildings |> snd in
       if (curr_hotels + n) <= 3 then 

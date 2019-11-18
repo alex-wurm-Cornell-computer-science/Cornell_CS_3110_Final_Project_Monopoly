@@ -100,7 +100,6 @@ val square_color : board -> prop_name -> string option
       is not in [bd]. *)
 val house_cost : board -> prop_name -> int option
 
-
 (** [hotel_cost bd prop] returns [Some i] where [i] is the cost of 
       building a hotel on [prop]. Raises [UnknownCard prop] if [prop]
       is not in [bd]. *)

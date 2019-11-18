@@ -9,8 +9,10 @@
 (* You are free to add more code here. *)
 open Board
 
-(* type player *)
+(* raised when attempting to build on non-property *)
+exception Unbuildable of prop_name
 
+(* type player *)
 type property
 
 (** The abstract type of values representing the game state. *)
