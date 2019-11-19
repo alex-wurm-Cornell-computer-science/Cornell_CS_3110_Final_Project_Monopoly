@@ -152,7 +152,7 @@ let rec roll_dice brd st =
                 ) else if dubs > 0 && dubs <= 2 then (
                   Printf.printf "\nPlayer %d rolled %d pair(s) of doubles\n" (State.current_player t) (State.doubles_rolled t); roll_dice brd t
                 ) else (
-                  Printf.printf "\nPlayer %d is now at space %d\n" (State.current_player t) (State.current_location t); res
+                  Printf.printf "\nPlayer %d is now at %s, space %d\n" (State.current_player t) (nth_square brd (current_location t)) (State.current_location t); res
                 )
                )
   | Win -> Printf.printf "\nYou've already won!"; res
@@ -190,27 +190,34 @@ let rec interp_command brd res st =
              | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" 
                              (current_player st); 
                interp_command brd (Legal st) st
-             | Legal st' ->
-               let moved = if (current_location st' - current_location st) > 0
-                 then current_location st' - current_location st
-                 else Board.size brd + 
-                      (current_location st' - current_location st) 
-               in 
-               if (current_location st' - current_location st) <= 0 then (
-                 Printf.printf "\nYou rolled %d\n" moved;
-                 Printf.printf "\nYou are at %s\n" 
-                   (Board.nth_square brd (current_location st'));
-                 Printf.printf "\nYou've passed GO, player %d!\n" 
-                   (current_player st');
-                 let res' = earn_cash st' 200 in 
-                 let st'' = update_state st' res' in 
-                 interp_command brd res' st''
+             | Legal st' -> if (nth_square brd (current_location st') <> "Jail") 
+               then (
+                 if nth_square brd (current_location st) =  "Jail" then 
+                   Printf.printf "\nYou got out of Jail with a double!\n";
+                 let moved = if (current_location st' - current_location st) > 0
+                   then current_location st' - current_location st
+                   else Board.size brd + 
+                        (current_location st' - current_location st) 
+                 in 
+                 if (current_location st' - current_location st) <= 0 then (
+                   Printf.printf "\nYou rolled %d\n" moved;
+                   Printf.printf "\nYou are at %s\n" 
+                     (Board.nth_square brd (current_location st'));
+                   Printf.printf "\nYou've passed GO, player %d!\n" 
+                     (current_player st');
+                   let res' = earn_cash st' 200 in 
+                   let st'' = update_state st' res' in 
+                   interp_command brd res' st''
+                 ) else (
+                   Printf.printf "\nYou rolled %d\n" moved;
+                   Printf.printf "\nYou are at %s\n" 
+                     (Board.nth_square brd (current_location st'));
+                   interp_command brd res st'
+                 )
                ) else (
-                 Printf.printf "\nYou rolled %d\n" moved;
-                 Printf.printf "\nYou are at %s\n" 
-                   (Board.nth_square brd (current_location st'));
+                 Printf.printf "\nYou need to roll a double or use a Get Out of Jail Free card to leave Jail\n";
                  interp_command brd res st'
-               )
+               ) 
              | Win -> Printf.printf "\n Player %d you have won the game! You were the \
                                      first player to accumulate $500!\n" (State.current_player st);
             )
