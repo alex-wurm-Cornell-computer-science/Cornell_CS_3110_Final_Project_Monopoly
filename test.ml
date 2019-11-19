@@ -89,7 +89,7 @@ let board_tests_valid = [
   "not buildable prop" >:: ( fun _ -> assert_equal false (is_buildable test_board "Chance"));
   "buyable prop" >:: (fun _ -> assert_equal true (is_buyable test_board "Baltic Avenue"));
   "unbuyable prop" >:: (fun _ -> assert_equal false (is_buyable test_board "Chance"));
-  "square color" >:: (fun _ -> assert_equal (Some "Dark Blue") (square_color test_board "Park Place"))
+  "square color" >:: (fun _ -> assert_equal (Some "Dark Blue") (square_color test_board "Park Place"));
 ]
 
 let suite =

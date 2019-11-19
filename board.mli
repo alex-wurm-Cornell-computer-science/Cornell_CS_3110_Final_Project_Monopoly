@@ -65,10 +65,12 @@ val chance_cards : board -> string list
 (** [chest_cards b] returns a list of the deck of chest cards in [b]*)
 val chest_cards : board -> string list 
 
-(** [next_chance bd] returns the chance card at the top of the pile *)
+(** [next_chance bd] returns the chance card at the top of the pile 
+      Requires: [chance_cards bd] is not empty. *)
 val next_chance : board -> string 
 
-(** [next_chest bd] returns the chance card at the top of the pile *)
+(** [next_chest bd] returns the chance card at the top of the pile. 
+      Requires: [chest_cards bd] is not empty. *)
 val next_chest : board -> string 
 
 (** [chance_card_description b cd] returns the description of card [cd]
@@ -100,9 +102,9 @@ val square_pos : board -> prop_name -> int
     [UnknownProp p] if [p] is not in [b] *)
 val square_color : board -> prop_name -> string option
 
-
 (** [house_cost bd prop] returns [Some i] where [i] is the cost of 
-      building a house on [prop]. Raises [UnknownCard prop] if [prop]
+      building a house on [prop]. Returns [None] if houses 
+      cannot be built on [prop]. Raises [UnknownCard prop] if [prop] 
       is not in [bd]. *)
 val house_cost : board -> prop_name -> int option
 
@@ -112,6 +114,7 @@ val house_cost : board -> prop_name -> int option
 val hotel_cost : board -> prop_name -> int option
 
 (** [is_buildable b p] returns true if players can build houses/hotels on [p]. 
+    Returns [None] if houses cannot be built on [prop].
     Raises [UnknownCard prop] if [prop] is not in [bd].*)
 val is_buildable : board -> prop_name -> bool
 
