@@ -142,22 +142,19 @@ let disp_inv st =
   (* List.iter print_endline (st |> curr_player_inventory); //NEED TO GET PROPERTY NAMES, NOT PROPERTY OBJ*) 
   print_string "\n"
 
-let rec roll brd st = 
-  let res = State.roll brd st in 
+let rec roll_dice brd st = 
+  let res = roll brd st in 
   match res with 
-  | Illegal -> Printf.printf "\nYou've already rolled";res
-  | Legal t -> (
-      if (doubles_rolled t) >= 3 then (
-        Printf.printf "\nPlayer %d rolled 3 doubles, so they're now in Jail\n" (State.current_player t); res
-      ) else if (doubles_rolled t > 0 && doubles_rolled t < 3) then (
-        Printf.printf "\nPlayer %d rolled a double and is at %s\n" (State.current_player t) (Board.nth_square brd (current_location t)); 
-        Printf.printf "\nYou will roll again automatically.\n"; roll brd t 
-      ) else (
-        let loc_lst = State.locations t in 
-        if snd (List.assoc (current_player t) loc_lst) then Illegal
-        else (Printf.printf "\nPlayer %d is at %s\n" (State.current_player t) (Board.nth_square brd (current_location t)); res)
-      )
-    )
+  | Illegal -> print_string "\nIllegal movement, please try again\n"; res
+  | Legal t -> (let dubs = doubles_rolled t in  
+                if dubs = 3 then (
+                  Printf.printf "\nPlayer %d is now at Jail\n" (State.current_player t); res
+                ) else if dubs > 0 && dubs <= 2 then (
+                  Printf.printf "\nPlayer %d rolled %d pair(s) of doubles\n" (State.current_player t) (State.doubles_rolled t); roll_dice brd t
+                ) else (
+                  Printf.printf "\nPlayer %d is now at space %d\n" (State.current_player t) (State.current_location t); res
+                )
+               )
   | Win -> Printf.printf "\nYou've already won!"; res
 
 
@@ -186,7 +183,7 @@ let rec interp_command brd res st =
                           \n\n"; exit 0
   | Build obj -> print_string "\nCan't build yet! \
                                \n\n";
-  | Roll -> (let res = roll brd st in  
+  | Roll -> (let res = roll_dice brd st in  
              match res with 
              | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" 
                              (current_player st); 
