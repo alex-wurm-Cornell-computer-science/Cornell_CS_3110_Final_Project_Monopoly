@@ -12,7 +12,9 @@
       "color": "Brown",
       "cost": "0",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Community Chest",
@@ -26,7 +28,9 @@
       "color": "Brown",
       "cost": "100",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Income Tax",
@@ -61,7 +65,9 @@
       "color": "Dark Blue",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     },
     {
       "name": "Luxury Tax",
@@ -82,7 +88,9 @@
       "color": "Dark Blue",
       "cost": "50",
       "type": "Property",
-      "rent": "100"
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
     }
   ],
   "chest cards": [],

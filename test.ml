@@ -63,6 +63,7 @@ let cmp_demo =
    by [make zip] as part of your CMS submission. *)
 
 let test_board = from_json (Yojson.Basic.from_file "test_board.json")
+let real_board = from_json (Yojson.Basic.from_file "standard_board.json")
 
 let board_tests_valid = [
   "test size" >:: (fun _ -> assert_equal 12 (size test_board));
@@ -78,6 +79,17 @@ let board_tests_valid = [
                           (cmp_set_like_lists ["Mediterranean Avenue" ; 
                                                "Baltic Avenue"] 
                              (monopoly_group test_board "Brown")));
+  "test house price" >:: (fun _ -> assert_equal (Some 50) 
+                             (house_cost test_board "Boardwalk"));
+  "test hotel price" >:: (fun _ -> assert_equal (Some 100) 
+                             (hotel_cost test_board "Boardwalk"));
+  "test square pos" >:: (fun _ -> assert_equal 4 (square_pos test_board "Income Tax"));
+  "test nth square" >:: (fun _ -> assert_equal "Chance" (nth_square test_board 5));
+  "buildable prop" >:: (fun _ -> assert_equal true (is_buildable test_board "Boardwalk"));
+  "not buildable prop" >:: ( fun _ -> assert_equal false (is_buildable test_board "Chance"));
+  "buyable prop" >:: (fun _ -> assert_equal true (is_buyable test_board "Baltic Avenue"));
+  "unbuyable prop" >:: (fun _ -> assert_equal false (is_buyable test_board "Chance"));
+  "square color" >:: (fun _ -> assert_equal (Some "Dark Blue") (square_color test_board "Park Place"))
 ]
 
 let suite =

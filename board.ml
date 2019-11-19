@@ -171,8 +171,10 @@ let chance_cards b =
 let chest_cards b = 
   List.map (fun x -> x.c_name) b.chest_cards
 
+(** Requires: [chance_cards bd] is non-empty *)
 let next_chance bd = List.hd (chance_cards bd)
 
+(** Requires: [chest_cards bd] is non-empty *)
 let next_chest bd = List.hd (chest_cards bd)
 
 let chance_card_description b cd = 
