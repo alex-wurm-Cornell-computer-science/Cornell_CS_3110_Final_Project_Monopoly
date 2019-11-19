@@ -298,7 +298,7 @@ let pay_rent bd prop st =
       } 
     | _ -> Illegal
 
-let rec build_houses bd st prop n  = 
+let build_houses bd st prop n  = 
   if is_buildable bd prop then 
     let monopoly_group = monopoly_group bd prop in 
     let player_prps = List.assoc st.curr_player st.inventories in 
@@ -328,7 +328,7 @@ let rec build_houses bd st prop n  =
     else Illegal
   else Illegal
 
-let rec build_hotels bd st prop n  = 
+let build_hotels bd st prop n  = 
   if is_buildable bd prop then 
     if List.assoc prop st.buildings |> fst = 3 then 
       let hotel_cost = match (hotel_cost bd prop) with 

@@ -30,23 +30,34 @@ val init_state : Board.board -> int -> t
     currently is located in state [st]. *)
 val current_player : t -> int
 
+(** [num_players st] returns the number of players in the current game [st] *)
 val num_players : t -> int
 
+(** [locations st] returns a list of all players, their locations, and a boolean 
+    specifying if they are eligible to move around the board in [st] *)
 val locations : t -> (int * (int * bool)) list
 
+(** [doubles_rolled st] returns the number of doubles the current player has 
+      rolled in the current [st] *)
 val doubles_rolled : t -> int
 
+(** [current_location st] returns the integer square corresponding to the current
+    player's location in [st] *)
 val current_location : t -> int
 
+(** [inventories st] returns an association list where the keys are players 
+    and the values are properties owned by the player in [st] *)
 val inventories : t -> (int * Board.prop_name list) list
 
+(** [items st] returns an assoc list where the keys are players and the values 
+    are the cards the players hold in [st] *)
 val items : t -> (int * Board.card_name list) list 
 
+(** [wallets st] returns an assoc list where the keys are players and the 
+    values are the amount of money that the players have in [st] *)
 val wallets : t -> (int * int) list
 
 val total_assets : t -> (int * int) list 
-
-val buildings : t -> (prop_name * ( int * int)) list 
 
 val update_state : t -> result -> t 
 
@@ -60,12 +71,30 @@ val curr_player_wallet : t -> int
 
 val curr_player_items : t -> card_name list 
 
+(** [buy bd prop st] adds [prop] to the current player's inventory and 
+    pays the cost of the property. *)
 val buy : Board.board -> prop_name -> t -> result 
 
+(** [sell bd prop st] Sells the property [prop] from the current player's 
+    inventory.  *)
 val sell : Board.board -> prop_name -> t -> result 
 
 val auction : prop_name -> t -> result 
 
+(** [earn_cash t amt] Adds [amt] to the current player's wallet*)
 val earn_cash : t -> int -> result 
 
+(** [pay_rent bd prop st] Executes the transaction where the current player
+      pays the owner of [prop] rent for landing on [prop]. *)
 val pay_rent : board -> prop_name -> t -> result
+
+(** [build_houses bd st prop n] returns Legal st', builds [n] houses on [prop], 
+    if the current player has enough currency to build all [n] houses. 
+    Otherwise, or if the player cannot build on [prop] returns [Illegal] *)
+val build_houses : board -> t -> prop_name -> int -> result
+
+(** [build_hotels bd st prop n] returns Legal st', builds [n] hotels on [prop],
+    refunds the player for houses on [prop],if the current player has enough 
+    currency to build all [n] hotels. Otherwise, or if the player cannot 
+    build on [prop] returns [Illegal]*)
+val build_hotels : board -> t -> prop_name -> int -> result
