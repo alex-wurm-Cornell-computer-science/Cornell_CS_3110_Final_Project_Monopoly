@@ -233,7 +233,8 @@ let is_buildable bd prop =
     let p = List.find (fun s -> s.name = prop) bd.squares in 
     match p.squareType with 
     | Property -> if  opt_match p.color <> "Railroad" && 
-                      opt_match p.color <> "Utility" then true else false 
+                      opt_match p.color <> "Utility" &&
+                      opt_match p.color <> "None" then true else false 
     | _ -> false
   with 
   | Not_found -> raise (UnknownSquare prop)

@@ -102,10 +102,10 @@ let next_turn st =
   ) else Legal st 
 
 let roll brd st = 
-  (* let die1 = (Random.int 5) + 1 in 
-     let die2 = (Random.int 5) + 1 in  *)
-  let die1 = 3 in 
-  let die2 = 3 in 
+  let die1 = (Random.int 5) + 1 in 
+  let die2 = (Random.int 5) + 1 in 
+  (* let die1 = 3 in 
+     let die2 = 3 in  *)
   let curr_player = current_player st in 
   let total_loc = locations st in 
   let curr_loc = List.assoc curr_player total_loc in 
@@ -125,11 +125,13 @@ let roll brd st =
           total_assets = total_assets st;
           buildings = buildings st;
         }) else (
-        let new_loc = (curr_player, ((fst curr_loc + die1 + die2) mod Board.size brd,false))::trimmed in 
+        let new_loc = if (nth_square brd ((fst curr_loc + die1 + die2) mod Board.size brd) = "Go To Jail") 
+          then Board.square_pos brd "Jail" else ((fst curr_loc + die1 + die2) mod Board.size brd) in 
+        let new_loc_lst = (curr_player, (new_loc,false))::trimmed in 
         Legal {
           curr_player = curr_player;
           num_players = num_players st;
-          locations = new_loc;
+          locations = new_loc_lst;
           inventories = inventories st;
           doubles_rolled = doubles_rolled st + 1;
           items = items st;
@@ -139,13 +141,17 @@ let roll brd st =
         }
       )
     ) else (
-      let new_loc = (curr_player, ((fst curr_loc + die1 + die2) mod Board.size brd,true))::trimmed in 
+      let new_loc = if (nth_square brd ((fst curr_loc) mod Board.size brd) = "Jail") then ((fst curr_loc) mod Board.size brd)
+        else if (nth_square brd ((fst curr_loc + die1 + die2) mod Board.size brd) = "Go To Jail") 
+        then Board.square_pos brd "Jail" 
+        else ((fst curr_loc + die1 + die2) mod Board.size brd) in 
+      let new_loc_lst = (curr_player, (new_loc,true))::trimmed in 
       Legal {
         curr_player = curr_player;
         num_players = num_players st;
-        locations = new_loc;
+        locations = new_loc_lst;
         inventories = inventories st;
-        doubles_rolled = doubles_rolled st;
+        doubles_rolled = 0;
         items = items st;
         wallets = wallets st;
         total_assets = total_assets st;
@@ -164,8 +170,6 @@ let hotels st prop : int =
     List.find (fun s -> (fst s) = prop) (buildings st) |> snd |> snd
   with 
   | Not_found -> raise (UnknownSquare prop)
-
-
 
 let curr_player_inventory st = 
   let curr_player = current_player st in

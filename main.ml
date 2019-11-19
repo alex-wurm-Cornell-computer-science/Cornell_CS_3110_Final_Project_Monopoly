@@ -181,8 +181,10 @@ let rec interp_command brd res st =
   match command with
   | Quit -> print_string "\nThank you for playing the Monopoly Game Engine! \
                           \n\n"; exit 0
-  | Build obj -> print_string "\nCan't build yet! \
-                               \n\n";
+  | Build obj -> if nth_square brd (current_location st) <> "Jail" then (
+      print_string "\nCan't build yet! \n\n";
+    ) else ((Printf.printf "\nUh oh! You're in Jail, so you can't perform this action\n"; 
+             interp_command brd (Legal st) st))
   | Roll -> (let res = roll_dice brd st in  
              match res with 
              | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" 
@@ -221,24 +223,29 @@ let rec interp_command brd res st =
   | Items -> print_string "\nYou currently have the following cards:\n"; 
     disp_items (State.items st);
     interp_command brd res st             
-  | Buy -> print_string "\nAre you sure you would like to buy this property?\n";
-    let confirmation = read_line() in 
-    if confirmation = "yes" then
-      (let prop = (State.current_location st) |> Board.nth_square brd in 
-       let res = State.buy brd prop st in
-       (match res with 
-        | Illegal -> Printf.printf "\nUnfortunately this property cannot
+  | Buy -> if nth_square brd (current_location st) <> "Jail" then (
+      print_string "\nAre you sure you would like to buy this property?\n";
+      let confirmation = read_line() in 
+      if confirmation = "yes" then
+        (let prop = (State.current_location st) |> Board.nth_square brd in 
+         let res = State.buy brd prop st in
+         (match res with 
+          | Illegal -> Printf.printf "\nUnfortunately this property cannot
                            be purchased at this time.\n"; interp_command brd (Legal st) st
-        | Legal st' -> Printf.printf "\n Congratulations! You are \
-                                      the owner of %s." prop; interp_command brd (Legal st') st;
-        | Win -> Printf.printf "\n Player %d you have won the game! You were the \
-                                first player to acquire multiple properties!\n" (State.current_player st)))
-    else if confirmation = "no" then
-      (Printf.printf "Okay, what would you like to do instead?\n"; 
+          | Legal st' -> Printf.printf "\n Congratulations! You are \
+                                        the owner of %s." prop; interp_command brd (Legal st') st;
+          | Win -> Printf.printf "\n Player %d you have won the game! You were the \
+                                  first player to acquire multiple properties!\n" (State.current_player st)))
+      else if confirmation = "no" then
+        (Printf.printf "Okay, what would you like to do instead?\n"; 
+         interp_command brd (Legal st) st)
+      else 
+        (Printf.printf "\n Invalid response, please try again. \n";
+         interp_command brd (Legal st) st)) 
+    else (
+      (Printf.printf "\nUh oh! You're in Jail, so you can't perform this action\n"; 
        interp_command brd (Legal st) st)
-    else 
-      (Printf.printf "\n Invalid response, please try again. \n";
-       interp_command brd (Legal st) st)
+    )
 
   (* let response = read_line () in 
      if response = "yes" then (* try-catch to see if legal *)
@@ -247,25 +254,30 @@ let rec interp_command brd res st =
      else if response = "no" then print_string "\n Okay maybe next time! \n"
      (* Take more input. *)
      else print_string "\n Invalid response, please try again. \n"; *)
-  | Sell p -> print_string "\nAre you sure you would like to sell this property?\n";
-    let confirmation = read_line() in 
-    if confirmation = "yes" then
-      (let prop = parse_obj_phrase p in 
-       let res = State.sell brd prop st in
-       match res with
-       | Illegal -> Printf.printf "\nUnfortunately this property cannot
+  | Sell p -> if nth_square brd (current_location st) <> "Jail" then (
+      print_string "\nAre you sure you would like to sell this property?\n";
+      let confirmation = read_line() in 
+      if confirmation = "yes" then
+        (let prop = parse_obj_phrase p in 
+         let res = State.sell brd prop st in
+         match res with
+         | Illegal -> Printf.printf "\nUnfortunately this property cannot
                            be sold at this time.\n"; interp_command brd (Legal st) st
-       | Legal st' -> Printf.printf "\n Congratulations! You have successfully \
-                                     sold %s." prop; interp_command brd (Legal st') st
-       | Win -> Printf.printf "\n Player %d you seem to have won the game... \
-                               but I suspect you may have cheated.\n" (State.current_player st); 
+         | Legal st' -> Printf.printf "\n Congratulations! You have successfully \
+                                       sold %s." prop; interp_command brd (Legal st') st
+         | Win -> Printf.printf "\n Player %d you seem to have won the game... \
+                                 but I suspect you may have cheated.\n" (State.current_player st); 
+           interp_command brd (Legal st) st)
+      else if confirmation = "no" then
+        (Printf.printf "Okay, what would you like to do instead?\n"; 
          interp_command brd (Legal st) st)
-    else if confirmation = "no" then
-      (Printf.printf "Okay, what would you like to do instead?\n"; 
+      else 
+        (Printf.printf "\n Invalid response, please try again. \n";
+         interp_command brd (Legal st) st))
+    else (
+      (Printf.printf "\nUh oh! You're in Jail, so you can't perform this action\n"; 
        interp_command brd (Legal st) st)
-    else 
-      (Printf.printf "\n Invalid response, please try again. \n";
-       interp_command brd (Legal st) st)
+    )
   (* let response = read_line () in 
      if response = "yes" then (* try-catch to see if legal *)
      print_string "\n Congratulations! You have \
@@ -273,16 +285,20 @@ let rec interp_command brd res st =
      else if response = "no" then print_string "\n Okay maybe next time! \n"
      (* Take more input. *)
      else print_string "\n Invalid response, please try again. \n"; *)
-  | Auction p -> print_string "\nAre you sure you would like to participate in
+  | Auction p -> if nth_square brd (current_location st) <> "Jail" then 
+      (print_string "\nAre you sure you would like to participate in
                                the auction for this property?\n";
-    (* let response = read_line () in 
-       if response = "yes" then (* try-catch to see if legal *)
-       print_string "\n Congratulations! You are \
-                    the owner of %s. \n" (*add functionality then take more input*)
-       else if response = "no" then print_string "\n Okay maybe next time! \n"
-       (* Take more input. *)
-       else print_string "\n Invalid response, please try again. \n"; *)
-    interp_command brd res st
+       interp_command brd res st)
+    else (Printf.printf "\nUh oh! You're in Jail, so you can't perform this action\n"; 
+          interp_command brd (Legal st) st
+         )
+  (* let response = read_line () in 
+     if response = "yes" then (* try-catch to see if legal *)
+     print_string "\n Congratulations! You are \
+                  the owner of %s. \n" (*add functionality then take more input*)
+     else if response = "no" then print_string "\n Okay maybe next time! \n"
+     (* Take more input. *)
+     else print_string "\n Invalid response, please try again. \n"; *)
   | Next -> let st' = next_turn res st in interp_command brd res st'
 
 (** [continue_game adv st result] updates the state of the game, prints the
