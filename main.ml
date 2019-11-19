@@ -27,7 +27,8 @@ let rec number_of_players () =
   else if n = "5" then 5
   else if n = "6" then 6
   else begin 
-    print_string "\nInvalid number of players entered. Monopoly works with 2 to 6 players. Please try again!\n";
+    print_string "\nInvalid number of players entered. 
+    Monopoly works with 2 to 6 players. Please try again!\n";
     number_of_players ()
   end 
 
@@ -148,11 +149,19 @@ let rec roll_dice brd st =
   | Illegal -> print_string "\nIllegal movement, please try again\n"; res
   | Legal t -> (let dubs = doubles_rolled t in  
                 if dubs = 3 then (
-                  Printf.printf "\nPlayer %d rolled 3 pairs of doubles, which is an illegal movement\n" (State.current_player t); res
+                  Printf.printf "\nPlayer %d rolled 3 pairs of doubles, 
+                  which is an illegal movement\n" (State.current_player t); 
+                  res
                 ) else if dubs > 0 && dubs <= 2 then (
-                  Printf.printf "\nPlayer %d rolled %d pair(s) of doubles\n" (State.current_player t) (State.doubles_rolled t); roll_dice brd t
+                  Printf.printf "\nPlayer %d rolled %d pair(s) of doubles\n" 
+                    (State.current_player t) 
+                    (State.doubles_rolled t); 
+                  roll_dice brd t
                 ) else (
-                  Printf.printf "\nPlayer %d is now at %s, space %d\n" (State.current_player t) (nth_square brd (current_location t)) (State.current_location t); res
+                  Printf.printf "\nPlayer %d is now at %s, space %d\n" 
+                    (State.current_player t) 
+                    (nth_square brd (current_location t)) 
+                    (State.current_location t); res
                 )
                )
   | Win -> Printf.printf "\nYou've already won!"; res
@@ -183,8 +192,11 @@ let rec interp_command brd res st =
                           \n\n"; exit 0
   | Build obj -> if nth_square brd (current_location st) <> "Jail" then (
       print_string "\nCan't build yet! \n\n";
-    ) else ((Printf.printf "\nUh oh! You're in Jail, so you can't perform this action\n"; 
-             interp_command brd (Legal st) st))
+    ) else (
+      Printf.printf "\nUh oh! You're in Jail, so you can't perform 
+    this action\n"; 
+      interp_command brd (Legal st) st
+    )
   | Roll -> (let res = roll_dice brd st in  
              match res with 
              | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" 
