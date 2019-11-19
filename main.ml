@@ -148,7 +148,7 @@ let rec roll_dice brd st =
   | Illegal -> print_string "\nIllegal movement, please try again\n"; res
   | Legal t -> (let dubs = doubles_rolled t in  
                 if dubs = 3 then (
-                  Printf.printf "\nPlayer %d is now at Jail\n" (State.current_player t); res
+                  Printf.printf "\nPlayer %d rolled 3 pairs of doubles, which is an illegal movement\n" (State.current_player t); res
                 ) else if dubs > 0 && dubs <= 2 then (
                   Printf.printf "\nPlayer %d rolled %d pair(s) of doubles\n" (State.current_player t) (State.doubles_rolled t); roll_dice brd t
                 ) else (
@@ -209,8 +209,8 @@ let rec interp_command brd res st =
                    (Board.nth_square brd (current_location st'));
                  interp_command brd res st'
                )
-              | Win -> Printf.printf "\n Player %d you have won the game! You were the \
-                first player to accumulate $500!\n" (State.current_player st);
+             | Win -> Printf.printf "\n Player %d you have won the game! You were the \
+                                     first player to accumulate $500!\n" (State.current_player st);
             )
   | Inventory -> print_string "\nYou own the following properties:\n";
     disp_inventories (State.inventories st);  
@@ -227,12 +227,12 @@ let rec interp_command brd res st =
       (let prop = (State.current_location st) |> Board.nth_square brd in 
        let res = State.buy brd prop st in
        (match res with 
-       | Illegal -> Printf.printf "\nUnfortunately this property cannot
+        | Illegal -> Printf.printf "\nUnfortunately this property cannot
                            be purchased at this time.\n"; interp_command brd (Legal st) st
-       | Legal st' -> Printf.printf "\n Congratulations! You are \
-                                     the owner of %s." prop; interp_command brd (Legal st') st;
-       | Win -> Printf.printf "\n Player %d you have won the game! You were the \
-                first player to acquire multiple properties!\n" (State.current_player st)))
+        | Legal st' -> Printf.printf "\n Congratulations! You are \
+                                      the owner of %s." prop; interp_command brd (Legal st') st;
+        | Win -> Printf.printf "\n Player %d you have won the game! You were the \
+                                first player to acquire multiple properties!\n" (State.current_player st)))
     else if confirmation = "no" then
       (Printf.printf "Okay, what would you like to do instead?\n"; 
        interp_command brd (Legal st) st)
@@ -258,8 +258,8 @@ let rec interp_command brd res st =
        | Legal st' -> Printf.printf "\n Congratulations! You have successfully \
                                      sold %s." prop; interp_command brd (Legal st') st
        | Win -> Printf.printf "\n Player %d you seem to have won the game... \
-                    but I suspect you may have cheated.\n" (State.current_player st); 
-                    interp_command brd (Legal st) st)
+                               but I suspect you may have cheated.\n" (State.current_player st); 
+         interp_command brd (Legal st) st)
     else if confirmation = "no" then
       (Printf.printf "Okay, what would you like to do instead?\n"; 
        interp_command brd (Legal st) st)

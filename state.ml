@@ -72,6 +72,9 @@ let wallets st =
 let total_assets st = 
   st.total_assets
 
+let buildings st =
+  st.buildings
+
 let update_state old_st res = 
   match res with 
   | Illegal -> old_st 
@@ -94,13 +97,15 @@ let next_turn st =
       items = items st;
       wallets = wallets st;
       total_assets = total_assets st;
-      buildings = st.buildings
+      buildings = buildings st;
     }
   ) else Legal st 
 
 let roll brd st = 
-  let die1 = (Random.int 5) + 1 in 
-  let die2 = (Random.int 5) + 1 in 
+  (* let die1 = (Random.int 5) + 1 in 
+     let die2 = (Random.int 5) + 1 in  *)
+  let die1 = 3 in 
+  let die2 = 3 in 
   let curr_player = current_player st in 
   let total_loc = locations st in 
   let curr_loc = List.assoc curr_player total_loc in 
@@ -118,6 +123,7 @@ let roll brd st =
           items = items st;
           wallets = wallets st;
           total_assets = total_assets st;
+          buildings = buildings st;
         }) else (
         let new_loc = (curr_player, ((fst curr_loc + die1 + die2) mod Board.size brd,false))::trimmed in 
         Legal {
@@ -129,6 +135,7 @@ let roll brd st =
           items = items st;
           wallets = wallets st;
           total_assets = total_assets st;
+          buildings = buildings st;
         }
       )
     ) else (
@@ -138,22 +145,23 @@ let roll brd st =
         num_players = num_players st;
         locations = new_loc;
         inventories = inventories st;
-        doubles_rolled = doubles_rolled st + 1;
+        doubles_rolled = doubles_rolled st;
         items = items st;
         wallets = wallets st;
         total_assets = total_assets st;
+        buildings = buildings st;
       })
   ) else Illegal
 
 let houses st prop = 
   try 
-    List.find (fun s -> (fst s) = prop) st.buildings |> snd |> fst
+    List.find (fun s -> (fst s) = prop) (buildings st) |> snd |> fst
   with 
   | Not_found -> raise (UnknownSquare prop)
 
 let hotels st prop : int = 
   try 
-    List.find (fun s -> (fst s) = prop) st.buildings |> snd |> snd
+    List.find (fun s -> (fst s) = prop) (buildings st) |> snd |> snd
   with 
   | Not_found -> raise (UnknownSquare prop)
 
@@ -176,13 +184,13 @@ let curr_player_items st =
 
 (** [prop_available prop st] returns false if [prop] is already owned *)
 let prop_available prop st = 
-  let all_owned = List.fold_left (fun acc (a,b) -> b @ acc) [] st.inventories in 
+  let all_owned = List.fold_left (fun acc (a,b) -> b @ acc) [] (inventories st) in 
   not (List.mem prop all_owned) 
 
 (** [enough_funds prop st] returns true if the current player has enough money 
     to buy [prop] in [bd] *)
 let enough_funds bd prop st = 
-  let price = cost bd prop in (List.assoc st.curr_player st.wallets) > price
+  let price = cost bd prop in (List.assoc (current_player st) (wallets st)) > price
 
 let auction prop st = 
   failwith ("Unimplemented")
@@ -204,7 +212,7 @@ let earn_cash st amt =
       items = items st;
       wallets = new_cash;
       total_assets = total_assets st;
-      buildings = st.buildings
+      buildings = buildings st;
     } 
 
 let buy bd prop st = 

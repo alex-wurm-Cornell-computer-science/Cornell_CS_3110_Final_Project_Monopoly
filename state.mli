@@ -46,6 +46,8 @@ val wallets : t -> (int * int) list
 
 val total_assets : t -> (int * int) list 
 
+val buildings : t -> (prop_name * ( int * int)) list 
+
 val update_state : t -> result -> t 
 
 val next_turn : t -> result 
