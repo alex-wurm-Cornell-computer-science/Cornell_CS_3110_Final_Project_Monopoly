@@ -99,62 +99,51 @@ let next_turn st =
   ) else Legal st 
 
 let roll brd st = 
-  let _ = print_string "here3" in 
-  Random.self_init ();
   let die1 = (Random.int 5) + 1 in 
   let die2 = (Random.int 5) + 1 in 
-  (* let die1 = 5 in 
-     let die2 = 5 in  *)
-  let rolled = die1 + die2 in 
   let curr_player = current_player st in 
   let total_loc = locations st in 
   let curr_loc = List.assoc curr_player total_loc in 
+  let trimmed = List.remove_assoc curr_player total_loc in
   if snd curr_loc = false then (
-    let trimmed = List.remove_assoc curr_player total_loc in 
-    if (die1 = die2) && ((doubles_rolled st) < 3) then (
-      let new_loc = (curr_player, ((fst curr_loc + rolled) mod Board.size brd,false))::trimmed in 
+    if die1 = die2 then (
+      if (doubles_rolled st = 2) then (
+        let new_loc = (curr_player, (Board.square_pos brd "Jail",true))::trimmed in 
+        Legal {
+          curr_player = curr_player;
+          num_players = num_players st;
+          locations = new_loc;
+          inventories = inventories st;
+          doubles_rolled = doubles_rolled st + 1;
+          items = items st;
+          wallets = wallets st;
+          total_assets = total_assets st;
+        }) else (
+        let new_loc = (curr_player, ((fst curr_loc + die1 + die2) mod Board.size brd,false))::trimmed in 
+        Legal {
+          curr_player = curr_player;
+          num_players = num_players st;
+          locations = new_loc;
+          inventories = inventories st;
+          doubles_rolled = doubles_rolled st + 1;
+          items = items st;
+          wallets = wallets st;
+          total_assets = total_assets st;
+        }
+      )
+    ) else (
+      let new_loc = (curr_player, ((fst curr_loc + die1 + die2) mod Board.size brd,true))::trimmed in 
       Legal {
         curr_player = curr_player;
         num_players = num_players st;
         locations = new_loc;
-        doubles_rolled = (doubles_rolled st) + 1;
         inventories = inventories st;
+        doubles_rolled = doubles_rolled st + 1;
         items = items st;
         wallets = wallets st;
         total_assets = total_assets st;
-        buildings = st.buildings
-      } 
-    )
-    else if (die1 = die2) && ((doubles_rolled st) >= 3) then (
-      let new_loc = (curr_player, (Board.square_pos brd "Jail",true))::trimmed in 
-      Legal {
-        curr_player = curr_player;
-        num_players = num_players st;
-        locations = new_loc;
-        doubles_rolled = 0;
-        inventories = inventories st;
-        items = items st;
-        wallets = wallets st;
-        total_assets = total_assets st;
-        buildings = st.buildings
-      } 
-    ) 
-    else if (die1 <> die2) then (
-      let new_loc = (curr_player, ((fst curr_loc + rolled) mod Board.size brd,true))::trimmed in 
-      Legal {
-        curr_player = curr_player;
-        num_players = num_players st;
-        locations = new_loc;
-        doubles_rolled = 0;
-        inventories = inventories st;
-        items = items st;
-        wallets = wallets st;
-        total_assets = total_assets st;
-        buildings = st.buildings
-      }
-    ) else
-      let _ = print_string "here" in Illegal 
-  ) else  let _ = print_string "here2" in Illegal
+      })
+  ) else Illegal
 
 let houses st prop = 
   try 
