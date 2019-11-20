@@ -283,7 +283,7 @@ let rec interp_command brd res st =
          | Illegal -> Printf.printf "\nUnfortunately this property cannot
                            be sold at this time.\n"; interp_command brd (Legal st) st
          | Legal st' -> Printf.printf "\n Congratulations! You have successfully \
-                                       sold %s." prop; interp_command brd (Legal st') st
+                                       sold %s." prop; interp_command brd (Legal st') st'
          | Win -> Printf.printf "\n Player %d you seem to have won the game... \
                                  but I suspect you may have cheated.\n" (State.current_player st); 
            interp_command brd (Legal st) st)

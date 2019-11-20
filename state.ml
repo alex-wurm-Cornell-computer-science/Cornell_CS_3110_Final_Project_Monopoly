@@ -219,13 +219,10 @@ let earn_cash st amt =
 
 let buy bd prop st = 
   if is_buyable bd prop then 
-    let () = print_string "1" in 
     if (prop_available prop st) && (enough_funds bd prop st) then
-      let _ = print_string "2" in 
       match (current_location st = square_pos bd prop) with 
-      | false -> let _ = print_string "3" in Illegal 
+      | false -> Illegal 
       | true -> begin 
-          let _ = print_string "4" in
           match (earn_cash st (-(cost bd prop))) with 
           | Legal st' ->  let () = print_int (List.assoc 1 (wallets st')) in
             let curr_invent = List.assoc st'.curr_player st'.inventories in 
@@ -244,8 +241,8 @@ let buy bd prop st =
                 total_assets = total_assets st';
                 buildings = st.buildings
               }
-          | Illegal -> let _ = print_string "5" in Illegal
-          | Win -> let _ = print_string "6" in exit 0
+          | Illegal -> Illegal
+          | Win -> Win
         end
     else Illegal
   else Illegal
