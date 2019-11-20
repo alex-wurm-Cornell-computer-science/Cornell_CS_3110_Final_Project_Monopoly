@@ -204,7 +204,7 @@ let earn_cash st amt =
   let trimmed = List.remove_assoc st.curr_player st.wallets in 
   let inc_cash = curr_cash + amt in 
   let new_cash = (st.curr_player,inc_cash)::trimmed in 
-  if inc_cash > 100000000 then Win else
+  if inc_cash > 2000 then Win else
     Legal {
       curr_player = st.curr_player;
       num_players = num_players st;
@@ -228,8 +228,7 @@ let buy bd prop st =
             let curr_invent = List.assoc st'.curr_player st'.inventories in 
             let trimmed = List.remove_assoc st'.curr_player st'.inventories in 
             let new_inv = (st'.curr_player, prop ::curr_invent) :: trimmed in 
-            if List.length (List.assoc st.curr_player new_inv) > 1 then Win else
-              let () = print_string (List.hd (List.assoc 1 (new_inv))) in 
+            if List.length (List.assoc st'.curr_player new_inv) > 1 then Win else
               Legal {
                 curr_player = st.curr_player;
                 num_players = num_players st';
