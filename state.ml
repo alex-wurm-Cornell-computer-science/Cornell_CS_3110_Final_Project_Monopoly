@@ -40,7 +40,7 @@ let init_state brd n =
     doubles_rolled = 0;
     inventories = init_lists (n) [] [];
     items = init_lists (n) [] [];
-    wallets = init_lists (n) 0 [];
+    wallets = init_lists (n) 1500 [];
     total_assets = init_lists (n) 0 [];
     buildings = []
   } 
@@ -200,15 +200,13 @@ let auction prop st =
   failwith ("Unimplemented")
 
 let earn_cash st amt =
-  let curr_player = current_player st in 
-  let total_cash = wallets st in 
-  let curr_cash = List.assoc curr_player total_cash in 
-  let trimmed = List.remove_assoc curr_player total_cash in 
+  let curr_cash = List.assoc st.curr_player st.wallets in 
+  let trimmed = List.remove_assoc st.curr_player st.wallets in 
   let inc_cash = curr_cash + amt in 
-  let new_cash = (curr_player,inc_cash)::trimmed in 
-  if inc_cash > 500 then Win else
+  let new_cash = (st.curr_player,inc_cash)::trimmed in 
+  if inc_cash > 100000000 then Win else
     Legal {
-      curr_player = curr_player;
+      curr_player = st.curr_player;
       num_players = num_players st;
       locations = locations st;
       doubles_rolled = doubles_rolled st;
@@ -221,16 +219,19 @@ let earn_cash st amt =
 
 let buy bd prop st = 
   if is_buyable bd prop then 
-    if (prop_available prop st) && (enough_funds bd prop st) then 
+    let () = print_string "1" in 
+    if (prop_available prop st) && (enough_funds bd prop st) then
+      let _ = print_string "2" in 
       match (current_location st = square_pos bd prop) with 
-      | false -> Illegal 
+      | false -> let _ = print_string "3" in Illegal 
       | true -> begin 
-          match (earn_cash st ((-1) *(cost bd prop))) with 
+          let _ = print_string "4" in
+          match (earn_cash st (-(cost bd prop))) with 
           | Legal st' -> 
-            let curr_invent = List.assoc st.curr_player st.inventories in 
-            let trimmed = List.remove_assoc st.curr_player st.inventories in 
-            let new_inv = (st.curr_player, prop ::curr_invent) :: trimmed in 
-            if List.length new_inv > 1 then Win else
+            let curr_invent = List.assoc st'.curr_player st'.inventories in 
+            let trimmed = List.remove_assoc st'.curr_player st'.inventories in 
+            let new_inv = (st'.curr_player, prop ::curr_invent) :: trimmed in 
+            if List.length (List.assoc st.curr_player new_inv) > 1 then Win else
               Legal {
                 curr_player = st.curr_player;
                 num_players = num_players st';
@@ -242,13 +243,14 @@ let buy bd prop st =
                 total_assets = total_assets st';
                 buildings = st.buildings
               }
-          | _ -> Illegal
+          | Illegal -> let _ = print_string "5" in Legal st
+          | Win -> let _ = print_string "6" in exit 0
         end
     else Illegal
   else Illegal
 
 let sell bd prop st = 
-  if is_buyable bd prop then 
+  if is_buyable bd prop then
     if (List.mem prop (List.assoc st.curr_player st.inventories)) then 
       match (earn_cash st (cost bd prop)) with 
       | Legal st' -> 
