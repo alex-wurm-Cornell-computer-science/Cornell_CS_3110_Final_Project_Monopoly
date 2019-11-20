@@ -227,11 +227,12 @@ let buy bd prop st =
       | true -> begin 
           let _ = print_string "4" in
           match (earn_cash st (-(cost bd prop))) with 
-          | Legal st' -> 
+          | Legal st' ->  let () = print_int (List.assoc 1 (wallets st')) in
             let curr_invent = List.assoc st'.curr_player st'.inventories in 
             let trimmed = List.remove_assoc st'.curr_player st'.inventories in 
             let new_inv = (st'.curr_player, prop ::curr_invent) :: trimmed in 
             if List.length (List.assoc st.curr_player new_inv) > 1 then Win else
+              let () = print_string (List.hd (List.assoc 1 (new_inv))) in 
               Legal {
                 curr_player = st.curr_player;
                 num_players = num_players st';
@@ -243,7 +244,7 @@ let buy bd prop st =
                 total_assets = total_assets st';
                 buildings = st.buildings
               }
-          | Illegal -> let _ = print_string "5" in Legal st
+          | Illegal -> let _ = print_string "5" in Illegal
           | Win -> let _ = print_string "6" in exit 0
         end
     else Illegal

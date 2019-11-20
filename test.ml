@@ -68,6 +68,7 @@ let real_board = from_json (Yojson.Basic.from_file "standard_board.json")
 let board_tests_valid = [
   "test size" >:: (fun _ -> assert_equal 12 (size test_board));
   "test cost" >:: (fun _ -> assert_equal 100 (cost test_board "Baltic Avenue"));
+  "test cost 2" >:: (fun _ -> assert_equal 700 (cost real_board "Oriental Avenue"));
   "test rent" >:: (fun _ -> assert_equal 100 (rent test_board "Baltic Avenue"));
   "test all squares" >:: (fun _ -> assert_equal true (
       cmp_set_like_lists [ "GO"; "Mediterranean Avenue" ; "Community Chest" ; 
@@ -92,9 +93,25 @@ let board_tests_valid = [
   "square color" >:: (fun _ -> assert_equal (Some "Dark Blue") (square_color test_board "Park Place"));
 ]
 
+let st = init_state real_board 2
+let cash_state = match (earn_cash st (-200)) with 
+    Legal st' -> st' 
+  | _ -> failwith ""
+
+
+let state_tests = [
+  "earning cash " >:: (fun _ -> assert_equal 1300 (List.assoc 1 (wallets cash_state)));
+  "index of location" >:: (fun _ -> assert_equal 0 (List.assoc 1 (locations st) |> fst));
+
+
+]
+
+
 let suite =
   "test suite for A2"  >::: List.flatten [
-    board_tests_valid
+    board_tests_valid;
+    state_tests
   ]
 
 let _ = run_test_tt_main suite
+

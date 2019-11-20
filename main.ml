@@ -252,7 +252,7 @@ let rec interp_command brd res st =
           | Illegal -> Printf.printf "\nUnfortunately this property cannot
                            be purchased at this time.\n"; interp_command brd (Legal st) st
           | Legal st' -> Printf.printf "\n Congratulations! You are \
-                                        the owner of %s." prop; interp_command brd (Legal st') st;
+                                        the owner of %s." prop; interp_command brd (Legal st') st';
           | Win -> Printf.printf "\n Player %d you have won the game! You were the \
                                   first player to acquire multiple properties!\n" (State.current_player st)))
       else if confirmation = "no" then
