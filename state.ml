@@ -224,7 +224,7 @@ let buy bd prop st =
       | false -> Illegal 
       | true -> begin 
           match (earn_cash st (-(cost bd prop))) with 
-          | Legal st' ->  let () = print_int (List.assoc 1 (wallets st')) in
+          | Legal st' ->  
             let curr_invent = List.assoc st'.curr_player st'.inventories in 
             let trimmed = List.remove_assoc st'.curr_player st'.inventories in 
             let new_inv = (st'.curr_player, prop ::curr_invent) :: trimmed in 
