@@ -64,16 +64,16 @@ val cost : board -> string -> int
     [UnknownSquare p] if [p] is not a property in [b]*)
 val rent : board -> string -> int 
 
-(** [chance_cards b] returns a list of the deck of chance cards in [b]*)
-val chance_cards : board -> string list 
+(** [cards b] returns a list of the deck of cards in [b]*)
+val cards : board -> string list 
 
-(** [next_chance bd] returns the chance card at the top of the pile 
-      Requires: [chance_cards bd] is not empty. *)
-val next_chance : board -> string 
+(** [next_card bd] returns the card at the top of the pile 
+      Requires: [cards bd] is not empty. *)
+val next_card : board -> string 
 
-(** [chance_card_description b cd] returns the description of card [cd]
+(** [card_description b cd] returns the description of card [cd]
       in board [b]. Raises [Not_Found] if [cd] is not in [b]  *)
-val chance_card_description : board -> string -> string 
+val card_description : board -> string -> string 
 
 (** [num_squares b] returns the size of board [b], defined as the number of
       squares in the board*)

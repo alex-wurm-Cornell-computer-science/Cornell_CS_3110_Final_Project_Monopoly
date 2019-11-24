@@ -41,7 +41,7 @@ type square = {
 
 type board  =  {
   squares : square list;
-  chance_cards : card list;
+  cards : card list;
   monopolies : prop_name list Stdlib__map.Make(String).t
 }
 
@@ -140,8 +140,8 @@ let from_json j =
   let sqs = j |> member "squares" |> to_list |> List.map square_of_json in 
   {
     squares = sqs;
-    chance_cards = if List.length (  j |> member "chance cards" |> to_list ) > 0 then
-        j |> member "chance cards" |> to_list |> List.map card_of_json else [];
+    cards = if List.length (  j |> member "chance cards" |> to_list ) > 0 then
+        j |> member "cards" |> to_list |> List.map card_of_json else [];
     monopolies = init_monopolies (List.filter (fun k -> 
         match k.squareType with 
         | Property -> true
@@ -170,14 +170,14 @@ let square_color (b : board) (prop : string) =
     | h :: t -> if h.name = prop then h.color else color' t prop
   in color' b.squares prop
 
-let chance_cards b = 
-  List.map (fun x -> x.c_name) b.chance_cards 
+let cards b = 
+  List.map (fun x -> x.c_name) b.cards 
 
-let next_chance bd = List.hd (chance_cards bd)
+let next_card bd = List.hd (cards bd)
 
-let chance_card_description b cd = 
+let card_description b cd = 
   try 
-    let card = List.find (fun k -> k.c_name = cd) b.chance_cards in 
+    let card = List.find (fun k -> k.c_name = cd) b.cards in 
     card.description 
   with 
   | exn -> raise (UnknownCard cd)
@@ -243,7 +243,7 @@ let is_buyable bd prop =
 
 let card_type bd cd = 
   try 
-    let card = List.find (fun k -> k.c_name = cd) bd.chance_cards in 
+    let card = List.find (fun k -> k.c_name = cd) bd.cards in 
     card.c_type
   with 
   | exn -> raise (UnknownCard cd)
@@ -251,7 +251,7 @@ let card_type bd cd =
 
 let card_payment bd cd = 
   try 
-    let card = List.find (fun k -> k.c_name = cd) bd.chance_cards in 
+    let card = List.find (fun k -> k.c_name = cd) bd.cards in 
     card.payment
   with 
   | exn -> raise (UnknownCard cd)
