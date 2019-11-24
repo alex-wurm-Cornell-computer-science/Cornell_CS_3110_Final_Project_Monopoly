@@ -282,7 +282,7 @@ let pay_rent bd prop st =
   in
   let pay_to = owner prop lst in
   if pay_to = 0 then Legal st else 
-    match earn_cash st ((-1) * ((rent bd prop) + (rent bd prop) * (houses st prop)/2)) with 
+    match earn_cash st ((-1) * ((rent bd prop) + (rent bd prop) * ((houses st prop)/2) + (hotels st prop)/2)) with 
     | Legal st1 -> 
       let total_cash = wallets st in 
       let curr_cash = List.assoc pay_to total_cash in 
