@@ -156,7 +156,7 @@ let rec roll_dice brd st =
                   Printf.printf "\nPlayer %d rolled %d pair(s) of doubles\n" 
                     (State.current_player t) 
                     (State.doubles_rolled t); 
-               res
+                  res
                 ) else (
                   Printf.printf "\nPlayer %d is now at %s, space %d\n" 
                     (State.current_player t) 
@@ -177,7 +177,7 @@ let next_move res st =
     match (State.next_turn st) with 
     | Illegal -> Printf.printf "\nYou are not done with your turn. Please roll!\n"; Illegal
     | Legal t -> State.next_turn st
-      (* State.update_state t res' *)
+    (* State.update_state t res' *)
     | Win -> Win
 
 (** [interp_command brd st command] allows the user to play the game by
@@ -321,8 +321,8 @@ let rec interp_command brd res st =
      (* Take more input. *)
      else print_string "\n Invalid response, please try again. \n"; *)
   | Next -> let res' = next_move res st in 
-            let st' = State.update_state st res' in 
-            interp_command brd res' st'
+    let st' = State.update_state st res' in 
+    interp_command brd res' st'
 
 (** [continue_game adv st result] updates the state of the game, prints the
     description, and prompts the user for another command to continue the game. *)
@@ -336,6 +336,7 @@ let rec interp_command brd res st =
 
 (** [play_game f] starts the adventure in file [f]. *)
 let play_game f =
+  Random.self_init ();
   let brd = get_board f in
   print_string "\nPlease enter a valid number of players for this game. \n";
   let n = number_of_players () in 
