@@ -156,7 +156,7 @@ let rec roll_dice brd st =
                   Printf.printf "\nPlayer %d rolled %d pair(s) of doubles\n" 
                     (State.current_player t) 
                     (State.doubles_rolled t); 
-                  roll_dice brd t
+               res
                 ) else (
                   Printf.printf "\nPlayer %d is now at %s, space %d\n" 
                     (State.current_player t) 
@@ -170,13 +170,15 @@ let rec roll_dice brd st =
 let pass_go st = 
   State.earn_cash st 200
 
-
-let next_turn res st =
-  match res with 
-  | Illegal -> st
-  | Legal t -> let res' = State.next_turn t in 
-    State.update_state st res'
-  | Win -> st
+let next_move res st =
+  match res with
+  | Win -> Win
+  | _ -> 
+    match (State.next_turn st) with 
+    | Illegal -> Printf.printf "\nYou are not done with your turn. Please roll!\n"; Illegal
+    | Legal t -> State.next_turn st
+      (* State.update_state t res' *)
+    | Win -> Win
 
 (** [interp_command brd st command] allows the user to play the game by
     printing an exit message if the input command is [Quit] or by inspecting a 
@@ -318,7 +320,9 @@ let rec interp_command brd res st =
      else if response = "no" then print_string "\n Okay maybe next time! \n"
      (* Take more input. *)
      else print_string "\n Invalid response, please try again. \n"; *)
-  | Next -> let st' = next_turn res st in interp_command brd res st'
+  | Next -> let res' = next_move res st in 
+            let st' = State.update_state st res' in 
+            interp_command brd res' st'
 
 (** [continue_game adv st result] updates the state of the game, prints the
     description, and prompts the user for another command to continue the game. *)
