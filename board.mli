@@ -15,6 +15,12 @@ type square
 (** The abstract type of values representing cards. *)
 type card
 
+
+(** The type representing what cards can do *)
+type cardType = 
+  | Money 
+  | Location 
+
 (** The type of property names *)
 type prop_name = string
 type card_name = string
@@ -62,24 +68,13 @@ val rent : board -> string -> int
 (** [chance_cards b] returns a list of the deck of chance cards in [b]*)
 val chance_cards : board -> string list 
 
-(** [chest_cards b] returns a list of the deck of chest cards in [b]*)
-val chest_cards : board -> string list 
-
 (** [next_chance bd] returns the chance card at the top of the pile 
       Requires: [chance_cards bd] is not empty. *)
 val next_chance : board -> string 
 
-(** [next_chest bd] returns the chance card at the top of the pile. 
-      Requires: [chest_cards bd] is not empty. *)
-val next_chest : board -> string 
-
 (** [chance_card_description b cd] returns the description of card [cd]
       in board [b]. Raises [Not_Found] if [cd] is not in [b]  *)
 val chance_card_description : board -> string -> string 
-
-(** [chest_card_description b cd] returns the description of card [cd]
-      in board [b]. Raises [Not_Found] if [cd] is not in [b]  *)
-val chest_card_description : board -> string -> string 
 
 (** [num_squares b] returns the size of board [b], defined as the number of
       squares in the board*)
@@ -121,3 +116,11 @@ val is_buildable : board -> prop_name -> bool
 (**  [is_buildable b p] returns true if players can buy [p]. 
      Raises [UnknownCard prop] if [prop] is not in [bd].*)
 val is_buyable : board -> prop_name -> bool 
+
+(** [card_type bd cd] returns the card type of [cd]. Raises 
+      [UnknownCard cd] if [cd] is not in [bd] *)
+val card_type : board -> card_name -> cardType
+
+(** [card_payment bd cd] returns the payment value of [cd]. Raises 
+      [UnknownCard cd] if [cd] is not in [bd] *)
+val card_payment : board -> card_name -> int

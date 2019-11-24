@@ -16,11 +16,17 @@ type squareType =
   | Chest
   | Tax 
 
+type cardType = 
+  | Money 
+  | Location 
+
+
 type card = 
   { 
     c_name : card_name;
     description : string;
-    payment : int
+    payment : int;
+    c_type : cardType 
   }
 
 type square = { 
@@ -37,7 +43,6 @@ type square = {
 type board  =  {
   squares : square list;
   chance_cards : card list;
-  chest_cards : card list;
   monopolies : prop_name list Stdlib__map.Make(String).t
 }
 
@@ -99,7 +104,10 @@ let card_of_json json =
   { 
     c_name = json |> member "name" |> to_string;
     description = json |> member "description" |> to_string;
-    payment = json |> member "payment" |> to_string |> int_of_string
+    payment = json |> member "payment" |> to_string |> int_of_string;
+    c_type = match json |> member "type" |> to_string with 
+      | "Money" -> Money
+      | _ -> Location
   }
 
 
@@ -135,8 +143,6 @@ let from_json j =
     squares = sqs;
     chance_cards = if List.length (  j |> member "chance cards" |> to_list ) > 0 then
         j |> member "chance cards" |> to_list |> List.map card_of_json else [];
-    chest_cards = if List.length (j |> member "chest cards" |> to_list) > 0 then
-        j |> member "chest cards" |> to_list |> List.map card_of_json else [];
     monopolies = init_monopolies (List.filter (fun k -> 
         match k.squareType with 
         | Property -> true
@@ -168,24 +174,11 @@ let square_color (b : board) (prop : string) =
 let chance_cards b = 
   List.map (fun x -> x.c_name) b.chance_cards 
 
-let chest_cards b = 
-  List.map (fun x -> x.c_name) b.chest_cards
-
-
 let next_chance bd = List.hd (chance_cards bd)
-
-let next_chest bd = List.hd (chest_cards bd)
 
 let chance_card_description b cd = 
   try 
     let card = List.find (fun k -> k.c_name = cd) b.chance_cards in 
-    card.description 
-  with 
-  | exn -> raise (UnknownCard cd)
-
-let chest_card_description b cd = 
-  try 
-    let card = List.find (fun k -> k.c_name = cd) b.chest_cards in 
     card.description 
   with 
   | exn -> raise (UnknownCard cd)
@@ -248,3 +241,21 @@ let is_buyable bd prop =
     | _ -> false 
   with 
   | Not_found -> raise (UnknownSquare prop)
+
+let card_type bd cd = 
+  try 
+    let card = List.find (fun k -> k.c_name = cd) bd.chance_cards in 
+    card.c_type
+  with 
+  | exn -> raise (UnknownCard cd)
+
+
+let card_payment bd cd = 
+  try 
+    let card = List.find (fun k -> k.c_name = cd) bd.chance_cards in 
+    card.payment
+  with 
+  | exn -> raise (UnknownCard cd)
+
+
+

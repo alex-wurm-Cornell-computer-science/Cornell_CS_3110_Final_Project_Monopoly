@@ -364,4 +364,26 @@ let build_hotels bd st prop n  =
 
 
 
+let card_action bd cd st = 
+  match card_type bd cd with 
+  | Money -> earn_cash st (card_payment bd cd)
+  | Location -> 
+    let new_loc = card_payment bd cd in 
+    let curr_loc = List.assoc st.curr_player st.locations in 
+    let trimmed = List.remove_assoc st.curr_player st.locations in
+    let new_locations = (st.curr_player, (new_loc,false)) :: trimmed in 
+    let st1 = {
+      curr_player = st.curr_player;
+      num_players = num_players st;
+      locations = new_locations;
+      inventories = inventories st;
+      doubles_rolled = st.doubles_rolled;
+      items = items st;
+      wallets = wallets st;
+      total_assets = total_assets st;
+      buildings = st.buildings;
+    } in 
+    if fst curr_loc > new_loc then earn_cash st1 200 else Legal st1
+
+
 

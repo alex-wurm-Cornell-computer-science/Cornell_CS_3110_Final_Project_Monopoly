@@ -98,3 +98,6 @@ val build_houses : board -> t -> prop_name -> int -> result
     currency to build all [n] hotels. Otherwise, or if the player cannot 
     build on [prop] returns [Illegal]*)
 val build_hotels : board -> t -> prop_name -> int -> result
+
+(** [card_action bd cd st] executed the action on the given [cd] *)
+val card_action : board -> card_name -> t -> result
