@@ -12,8 +12,7 @@ type squareType =
   | Parking
   | GoToJail
   | Property
-  | Chance
-  | Chest
+  | Card
   | Tax 
 
 type cardType = 
@@ -65,8 +64,8 @@ let parse_type s =
   if s = "Parking" then Parking else 
   if s = "GoToJail" then GoToJail else 
   if s = "Property" then Property else 
-  if s = "Chance" then Chance else 
-  if s = "Chest" then Chest else Tax
+  if s = "Card" then Card else 
+    Tax
 
 (** [get_house j] returns the house field of the given json square [j] *)
 let get_house j = 

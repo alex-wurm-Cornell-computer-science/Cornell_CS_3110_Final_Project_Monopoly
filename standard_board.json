@@ -20,8 +20,8 @@
       "name": "Community Chest",
       "color": "None",
       "cost": "0",
-      "type": "Chest",
-      "rent": "100"
+      "type": "Card",
+      "rent": "0"
     },
     {
       "name": "Baltic Avenue",
@@ -59,7 +59,7 @@
       "name": "Chance",
       "color": "None",
       "cost": "0",
-      "type": "Chance",
+      "type": "Card",
       "rent": "100"
     },
     {
@@ -141,7 +141,7 @@
       "name": "Community Chest",
       "color": "None",
       "cost": "50",
-      "type": "Chest",
+      "type": "Card",
       "rent": "100"
     },
     {
@@ -182,7 +182,7 @@
       "name": "Chance",
       "color": "None",
       "cost": "50",
-      "type": "Chance",
+      "type": "Card",
       "rent": "100"
     },
     {
@@ -273,7 +273,7 @@
       "name": "Community Chest",
       "color": "None",
       "cost": "50",
-      "type": "Chest",
+      "type": "Card",
       "rent": "100"
     },
     {
@@ -296,7 +296,7 @@
       "name": "Chance",
       "color": "None",
       "cost": "50",
-      "type": "Chance",
+      "type": "Card",
       "rent": "100"
     },
     {

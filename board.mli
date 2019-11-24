@@ -41,8 +41,7 @@ type squareType =
   | Parking
   | GoToJail
   | Property
-  | Chance
-  | Chest
+  | Card
   | Tax 
 
 (** [from_json j] is the adventure that [j] represents.
