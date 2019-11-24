@@ -325,5 +325,30 @@
       "hotel": "100"
     }
   ],
-  "chance cards": []
+  "chance cards": [
+    {
+      "name": "lose money",
+      "description": "Your 3110 prelim came back. You're upset and go to Vegas to forget about your troubles. Let's just say, you suck at gambling. Lose $100.",
+      "payment": "-100",
+      "type": "Money"
+    },
+    {
+      "name": "gain money",
+      "description": "Sometime ago you started a ponzi scheme. It is very profitable. Collect $100",
+      "payment": "100",
+      "type": "Money"
+    },
+    {
+      "name": "jail",
+      "description": "Life isn't always fair. Life in jail is never fair. Good luck in jail!",
+      "payment": "30",
+      "type": "Location"
+    },
+    {
+      "name": "Reading",
+      "description": "Go on a trip. Get out there. See the world. Take the Reading Railroad.",
+      "payment": "5",
+      "type": "Location"
+    }
+  ]
 }

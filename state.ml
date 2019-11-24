@@ -363,7 +363,6 @@ let build_hotels bd st prop n  =
   else Illegal
 
 
-
 let card_action bd cd st = 
   match card_type bd cd with 
   | Money -> earn_cash st (card_payment bd cd)
