@@ -81,6 +81,8 @@ val sell : Board.board -> prop_name -> t -> result
 
 val auction : prop_name -> t -> result 
 
+val inventory_value : Board.board -> t -> int 
+
 (** [earn_cash t amt] Adds [amt] to the current player's wallet*)
 val earn_cash : t -> int -> result 
 
