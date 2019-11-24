@@ -99,7 +99,7 @@ let next_turn st =
       total_assets = total_assets st;
       buildings = buildings st;
     }
-  ) else Legal st 
+  ) else Illegal
 
 let roll brd st = 
   let die1 = (Random.int 5) + 1 in 
@@ -199,6 +199,26 @@ let enough_funds bd prop st =
 let auction prop st = 
   failwith ("Unimplemented")
 
+let inventory_value brd st = 
+  let prop_value p = 
+    let num_houses = fst (List.assoc p (buildings st)) in
+    let house_costs = match (Board.house_cost brd p) with
+                      | Some i -> i * num_houses 
+                      | None -> 0
+    in 
+    let num_hotels = snd (List.assoc p (buildings st)) in
+    let hotel_costs = match (Board.hotel_cost brd p) with 
+                      | Some i -> i * num_hotels
+                      | None -> 0
+    in
+    (Board.cost brd p) + house_costs + hotel_costs
+  in
+
+let inv_values = List.map prop_value (curr_player_inventory st) in
+List.fold_left (fun acc x -> acc + x) 0 inv_values
+
+
+
 let earn_cash st amt =
   let curr_cash = List.assoc st.curr_player st.wallets in 
   let trimmed = List.remove_assoc st.curr_player st.wallets in 
@@ -281,7 +301,7 @@ let pay_rent bd prop st =
         owner prop t
   in
   let pay_to = owner prop lst in
-  if pay_to = 0 then Legal st else 
+  if pay_to = 0 || pay_to = (current_player st) then Legal st else 
     match earn_cash st ((-1) * ((rent bd prop) + (rent bd prop) * ((houses st prop)/2) + (hotels st prop)/2)) with 
     | Legal st1 -> 
       let total_cash = wallets st in 
