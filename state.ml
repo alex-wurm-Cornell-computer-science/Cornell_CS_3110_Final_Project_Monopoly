@@ -203,19 +203,19 @@ let inventory_value brd st =
   let prop_value p = 
     let num_houses = fst (List.assoc p (buildings st)) in
     let house_costs = match (Board.house_cost brd p) with
-                      | Some i -> i * num_houses 
-                      | None -> 0
+      | Some i -> i * num_houses 
+      | None -> 0
     in 
     let num_hotels = snd (List.assoc p (buildings st)) in
     let hotel_costs = match (Board.hotel_cost brd p) with 
-                      | Some i -> i * num_hotels
-                      | None -> 0
+      | Some i -> i * num_hotels
+      | None -> 0
     in
     (Board.cost brd p) + house_costs + hotel_costs
   in
 
-let inv_values = List.map prop_value (curr_player_inventory st) in
-List.fold_left (fun acc x -> acc + x) 0 inv_values
+  let inv_values = List.map prop_value (curr_player_inventory st) in
+  List.fold_left (fun acc x -> acc + x) 0 inv_values
 
 
 
@@ -403,6 +403,22 @@ let card_action bd cd st =
       buildings = st.buildings;
     } in 
     if fst curr_loc > new_loc then earn_cash st1 200 else Legal st1
+  | LeaveJail -> 
+    let curr_items = List.assoc st.curr_player st.items in 
+    let trimmed = List.remove_assoc st.curr_player st.items in 
+    let new_items = (st.curr_player, cd :: curr_items) :: trimmed in 
+    Legal {
+      curr_player = st.curr_player;
+      num_players = num_players st;
+      locations = locations st;
+      inventories = inventories st;
+      doubles_rolled = st.doubles_rolled;
+      items = new_items;
+      wallets = wallets st;
+      total_assets = total_assets st;
+      buildings = st.buildings;
+    }
+
 
 
 

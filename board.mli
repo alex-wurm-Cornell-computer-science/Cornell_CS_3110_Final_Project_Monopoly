@@ -20,6 +20,7 @@ type card
 type cardType = 
   | Money 
   | Location 
+  | LeaveJail
 
 (** The type of property names *)
 type prop_name = string

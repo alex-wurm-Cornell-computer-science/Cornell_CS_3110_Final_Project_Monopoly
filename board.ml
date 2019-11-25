@@ -18,6 +18,7 @@ type squareType =
 type cardType = 
   | Money 
   | Location 
+  | LeaveJail
 
 
 type card = 
@@ -140,7 +141,7 @@ let from_json j =
   let sqs = j |> member "squares" |> to_list |> List.map square_of_json in 
   {
     squares = sqs;
-    cards = if List.length (  j |> member "chance cards" |> to_list ) > 0 then
+    cards = if List.length (  j |> member "cards" |> to_list ) > 0 then
         j |> member "cards" |> to_list |> List.map card_of_json else [];
     monopolies = init_monopolies (List.filter (fun k -> 
         match k.squareType with 
