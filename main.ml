@@ -181,13 +181,17 @@ let next_move res st =
     | Win -> Win
 
 
-let check_card brd st = 
-  let crd = next_card brd in
-  print_string (card_description brd crd);
-  let res = move_cards crd st in 
-  match res with 
-  | Legal st' -> card_action brd crd st'  
-  | _ -> failwith "shouldnt't happen"
+let check_card pos brd st = 
+  match (square_type brd (nth_square brd pos)) with 
+  | Card -> 
+    let crd = next_card brd in
+    print_string ("\nYou have found this card:\n" ^ (card_description brd crd));
+    let res = move_cards crd st in 
+    begin match res with 
+      | Legal st' -> card_action brd crd st'  
+      | _ -> failwith "shouldnt't happen"
+    end
+  | _ -> Legal st
 
 (** [interp_command brd st command] allows the user to play the game by
     printing an exit message if the input command is [Quit] or by inspecting a 
@@ -241,13 +245,13 @@ let rec interp_command brd res st =
                        (current_player st');
                      let res' = earn_cash st' 200 in 
                      let st'' = update_state st' res' in 
-                     let res' = check_card brd st in
+                     let res' = check_card (current_location st') brd st in
                      interp_command brd res' st''
                    ) else (
                      Printf.printf "\nYou rolled %d\n" moved;
                      Printf.printf "\nYou are at %s\n" 
                        (Board.nth_square brd (current_location st'));
-                     let res' = check_card brd st in
+                     let res' = check_card (current_location st') brd st in
                      interp_command brd res' st'
                    )
                  ) else (
