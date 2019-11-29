@@ -13,6 +13,7 @@ type command =
   | Auction of object_phrase (* Used to participate in property auctions. *)
   | Next 
   | Build of object_phrase
+  | Game 
 
 exception Empty
 
@@ -31,6 +32,7 @@ let format_command lst =
   | h::t when h = "auction" -> if t = [] then raise (Malformed) else Auction t
   | h::t when h = "next" -> if t = [] then Next else raise (Malformed)
   | h::t when h = "build" -> if t = [] then raise (Malformed) else Build t
+  | h::t when h = "game" -> if t = [] then Game else raise Malformed
   | _ -> raise (Malformed)
 
 let parse str = 

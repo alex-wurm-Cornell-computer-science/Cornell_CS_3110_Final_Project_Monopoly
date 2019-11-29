@@ -5,6 +5,18 @@ open State
 
 exception NotValid
 
+
+(** [format_assoc_list fmt_key fmt_val fmt lst] formats an association 
+    list [lst] as a dictionary.  The [fmt_key] and [fmt_val] arguments
+    are formatters for the key and value types, respectively.  The
+    [fmt] argument is where to put the formatted output. 
+    Taken from a4 source code. *)
+let format_assoc_list format_key format_val fmt lst =
+  Format.fprintf fmt "[";
+  List.iter (fun (k,v) -> Format.fprintf fmt "%a -> %a; "
+                format_key k format_val v) lst;
+  Format.fprintf fmt "]"
+
 (** [user_input _] prompts the user for a command. If the command
     is empty the game will inform the player and ask for another command. 
     If the command was malformed, the game will inform the player and ask
@@ -41,15 +53,6 @@ let rec get_board f =
     | Not_found -> print_string "Invalid adventure. Try again. \n";
       get_board (read_line ())  
 
-
-(* let format_assoc_list format_key format_val fmt lst =
-   Format.fprintf fmt "[";
-   List.iter (fun (k,v) -> Format.fprintf fmt "%a -> %a;"
-                format_key k format_val v) lst;
-   Format.fprintf fmt "]"
-
-   let format fmt d =
-      format_assoc_list Key.format Value.format fmt d *)
 
 let to_list f acc l = List.fold_left (fun acc (k,v) -> f k v acc) acc
 
@@ -92,6 +95,8 @@ let rec disp_items itms =
 let parse_obj_phrase lst = 
   let new_str = List.fold_left (fun p n -> p ^ " " ^ n) "" lst in
   String.trim new_str
+
+
 
 (*
 (** [update_items adv st] prints the loot of the [current_room] given
@@ -181,6 +186,24 @@ let next_move res st =
     | Win -> Win
 
 
+let format_board brd locs = 
+  let new_locs = List.map (fun (a,b) -> (a, fst b)) locs in 
+  let rec format' brd locs = 
+    match locs with 
+    | [] -> () 
+    | h :: t -> 
+      Printf.printf "Player %d is at position: " (fst h);
+      print_string (nth_square brd (snd h));
+      format' brd t in 
+  format' brd new_locs
+
+
+
+let print_game brd st = 
+  disp_inventories (inventories st);
+  disp_wallet (wallets st);
+  format_board brd (locations st); ()
+
 let check_card pos brd st = 
   match (square_type brd (nth_square brd pos)) with 
   | Card -> 
@@ -196,7 +219,7 @@ let check_card pos brd st =
 (** [interp_command brd st command] allows the user to play the game by
     printing an exit message if the input command is [Quit] or by inspecting a 
     [Go] message to determine what action to perform. If the command is [Legal]
-    the state is updated and the user is prompted for another command. If the 
+        the state is updated and the user is prompted for another command. If the 
     command is [Illegal] the game prints an error message and asks the user
     for a new command. *)
 let rec interp_command brd res st = 
@@ -349,6 +372,8 @@ let rec interp_command brd res st =
     let st' = State.update_state st res' in 
     interp_command brd res' st'
 
+  | Game -> print_game brd st; interp_command brd res st
+
 (** [continue_game adv st result] updates the state of the game, prints the
     description, and prompts the user for another command to continue the game. *)
 (* and continue_game_roll brd st result =
@@ -382,3 +407,5 @@ let main () =
 
 (* Execute the game engine. *)
 let () = main ()
+
+

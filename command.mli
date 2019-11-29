@@ -37,6 +37,7 @@ type command =
   | Auction of object_phrase (* Used to participate in property auctions. *)
   | Next
   | Build of object_phrase
+  | Game 
 
 (** Raised when an empty command is parsed. *)
 exception Empty
