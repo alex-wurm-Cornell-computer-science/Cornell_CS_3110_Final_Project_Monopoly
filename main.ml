@@ -396,14 +396,15 @@ let play_game f =
   Stdlib.exit 0
 
 (** [main ()] prompts for the game to play, then starts it. *)
-let main () =
+let rec main () =
   print_string 
     "\n\nWelcome to the 3110 Monopoly Game Engine.\n";
   print_endline "Please enter the name of the board file you want to load.\n";
   print_string  "> ";
   match read_line () with
   | exception End_of_file -> ()
-  | file_name -> play_game file_name
+  | file_name -> try play_game file_name with 
+    | _ -> print_string "Not a game file, try again"; main ()
 
 (* Execute the game engine. *)
 let () = main ()
