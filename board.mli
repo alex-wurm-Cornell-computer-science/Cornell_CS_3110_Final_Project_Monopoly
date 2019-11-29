@@ -124,3 +124,5 @@ val card_type : board -> card_name -> cardType
 (** [card_payment bd cd] returns the payment value of [cd]. Raises 
       [UnknownCard cd] if [cd] is not in [bd] *)
 val card_payment : board -> card_name -> int
+
+

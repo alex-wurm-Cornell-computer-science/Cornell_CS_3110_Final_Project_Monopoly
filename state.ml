@@ -22,7 +22,8 @@ type t = {
   items : (int * prop_name list) list;
   wallets : (int * int) list;
   total_assets : (int * int) list;
-  buildings : (prop_name * ( int * int)) list 
+  buildings : (prop_name * ( int * int)) list;
+  cards : card_name list 
 }
 
 type result = Legal of t | Illegal | Win
@@ -42,7 +43,8 @@ let init_state brd n =
     items = init_lists (n) [] [];
     wallets = init_lists (n) 1500 [];
     total_assets = init_lists (n) 0 [];
-    buildings = []
+    buildings = [];
+    cards = cards brd
   } 
 
 let current_player st =
@@ -98,6 +100,7 @@ let next_turn st =
       wallets = wallets st;
       total_assets = total_assets st;
       buildings = buildings st;
+      cards = st.cards;
     }
   ) else Illegal
 
@@ -124,6 +127,7 @@ let roll brd st =
           wallets = wallets st;
           total_assets = total_assets st;
           buildings = buildings st;
+          cards = st.cards
         }) else (
         let new_loc = if (nth_square brd ((fst curr_loc + die1 + die2) mod Board.size brd) = "Go To Jail") 
           then Board.square_pos brd "Jail" else ((fst curr_loc + die1 + die2) mod Board.size brd) in 
@@ -138,6 +142,7 @@ let roll brd st =
           wallets = wallets st;
           total_assets = total_assets st;
           buildings = buildings st;
+          cards = st.cards
         }
       )
     ) else (
@@ -156,6 +161,7 @@ let roll brd st =
         wallets = wallets st;
         total_assets = total_assets st;
         buildings = buildings st;
+        cards = st.cards
       })
   ) else Illegal
 
@@ -235,6 +241,7 @@ let earn_cash st amt =
       wallets = new_cash;
       total_assets = total_assets st;
       buildings = buildings st;
+      cards = st.cards
     } 
 
 let buy bd prop st = 
@@ -258,7 +265,8 @@ let buy bd prop st =
                 items = items st';
                 wallets = wallets st';
                 total_assets = total_assets st';
-                buildings = st.buildings
+                buildings = st.buildings;
+                cards = st.cards
               }
           | Illegal -> Illegal
           | Win -> Win
@@ -284,7 +292,8 @@ let sell bd prop st =
           items = items st';
           wallets = wallets st';
           total_assets = total_assets st';
-          buildings = st.buildings
+          buildings = st.buildings;
+          cards = st.cards
         }
       | _ -> Illegal 
 
@@ -317,8 +326,10 @@ let pay_rent bd prop st =
         items = items st;
         wallets = new_cash;
         total_assets = total_assets st;
-        buildings = st.buildings
-      } 
+        buildings = st.buildings;
+        cards = st.cards
+      } ;
+
     | _ -> Illegal
 
 let build_houses bd st prop n  = 
@@ -344,7 +355,8 @@ let build_houses bd st prop n  =
             items = items st;
             wallets = wallets st;
             total_assets = total_assets st;
-            buildings = new_buildings
+            buildings = new_buildings;
+            cards = st.cards
           } in 
           earn_cash st1 (-n * house_cost) 
         else Illegal
@@ -372,7 +384,8 @@ let build_hotels bd st prop n  =
             items = items st;
             wallets = wallets st;
             total_assets = total_assets st;
-            buildings = new_buildings
+            buildings = new_buildings;
+            cards = st.cards
           } in 
           match house_cost bd prop with 
           | None -> raise (UnknownCard prop)
@@ -401,6 +414,7 @@ let card_action bd cd st =
       wallets = wallets st;
       total_assets = total_assets st;
       buildings = st.buildings;
+      cards = st.cards
     } in 
     if fst curr_loc > new_loc then earn_cash st1 200 else Legal st1
   | LeaveJail -> 
@@ -417,8 +431,23 @@ let card_action bd cd st =
       wallets = wallets st;
       total_assets = total_assets st;
       buildings = st.buildings;
+      cards = st.cards
     }
 
-
+let move_cards crd st = 
+  let trimmed = List.filter (fun s -> s <> crd) st.cards in 
+  let new_cards = trimmed @ [crd] in 
+  Legal {
+    curr_player = st.curr_player;
+    num_players = num_players st;
+    locations = locations st;
+    inventories = inventories st;
+    doubles_rolled = st.doubles_rolled;
+    items = st.items;
+    wallets = wallets st;
+    total_assets = total_assets st;
+    buildings = st.buildings;
+    cards = new_cards
+  }
 
 

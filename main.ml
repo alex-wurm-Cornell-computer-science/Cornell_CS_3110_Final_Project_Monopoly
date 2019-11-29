@@ -180,6 +180,15 @@ let next_move res st =
     (* State.update_state t res' *)
     | Win -> Win
 
+
+let check_card brd st = 
+  let crd = next_card brd in
+  print_string (card_description brd crd);
+  let res = move_cards crd st in 
+  match res with 
+  | Legal st' -> card_action brd crd st'  
+  | _ -> failwith "shouldnt't happen"
+
 (** [interp_command brd st command] allows the user to play the game by
     printing an exit message if the input command is [Quit] or by inspecting a 
     [Go] message to determine what action to perform. If the command is [Legal]
@@ -206,14 +215,14 @@ let rec interp_command brd res st =
                interp_command brd (Legal st) st
              | Win -> Printf.printf "\nYou won, player %d\n" (current_player st); 
                exit 0;
-             | Legal ste -> 
-               let res2 = pay_rent brd (nth_square brd (current_location ste)) ste in 
+             | Legal st0 -> 
+               let res2 = pay_rent brd (nth_square brd (current_location st0)) st0 in 
                match res2 with 
                | Illegal -> Printf.printf "\nTry again, player %d\n" 
-                              (current_player ste);
+                              (current_player st0);
                  interp_command brd (Legal st) st;
                | Win -> Printf.printf "\nYou won, player %d\n" 
-                          (current_player ste); exit 0;
+                          (current_player st0); exit 0;
                | Legal st' -> 
                  if (nth_square brd (current_location st') <> "Jail") 
                  then (
@@ -232,19 +241,19 @@ let rec interp_command brd res st =
                        (current_player st');
                      let res' = earn_cash st' 200 in 
                      let st'' = update_state st' res' in 
+                     let res' = check_card brd st in
                      interp_command brd res' st''
                    ) else (
                      Printf.printf "\nYou rolled %d\n" moved;
                      Printf.printf "\nYou are at %s\n" 
                        (Board.nth_square brd (current_location st'));
-                     interp_command brd res st'
+                     let res' = check_card brd st in
+                     interp_command brd res' st'
                    )
                  ) else (
                    Printf.printf "\nYou need to roll a double or use a Get Out of Jail Free card to leave Jail\n";
                    interp_command brd res st'
                  ) 
-               | Win -> Printf.printf "\n Player %d you have won the game! You were the \
-                                       first player to accumulate $500!\n" (State.current_player st);
             )
   | Inventory -> print_string "\nYou own the following properties:\n";
     disp_inventories (State.inventories st);  
