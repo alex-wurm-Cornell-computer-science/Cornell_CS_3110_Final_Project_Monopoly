@@ -83,6 +83,8 @@ val auction : prop_name -> t -> result
 
 val inventory_value : Board.board -> t -> int 
 
+val wealthiest_player : Board.board -> t -> (int * int) list
+
 (** [earn_cash t amt] Adds [amt] to the current player's wallet*)
 val earn_cash : t -> int -> result 
 

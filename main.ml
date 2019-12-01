@@ -227,7 +227,21 @@ let rec interp_command brd res st =
   let command = user_input () in
   match command with
   | Quit -> print_string "\nThank you for playing the Monopoly Game Engine! \
-                          \n\n"; exit 0
+                          \n\n";
+                          let lst = State.wealthiest_player brd st in 
+                          if List.length lst = 1 then let (x,y) = List.hd lst in 
+                          Printf.printf "\n Player %d, you were winning the game \
+                          at the time it ended with a total accumulated wealth \
+                          of $%d! \n" x y;
+                          else Printf.printf "\nThere was a tie between the \
+                          following players: \n";
+                            let rec print_winners = function
+                            | [] -> Printf.printf "\n\n"
+                            | (pl,wlt)::t -> Printf.printf "\nPlayer %d : $%d \n" pl wlt;
+                              print_winners t
+                            in
+                            print_winners lst;
+                          exit 0
   | Build obj -> if nth_square brd (current_location st) <> "Jail" then (
       print_string "\nCan't build yet! \n\n";
     ) else (

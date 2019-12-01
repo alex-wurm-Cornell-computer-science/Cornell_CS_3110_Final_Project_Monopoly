@@ -223,7 +223,22 @@ let inventory_value brd st =
   let inv_values = List.map prop_value (curr_player_inventory st) in
   List.fold_left (fun acc x -> acc + x) 0 inv_values
 
-
+let wealthiest_player brd st = 
+  let rec max_wealth brd st =
+    let inv_list = inventories st in 
+    match inv_list with
+    | [] -> [(0,0)]
+    | (p,invs)::t -> let st' = {st with curr_player = p} in 
+                     let curr_wallet = curr_player_wallet st' in 
+                     let curr_props = inventory_value brd st' in 
+                     let curr_wealth = curr_wallet + curr_props in 
+                     let next_st = {st with inventories = t} in 
+                     let xs = max_wealth brd next_st in 
+                     if curr_wealth > snd (List.hd xs) then (current_player st',curr_wealth) :: []
+                     else if curr_wealth < snd (List.hd xs) then xs
+                     else (current_player st',curr_wealth) :: xs
+  in
+  max_wealth brd st
 
 let earn_cash st amt =
   let curr_cash = List.assoc st.curr_player st.wallets in 
