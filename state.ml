@@ -447,20 +447,22 @@ let card_action bd cd st =
       cards = st.cards
     }
 
-let move_cards crd st = 
-  let trimmed = List.filter (fun s -> s <> crd) st.cards in 
-  let new_cards = trimmed @ [crd] in 
-  Legal {
-    curr_player = st.curr_player;
-    num_players = num_players st;
-    locations = locations st;
-    inventories = inventories st;
-    doubles_rolled = st.doubles_rolled;
-    items = st.items;
-    wallets = wallets st;
-    total_assets = total_assets st;
-    buildings = st.buildings;
-    cards = new_cards
-  }
+let move_cards brd crd st = 
+  if (card_type brd crd) <> LeaveJail then
+    let trimmed = List.filter (fun s -> s <> crd) st.cards in 
+    let new_cards = trimmed @ [crd] in 
+    Legal {
+      curr_player = st.curr_player;
+      num_players = num_players st;
+      locations = locations st;
+      inventories = inventories st;
+      doubles_rolled = st.doubles_rolled;
+      items = st.items;
+      wallets = wallets st;
+      total_assets = total_assets st;
+      buildings = st.buildings;
+      cards = new_cards
+    }
+  else Legal st
 
 

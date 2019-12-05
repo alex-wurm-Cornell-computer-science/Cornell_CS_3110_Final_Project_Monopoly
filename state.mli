@@ -132,5 +132,6 @@ val build_hotels : board -> t -> prop_name -> int -> result
 (** [card_action bd cd st] executed the action on the given [cd] *)
 val card_action : board -> card_name -> t -> result
 
-(** [move_cards brd crd st] moves [crd] to the bottom of the card pile *)
-val move_cards : card_name -> t -> result
+(** [move_cards brd crd st] moves [crd] to the bottom of the card pile. 
+      If [crd] is a get out of jail card, the pile is unchanged *)
+val move_cards : board -> card_name -> t -> result

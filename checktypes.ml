@@ -1,21 +1,35 @@
-module type AdventureSig = sig
-  type t
-  type room_id = string
-  type exit_name = string
-  type item_name = string
-  exception UnknownRoom of room_id
-  exception UnknownExit of exit_name
-  exception UnknownItem of item_name
-  val from_json : Yojson.Basic.t -> t
-  val start_room : t -> room_id
-  val room_ids : t -> room_id list
-  val description : t -> room_id -> string
-  val exits : t -> room_id -> exit_name list
-  val next_room : t -> room_id -> exit_name -> room_id
-  val next_rooms : t -> room_id -> room_id list
+module type BoardSig = sig
+  type square
+  type card
+  type cardType = | Money | Location | LeaveJail
+  type prop_name = string
+  type card_name = string
+  exception UnknownSquare of prop_name
+  exception UnknownCard of card_name
+  type board
+  type squareType = | Go| Jail  | Parking | GoToJail | Property | Card | Tax 
+  val from_json : Yojson.Basic.t -> board
+  val square_type  : board -> prop_name -> squareType
+  val all_squares : board -> string list
+  val cost : board -> string -> int 
+  val rent : board -> string -> int 
+  val cards : board -> string list 
+  val next_card : board -> string 
+  val card_description : board -> string -> string 
+  val size : board -> int 
+  val monopoly_group : board -> string -> string list
+  val nth_square : board -> int -> string
+  val square_pos : board -> prop_name -> int
+  val square_color : board -> prop_name -> string option
+  val house_cost : board -> prop_name -> int option
+  val hotel_cost : board -> prop_name -> int option
+  val is_buildable : board -> prop_name -> bool
+  val is_buyable : board -> prop_name -> bool 
+  val card_type : board -> card_name -> cardType
+  val card_payment : board -> card_name -> int
 end
 
-module AdventureCheck : AdventureSig = Adventure
+module BoardCheck : BoardSig = Board
 
 module type CommandSig = sig
   type object_phrase = string list
