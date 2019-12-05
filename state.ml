@@ -1,11 +1,6 @@
-(* Note: You may introduce new code anywhere in this file. *) 
-
 open Board
 
-
 exception Unbuildable of prop_name
-
-(* type player = int *)
 
 type property = {
   name : prop_name;
@@ -76,6 +71,9 @@ let total_assets st =
 
 let buildings st =
   st.buildings
+
+let cards st =
+  st.cards
 
 let update_state old_st res = 
   match res with 
@@ -229,14 +227,14 @@ let wealthiest_player brd st =
     match inv_list with
     | [] -> [(0,0)]
     | (p,invs)::t -> let st' = {st with curr_player = p} in 
-                     let curr_wallet = curr_player_wallet st' in 
-                     let curr_props = inventory_value brd st' in 
-                     let curr_wealth = curr_wallet + curr_props in 
-                     let next_st = {st with inventories = t} in 
-                     let xs = max_wealth brd next_st in 
-                     if curr_wealth > snd (List.hd xs) then (current_player st',curr_wealth) :: []
-                     else if curr_wealth < snd (List.hd xs) then xs
-                     else (current_player st',curr_wealth) :: xs
+      let curr_wallet = curr_player_wallet st' in 
+      let curr_props = inventory_value brd st' in 
+      let curr_wealth = curr_wallet + curr_props in 
+      let next_st = {st with inventories = t} in 
+      let xs = max_wealth brd next_st in 
+      if curr_wealth > snd (List.hd xs) then (current_player st',curr_wealth) :: []
+      else if curr_wealth < snd (List.hd xs) then xs
+      else (current_player st',curr_wealth) :: xs
   in
   max_wealth brd st
 
