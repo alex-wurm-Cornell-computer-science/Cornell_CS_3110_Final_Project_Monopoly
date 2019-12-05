@@ -33,7 +33,7 @@ module BoardCheck : BoardSig = Board
 
 module type CommandSig = sig
   type object_phrase = string list
-  type command = Go of object_phrase | Quit | Score | Take of object_phrase | Drop of object_phrase | Inventory
+  type command = | Roll  | Quit | Wallet  | Inventory  | Buy  | Sell of object_phrase | Items | Auction of object_phrase  | Next | Build of object_phrase| Game 
   exception Empty
   exception Malformed
   val parse : string -> command
@@ -42,12 +42,40 @@ end
 module CommandCheck : CommandSig = Command
 
 module type StateSig = sig
-  type t 
-  val init_state : Adventure.t -> t
-  val current_room_id : t -> string
-  val visited : t -> string list
-  type result = Legal of t | Illegal
-  val go : Adventure.exit_name -> Adventure.t -> t -> result
+  open Board
+  exception Unbuildable of prop_name
+  type t
+  type property 
+  type result = Legal of t | Illegal | Win
+  val init_state : Board.board -> int -> t
+  val current_player : t -> int
+  val num_players : t -> int
+  val locations : t -> (int * (int * bool)) list
+  val doubles_rolled : t -> int
+  val current_location : t -> int
+  val inventories : t -> (int * Board.prop_name list) list
+  val items : t -> (int * Board.card_name list) list 
+  val wallets : t -> (int * int) list
+  val total_assets : t -> (int * int) list 
+  val buildings : t -> (prop_name * ( int * int)) list
+  val cards : t -> card_name list 
+  val update_state : t -> result -> t 
+  val next_turn : t -> result 
+  val roll : Board.board -> t -> result
+  val curr_player_inventory : t -> prop_name list
+  val curr_player_wallet : t -> int 
+  val curr_player_items : t -> card_name list 
+  val buy : Board.board -> prop_name -> t -> result 
+  val sell : Board.board -> prop_name -> t -> result 
+  val auction : prop_name -> t -> result 
+  val inventory_value : Board.board -> t -> int 
+  val wealthiest_player : Board.board -> t -> (int * int) list
+  val earn_cash : t -> int -> result 
+  val pay_rent : board -> prop_name -> t -> result
+  val build_houses : board -> t -> prop_name -> int -> result
+  val build_hotels : board -> t -> prop_name -> int -> result
+  val card_action : board -> card_name -> t -> result
+  val move_cards : board -> card_name -> t -> result
 end
 
 module StateCheck : StateSig = State
