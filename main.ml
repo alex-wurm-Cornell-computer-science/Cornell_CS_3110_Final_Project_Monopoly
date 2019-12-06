@@ -248,13 +248,13 @@ let rec interp_command brd res st =
           let () = print_string "\nWhere would you like to build on?\n" in 
           let prop = read_line () in 
           let () = print_string "\nHow many would you like to build?\n" in 
-          let n = read_line () in 
+          let n = int_of_string (read_line ()) in 
           let res = build_houses brd st prop n in interp_command brd res st else 
         if List.hd obj = "hotels" then 
           let () = print_string "\nWhere would you like to build on?\n" in 
           let prop = read_line () in 
           let () = print_string "\nHow many would you like to build?\n" in 
-          let n = read_line () in 
+          let n = int_of_string (read_line ()) in 
           let res = build_hotels brd st prop n in interp_command brd res st
         else 
           print_string "\n Try again!\n"; interp_command brd (Legal st ) st

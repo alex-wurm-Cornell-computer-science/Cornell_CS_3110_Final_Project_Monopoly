@@ -18,7 +18,8 @@ type t = {
   wallets : (int * int) list;
   total_assets : (int * int) list;
   buildings : (prop_name * ( int * int)) list;
-  cards : card_name list 
+  cards : card_name list;
+  player_status : (int * bool) list;
 }
 
 type result = Legal of t | Illegal | Win
@@ -39,7 +40,8 @@ let init_state brd n =
     wallets = init_lists (n) 1500 [];
     total_assets = init_lists (n) 0 [];
     buildings = [];
-    cards = cards brd
+    cards = cards brd;
+    player_status = init_lists (n) true [];
   } 
 
 let current_player st =
@@ -75,6 +77,9 @@ let buildings st =
 let cards st =
   st.cards
 
+let player_status st = 
+  st.player_status
+
 let update_state old_st res = 
   match res with 
   | Illegal -> old_st 
@@ -84,8 +89,10 @@ let update_state old_st res =
 let next_turn st = 
   let curr_player = current_player st in 
   let total_loc = locations st in 
+  let total_status = player_status st in 
   let curr_loc = List.assoc curr_player total_loc in 
-  if snd curr_loc then (
+  let curr_status = List.assoc curr_player total_status in 
+  if (snd curr_loc) && (curr_status) then (
     let trimmed = List.remove_assoc curr_player total_loc in 
     let new_loc = (curr_player, (fst curr_loc,false))::trimmed in 
     Legal {
@@ -98,7 +105,8 @@ let next_turn st =
       wallets = wallets st;
       total_assets = total_assets st;
       buildings = buildings st;
-      cards = st.cards;
+      cards = cards st;
+      player_status = player_status st; 
     }
   ) else Illegal
 
@@ -125,7 +133,8 @@ let roll brd st =
           wallets = wallets st;
           total_assets = total_assets st;
           buildings = buildings st;
-          cards = st.cards
+          cards = cards st;
+          player_status = player_status st; 
         }) else (
         let new_loc = if (nth_square brd ((fst curr_loc + die1 + die2) mod Board.size brd) = "Go To Jail") 
           then Board.square_pos brd "Jail" else ((fst curr_loc + die1 + die2) mod Board.size brd) in 
@@ -140,7 +149,8 @@ let roll brd st =
           wallets = wallets st;
           total_assets = total_assets st;
           buildings = buildings st;
-          cards = st.cards
+          cards = cards st;
+          player_status = player_status st; 
         }
       )
     ) else (
@@ -159,7 +169,8 @@ let roll brd st =
         wallets = wallets st;
         total_assets = total_assets st;
         buildings = buildings st;
-        cards = st.cards
+        cards = cards st;
+        player_status = player_status st; 
       })
   ) else Illegal
 
@@ -254,7 +265,8 @@ let earn_cash st amt =
       wallets = new_cash;
       total_assets = total_assets st;
       buildings = buildings st;
-      cards = st.cards
+      cards = cards st;
+      player_status = player_status st; 
     } 
 
 let buy bd prop st = 
@@ -279,7 +291,8 @@ let buy bd prop st =
                 wallets = wallets st';
                 total_assets = total_assets st';
                 buildings = st.buildings;
-                cards = st.cards
+                cards = cards st;
+                player_status = player_status st; 
               }
           | Illegal -> Illegal
           | Win -> Win
@@ -306,7 +319,8 @@ let sell bd prop st =
           wallets = wallets st';
           total_assets = total_assets st';
           buildings = st.buildings;
-          cards = st.cards
+          cards = cards st;
+          player_status = player_status st; 
         }
       | _ -> Illegal 
 
@@ -340,7 +354,8 @@ let pay_rent bd prop st =
         wallets = new_cash;
         total_assets = total_assets st;
         buildings = st.buildings;
-        cards = st.cards
+        cards = cards st;
+        player_status = player_status st; 
       } ;
 
     | _ -> Illegal
@@ -369,7 +384,8 @@ let build_houses bd st prop n  =
             wallets = wallets st;
             total_assets = total_assets st;
             buildings = new_buildings;
-            cards = st.cards
+            cards = cards st;
+            player_status = player_status st; 
           } in 
           earn_cash st1 (-n * house_cost) 
         else Illegal
@@ -398,7 +414,8 @@ let build_hotels bd st prop n  =
             wallets = wallets st;
             total_assets = total_assets st;
             buildings = new_buildings;
-            cards = st.cards
+            cards = cards st;
+            player_status = player_status st; 
           } in 
           match house_cost bd prop with 
           | None -> raise (UnknownCard prop)
@@ -427,7 +444,8 @@ let card_action bd cd st =
       wallets = wallets st;
       total_assets = total_assets st;
       buildings = st.buildings;
-      cards = st.cards
+      cards = cards st;
+      player_status = player_status st; 
     } in 
     if fst curr_loc > new_loc then earn_cash st1 200 else Legal st1
   | LeaveJail -> 
@@ -444,7 +462,8 @@ let card_action bd cd st =
       wallets = wallets st;
       total_assets = total_assets st;
       buildings = st.buildings;
-      cards = st.cards
+      cards = cards st;
+      player_status = player_status st; 
     }
 
 let move_cards brd crd st = 
@@ -462,7 +481,8 @@ let move_cards brd crd st =
       wallets = wallets st;
       total_assets = total_assets st;
       buildings = st.buildings;
-      cards = new_cards
+      cards = new_cards;
+      player_status = player_status st; 
     }
   | LeaveJail -> 
     let curr_invent = List.assoc st.curr_player st.items in 
@@ -479,7 +499,8 @@ let move_cards brd crd st =
       wallets = wallets st;
       total_assets = total_assets st;
       buildings = st.buildings;
-      cards = cards st 
+      cards = cards st;
+      player_status = player_status st; 
     }
 
 
