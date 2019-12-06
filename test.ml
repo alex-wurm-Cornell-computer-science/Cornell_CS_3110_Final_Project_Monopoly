@@ -91,6 +91,7 @@ let board_tests_valid = [
   "buyable prop" >:: (fun _ -> assert_equal true (is_buyable test_board "Baltic Avenue"));
   "unbuyable prop" >:: (fun _ -> assert_equal false (is_buyable test_board "Chance"));
   "square color" >:: (fun _ -> assert_equal (Some "Dark Blue") (square_color test_board "Park Place"));
+
 ]
 
 let st = init_state real_board 2

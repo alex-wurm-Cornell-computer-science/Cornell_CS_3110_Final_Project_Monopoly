@@ -90,7 +90,7 @@ let rec disp_items itms =
   match itms with
   | [] -> print_endline "\n";
   | (a,b) :: t -> Printf.printf "Player %d has the following cards:" a;
-    print_string_list b; print_endline "\n"; disp_inventories t
+    print_string_list b; print_endline "\n"; disp_items t
 
 let parse_obj_phrase lst = 
   let new_str = List.fold_left (fun p n -> p ^ " " ^ n) "" lst in
@@ -243,7 +243,22 @@ let rec interp_command brd res st =
     print_winners lst;
     exit 0
   | Build obj -> if nth_square brd (current_location st) <> "Jail" then (
-      print_string "\nCan't build yet! \n\n";
+      begin 
+        if List.hd obj = "houses" then 
+          let () = print_string "\nWhere would you like to build on?\n" in 
+          let prop = read_line () in 
+          let () = print_string "\nHow many would you like to build?\n" in 
+          let n = read_line () in 
+          let res = build_houses brd st prop n in interp_command brd res st else 
+        if List.hd obj = "hotels" then 
+          let () = print_string "\nWhere would you like to build on?\n" in 
+          let prop = read_line () in 
+          let () = print_string "\nHow many would you like to build?\n" in 
+          let n = read_line () in 
+          let res = build_hotels brd st prop n in interp_command brd res st
+        else 
+          print_string "\n Try again!\n"; interp_command brd (Legal st ) st
+      end 
     ) else (
       Printf.printf "\nUh oh! You're in Jail, so you can't perform 
     this action\n"; 
