@@ -469,7 +469,7 @@ let move_cards brd crd st =
     let curr_invent = List.assoc st.curr_player st.items in 
     let trimmed = List.remove_assoc st.curr_player st.items in 
     let new_invent = crd :: curr_invent in 
-    let new_items = new_invent :: trimmed in 
+    let new_items = (st.curr_player, new_invent) :: trimmed in 
     Legal {
       curr_player = st.curr_player;
       num_players = num_players st;
