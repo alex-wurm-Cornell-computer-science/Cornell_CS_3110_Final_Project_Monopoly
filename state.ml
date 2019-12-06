@@ -86,7 +86,7 @@ let update_state old_st res =
   | Legal t -> t 
   | Win -> old_st
 
-let next_turn st = 
+let rec next_turn st = 
   let curr_player = current_player st in 
   let total_loc = locations st in 
   let total_status = player_status st in 
@@ -108,7 +108,24 @@ let next_turn st =
       cards = cards st;
       player_status = player_status st; 
     }
-  ) else Illegal
+  ) else if (not curr_status) then (
+    let next_st = {
+      curr_player = ((current_player st) mod (num_players st)) + 1;
+      num_players = num_players st;
+      locations = locations st;
+      doubles_rolled = 0;
+      inventories = inventories st;
+      items = items st;
+      wallets = wallets st;
+      total_assets = total_assets st;
+      buildings = buildings st;
+      cards = cards st;
+      player_status = player_status st; 
+    } in 
+    next_turn next_st
+  ) else (
+    Illegal
+  )
 
 let roll brd st = 
   let die1 = (Random.int 5) + 1 in 
