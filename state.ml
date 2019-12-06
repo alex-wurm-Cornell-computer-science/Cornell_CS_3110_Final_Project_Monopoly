@@ -448,9 +448,11 @@ let card_action bd cd st =
     }
 
 let move_cards brd crd st = 
-  if (card_type brd crd) <> LeaveJail then
-    let trimmed = List.filter (fun s -> s <> crd) st.cards in 
-    let new_cards = trimmed @ [crd] in 
+
+  let trimmed = List.filter (fun s -> s <> crd) st.cards in 
+  let new_cards = trimmed @ [crd] in 
+  match (card_type brd crd) with 
+  | Money | Location -> 
     Legal {
       curr_player = st.curr_player;
       num_players = num_players st;
@@ -463,6 +465,22 @@ let move_cards brd crd st =
       buildings = st.buildings;
       cards = new_cards
     }
-  else Legal st
+  | LeaveJail -> 
+    let curr_invent = List.assoc st.curr_player st.items in 
+    let trimmed = List.remove_assoc st.curr_player st.items in 
+    let new_invent = crd :: curr_invent in 
+    let new_items = new_invent :: trimmed in 
+    Legal {
+      curr_player = st.curr_player;
+      num_players = num_players st;
+      locations = locations st;
+      inventories = inventories st;
+      doubles_rolled = st.doubles_rolled;
+      items = new_items;
+      wallets = wallets st;
+      total_assets = total_assets st;
+      buildings = st.buildings;
+      cards = cards st 
+    }
 
 
