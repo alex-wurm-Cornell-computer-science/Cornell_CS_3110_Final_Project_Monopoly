@@ -71,6 +71,9 @@ val buildings : t -> (prop_name * ( int * int)) list
     top of the deck *)
 val cards : t -> card_name list 
 
+val player_status : t -> (int * bool) list 
+
+val current_status : t -> bool
 (** [update_state st res] is [st] from [result] if [result] is 
     [Legal st], otherwise if [result] is [Illegal] it's [old_state].*)
 val update_state : t -> result -> t 

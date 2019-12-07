@@ -80,6 +80,9 @@ let cards st =
 let player_status st = 
   st.player_status
 
+let current_status st = 
+  List.assoc (current_player st) (player_status st)
+
 let update_state old_st res = 
   match res with 
   | Illegal -> old_st 
@@ -92,22 +95,26 @@ let rec next_turn st =
   let total_status = player_status st in 
   let curr_loc = List.assoc curr_player total_loc in 
   let curr_status = List.assoc curr_player total_status in 
-  if (snd curr_loc) && (curr_status) then (
-    let trimmed = List.remove_assoc curr_player total_loc in 
-    let new_loc = (curr_player, (fst curr_loc,false))::trimmed in 
-    Legal {
-      curr_player = ((current_player st) mod (num_players st)) + 1;
-      num_players = num_players st;
-      locations = new_loc;
-      doubles_rolled = 0;
-      inventories = inventories st;
-      items = items st;
-      wallets = wallets st;
-      total_assets = total_assets st;
-      buildings = buildings st;
-      cards = cards st;
-      player_status = player_status st; 
-    }
+  if (curr_status) then (
+    if (snd curr_loc) then (
+      let trimmed = List.remove_assoc curr_player total_loc in 
+      let new_loc = (curr_player, (fst curr_loc,false))::trimmed in 
+      Legal {
+        curr_player = ((current_player st) mod (num_players st)) + 1;
+        num_players = num_players st;
+        locations = new_loc;
+        doubles_rolled = 0;
+        inventories = inventories st;
+        items = items st;
+        wallets = wallets st;
+        total_assets = total_assets st;
+        buildings = buildings st;
+        cards = cards st;
+        player_status = player_status st; 
+      }
+    ) else (
+      Legal st
+    )
   ) else if (not curr_status) then (
     let next_st = {
       curr_player = ((current_player st) mod (num_players st)) + 1;
@@ -134,6 +141,8 @@ let roll brd st =
      let die2 = 3 in  *)
   let curr_player = current_player st in 
   let total_loc = locations st in 
+  let total_status = player_status st in 
+  (* let new_status = if (curr_player = 1) then (curr_player,false)::(List.remove_assoc curr_player total_status) else total_status in  *)
   let curr_loc = List.assoc curr_player total_loc in 
   let trimmed = List.remove_assoc curr_player total_loc in
   if snd curr_loc = false then (
@@ -151,7 +160,7 @@ let roll brd st =
           total_assets = total_assets st;
           buildings = buildings st;
           cards = cards st;
-          player_status = player_status st; 
+          player_status = total_status; 
         }) else (
         let new_loc = if (nth_square brd ((fst curr_loc + die1 + die2) mod Board.size brd) = "Go To Jail") 
           then Board.square_pos brd "Jail" else ((fst curr_loc + die1 + die2) mod Board.size brd) in 
@@ -167,7 +176,7 @@ let roll brd st =
           total_assets = total_assets st;
           buildings = buildings st;
           cards = cards st;
-          player_status = player_status st; 
+          player_status = total_status;
         }
       )
     ) else (
@@ -187,7 +196,7 @@ let roll brd st =
         total_assets = total_assets st;
         buildings = buildings st;
         cards = cards st;
-        player_status = player_status st; 
+        player_status = total_status;
       })
   ) else Illegal
 
