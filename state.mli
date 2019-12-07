@@ -15,7 +15,21 @@ exception Unbuildable of prop_name
 type property
 
 (** The abstract type of values representing the game state. *)
-type t 
+type t = {
+  curr_player : int;
+  num_players : int;
+  locations : (int * (int * bool)) list;
+  doubles_rolled : int;
+  inventories : (int * prop_name list) list;
+  items : (int * prop_name list) list;
+  wallets : (int * int) list;
+  total_assets : (int * int) list;
+  buildings : (prop_name * ( int * int)) list;
+  cards : card_name list;
+  player_status : (int * bool) list;
+}
+
+
 
 (** The type representing the result of an attempted movement. *)
 type result = Legal of t | Illegal | Win

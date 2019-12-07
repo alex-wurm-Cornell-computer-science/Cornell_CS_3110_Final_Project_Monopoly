@@ -87,27 +87,37 @@ let rec print_int_list l =
   | h::t -> Printf.printf "%d, " h; print_int_list t
 
 (** [disp_wallet wals] prints the amount of cash in [wals] that each player has *)
-let rec disp_wallet wals = 
+let rec disp_wallet st = 
   print_endline "\n";
-  match wals with 
+  match wallets st with 
   | [] -> print_endline "\n";
   | (a,b) :: t -> Printf.printf "Player %d has $%d." a b; print_endline "\n";
-    disp_wallet t
+    let st' = {st with wallets = t} in
+    disp_wallet st'
 
-let rec disp_inventories invs = 
+let rec disp_inventories st = 
   print_endline "\n";
-  match invs with
+  match inventories st with
   | [] -> print_endline "\n";
   | (a,b) :: t -> Printf.printf "Player %d has the following properties:" a; 
-    print_string_list b; print_endline "\n"; disp_inventories t
+      let rec disp_buildings props = 
+        match props with
+        | [] -> print_endline "\n";
+        | h :: t -> let (hou,hot) = List.assoc h (buildings st) in 
+                    Printf.printf "\n %s with %d houses and %d hotels \n" h hou hot;
+                    disp_buildings t
+      in
+      disp_buildings b; print_endline "\n"; 
+  let st' = {st with inventories = t} in disp_inventories st'
 
 
-let rec disp_items itms = 
+let rec disp_items st = 
   print_endline "\n";
-  match itms with
+  match items st with
   | [] -> print_endline "\n";
   | (a,b) :: t -> Printf.printf "Player %d has the following cards:" a;
-    print_string_list b; print_endline "\n"; disp_items t
+    print_string_list b; print_endline "\n"; 
+    let st' = {st with items = t} in disp_items st'
 
 let parse_obj_phrase lst = 
   let new_str = List.fold_left (fun p n -> p ^ " " ^ n) "" lst in
@@ -217,8 +227,8 @@ let format_board brd locs =
 
 
 let print_game brd st = 
-  disp_inventories (inventories st);
-  disp_wallet (wallets st);
+  disp_inventories st;
+  disp_wallet st;
   format_board brd (locations st); ()
 
 let check_card pos brd st = 
@@ -375,13 +385,13 @@ let rec interp_command brd res st wc =
                  ) 
             )
   | Inventory -> print_string "\nYou own the following properties:\n";
-    disp_inventories (State.inventories st);  
+    disp_inventories st;  
     interp_command brd res st wc 
   | Wallet -> print_string "\nYou currently have the following in cash.\n";
-    disp_wallet (wallets st); 
+    disp_wallet st; 
     interp_command brd res st wc 
   | Items -> print_string "\nYou currently have the following cards:\n"; 
-    disp_items (State.items st);
+    disp_items st;
     interp_command brd res st wc     
   | Buy -> if nth_square brd (current_location st) <> "Jail" then (
       print_string "\nAre you sure you would like to buy this property?\n";
