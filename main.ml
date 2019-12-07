@@ -300,7 +300,9 @@ let rec interp_command brd res st =
              | Win -> Printf.printf "\nYou won, player %d\n" (current_player st); 
                exit 0;
              | Legal st0 -> 
+               let () = print_string "here1" in
                let res2 = pay_rent brd (nth_square brd (current_location st0)) st0 in 
+               let () = print_string "here2" in
                match res2 with 
                | Illegal -> Printf.printf "\nTry again, player %d\n" 
                               (current_player st0);

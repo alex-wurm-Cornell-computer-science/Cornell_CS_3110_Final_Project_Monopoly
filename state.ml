@@ -152,8 +152,8 @@ let rec next_turn st =
   )
 
 let roll brd st = 
-  let die1 = (Random.int 5) + 1 in 
-  let die2 = (Random.int 5) + 1 in 
+  let die1 = 0 in 
+  let die2 = 1 in 
   (* let die1 = 3 in 
      let die2 = 3 in  *)
   let curr_player = current_player st in 
@@ -224,7 +224,7 @@ let houses st prop =
   try 
     List.find (fun s -> (fst s) = prop) (buildings st) |> snd |> fst
   with 
-  | Not_found -> raise (UnknownSquare prop)
+  | Not_found -> 0
 
 (** [hotels st prop] is the number of hotels currently built on the property 
     corresponding to [prop]. Raises [UnknownSquare] if the given property [prop] 
@@ -233,7 +233,7 @@ let hotels st prop =
   try 
     List.find (fun s -> (fst s) = prop) (buildings st) |> snd |> snd
   with 
-  | Not_found -> raise (UnknownSquare prop)
+  | Not_found -> 0
 
 (** [prop_available prop st] returns false if [prop] is already owned *)
 let prop_available prop st = 
@@ -364,35 +364,41 @@ let sell bd prop st =
 
 let pay_rent bd prop st =  
   let lst = inventories st in 
+  let () = print_string "here3" in
   let rec owner prop lst =
     match lst with
     | [] -> 0
     | h::t -> if List.mem prop (snd h) then fst h else  
         owner prop t
   in
+  let () = print_string "here4" in 
   let pay_to = owner prop lst in
   if pay_to = 0 || pay_to = (current_player st) then Legal st else 
-    match earn_cash st ((-1) * ((rent bd prop) + (rent bd prop) * ((houses st prop)) + (hotels st prop))) with 
+    let () = print_string "here5" in 
+    let pay_amt = ((rent bd prop) + ((rent bd prop) * ((houses st prop) + (hotels st prop)))) in
+    match earn_cash st (-pay_amt) with 
     | Legal st1 -> 
-      let total_cash = wallets st in 
+      let () = print_string "here6 " in 
+      let () = print_int (List.assoc 2 (wallets st1)) in
+      let total_cash = wallets st1 in 
       let curr_cash = List.assoc pay_to total_cash in 
       let trimmed = List.remove_assoc pay_to total_cash in 
-      let new_cash = (pay_to,curr_cash + (rent bd prop))::trimmed in 
+      let new_cash = (pay_to,curr_cash + pay_amt)::trimmed in 
       Legal {
-        curr_player = st.curr_player;
-        num_players = num_players st;
-        locations = locations st;
-        doubles_rolled = doubles_rolled st;
-        inventories = inventories st;
-        items = items st;
+        curr_player = st1.curr_player;
+        num_players = num_players st1;
+        locations = locations st1;
+        doubles_rolled = doubles_rolled st1;
+        inventories = inventories st1;
+        items = items st1;
         wallets = new_cash;
-        total_assets = total_assets st;
-        buildings = st.buildings;
-        cards = cards st;
-        player_status = player_status st; 
+        total_assets = total_assets st1;
+        buildings = st1.buildings;
+        cards = cards st1;
+        player_status = player_status st1; 
       } ;
 
-    | _ -> Illegal
+    | _ -> let () = print_string "here7" in Illegal
 
 let build_houses bd st prop n  = 
   if is_buildable bd prop then 

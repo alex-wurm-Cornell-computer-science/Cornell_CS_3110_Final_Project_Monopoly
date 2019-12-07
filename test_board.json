@@ -20,7 +20,7 @@
       "name": "Community Chest",
       "color": "None",
       "cost": "0",
-      "type": "Chest",
+      "type": "Card",
       "rent": "100"
     },
     {
