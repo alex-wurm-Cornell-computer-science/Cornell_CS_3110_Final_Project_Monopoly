@@ -210,7 +210,7 @@ let print_game brd st =
 let check_card pos brd st = 
   match (square_type brd (nth_square brd pos)) with 
   | Card -> 
-    let crd = next_card brd in
+    let crd = next_card st in
     print_string ("\nYou have found this card:\n" ^ (card_description brd crd));
     let res = move_cards brd crd st in 
     begin match res with 

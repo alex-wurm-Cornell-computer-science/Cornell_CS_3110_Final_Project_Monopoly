@@ -115,9 +115,9 @@ let state_tests =
     "first card" >:: (fun _ -> assert_equal "lose money" (next_card st));
     "rearranged deck first card" >:: (fun _ -> assert_equal "gain money" 
                                          (next_card card_shuffle));
-    "picked up jail card" >:: (fun _ -> assert_equal 
-                                  ["lose money" ; "gain money"; "jail"; "Reading"]
-                                  (cards pick_up_card))
+    "jail card removed from deck" >:: (fun _ -> assert_equal 
+                                          ["lose money" ; "gain money"; "jail"; "Reading"]
+                                          (cards pick_up_card));
 
 
   ]
