@@ -24,6 +24,8 @@ type t = {
 
 type result = Legal of t | Illegal | Win
 
+(**  [init_lists n v acc] is the association list of length [n] where the keys 
+     are integers 1..n and the values are [v] *)
 let rec init_lists n v acc =
   match n with 
   | 0 -> acc 
@@ -56,9 +58,6 @@ let locations st =
 let doubles_rolled st =
   st.doubles_rolled
 
-let current_location st = 
-  fst (List.assoc (current_player st) (locations st))
-
 let inventories st =
   st.inventories
 
@@ -79,6 +78,24 @@ let cards st =
 
 let player_status st = 
   st.player_status
+
+let current_location st = 
+  fst (List.assoc (current_player st) (locations st))
+
+let curr_player_inventory st = 
+  let curr_player = current_player st in
+  let total_inv = inventories st in 
+  List.assoc curr_player total_inv 
+
+let curr_player_wallet st = 
+  let curr_player = current_player st in
+  let total_wallets = wallets st in 
+  List.assoc curr_player total_wallets
+
+let curr_player_items st = 
+  let curr_player = current_player st in
+  let total_items = items st in 
+  List.assoc curr_player total_items
 
 let current_status st = 
   List.assoc (current_player st) (player_status st)
@@ -200,32 +217,23 @@ let roll brd st =
       })
   ) else Illegal
 
+(** [houses st prop] is the number of houses currently built on the property 
+    corresponding to [prop]. Raises [UnknownSquare] if the given property 
+    [prop] doesn't exist *)
 let houses st prop = 
   try 
     List.find (fun s -> (fst s) = prop) (buildings st) |> snd |> fst
   with 
   | Not_found -> raise (UnknownSquare prop)
 
-let hotels st prop : int = 
+(** [hotels st prop] is the number of hotels currently built on the property 
+    corresponding to [prop]. Raises [UnknownSquare] if the given property [prop] 
+    doesn't exist *)
+let hotels st prop = 
   try 
     List.find (fun s -> (fst s) = prop) (buildings st) |> snd |> snd
   with 
   | Not_found -> raise (UnknownSquare prop)
-
-let curr_player_inventory st = 
-  let curr_player = current_player st in
-  let total_inv = inventories st in 
-  List.assoc curr_player total_inv 
-
-let curr_player_wallet st = 
-  let curr_player = current_player st in
-  let total_wallets = wallets st in 
-  List.assoc curr_player total_wallets
-
-let curr_player_items st = 
-  let curr_player = current_player st in
-  let total_items = items st in 
-  List.assoc curr_player total_items
 
 (** [prop_available prop st] returns false if [prop] is already owned *)
 let prop_available prop st = 
@@ -528,5 +536,3 @@ let move_cards brd crd st =
       cards = cards st;
       player_status = player_status st; 
     }
-
-
