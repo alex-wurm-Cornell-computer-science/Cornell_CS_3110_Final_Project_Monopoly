@@ -285,7 +285,7 @@ let rec interp_command brd res st =
           | Win -> Printf.printf "\nYou won, player %d\n" (current_player st); 
             exit 0;
         else 
-          print_string "\n Try again!\n"; interp_command brd (Legal st ) st
+          let _ = print_string "\nTry again!\n" in interp_command brd (Legal st ) st
       end 
     ) else (
       Printf.printf "\nUh oh! You're in Jail, so you can't perform 
@@ -358,9 +358,10 @@ let rec interp_command brd res st =
           | Illegal -> Printf.printf "\nUnfortunately this property cannot
                            be purchased at this time.\n"; interp_command brd (Legal st) st
           | Legal st' -> Printf.printf "\n Congratulations! You are \
-                                        the owner of %s." prop; interp_command brd (Legal st') st';
-          | Win -> Printf.printf "\n Player %d you have won the game! You were the \
-                                  first player to acquire multiple properties!\n" (State.current_player st)))
+                                        the owner of %s." prop; interp_command brd (Legal st') st'
+          | Win -> let () = 
+                     Printf.printf "\n Player %d you have won the game! You were the \
+                                    first player to acquire multiple properties!\n" (current_player st) in exit 0))
       else if confirmation = "no" then
         (Printf.printf "Okay, what would you like to do instead?\n"; 
          interp_command brd (Legal st) st)
