@@ -3,9 +3,6 @@ open Board
 open Command
 open State
 
-exception NotValid
-
-
 (** [format_assoc_list fmt_key fmt_val fmt lst] formats an association 
     list [lst] as a dictionary.  The [fmt_key] and [fmt_val] arguments
     are formatters for the key and value types, respectively.  The
@@ -30,6 +27,8 @@ let rec user_input _ =
   | Malformed -> print_string "\nCommand unclear, please try again. \n\n"; 
     user_input()
 
+(** [number_of_players] prompts the user for input. If the input isn't an 
+    integer in 2..6, the game will inform the player and ask for more input. *)
 let rec number_of_players () =
   print_string " > ";
   let n = read_line () in 
@@ -53,9 +52,11 @@ let rec get_board f =
     | Not_found -> print_string "Invalid adventure. Try again. \n";
       get_board (read_line ())  
 
-
+(** [to_list f acc l] is the accumulator result [acc] from applying [f] to list 
+    [l] *)
 let to_list f acc l = List.fold_left (fun acc (k,v) -> f k v acc) acc
 
+(** [print_string_list l] prints the given string list [l] *)
 let rec print_string_list l = 
   print_string "[";
   match l with
@@ -63,6 +64,7 @@ let rec print_string_list l =
   | [h] -> Printf.printf "%s" h;
   | h::t -> Printf.printf "%s, " h; print_string_list t
 
+(** [print_int_list l] prints the given int list [l] *)
 let rec print_int_list l = 
   print_string "[";
   match l with
@@ -70,6 +72,7 @@ let rec print_int_list l =
   | [h] -> Printf.printf "%d" h;
   | h::t -> Printf.printf "%d, " h; print_int_list t
 
+(** [disp_wallet wals] prints the amount of cash in [wals] that each player has *)
 let rec disp_wallet wals = 
   print_endline "\n";
   match wals with 
