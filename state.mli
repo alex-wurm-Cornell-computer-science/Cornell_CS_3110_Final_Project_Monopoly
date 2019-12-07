@@ -138,3 +138,11 @@ val card_action : board -> card_name -> t -> result
 (** [move_cards brd crd st] moves [crd] to the bottom of the card pile. 
       If [crd] is a get out of jail card, the pile is unchanged *)
 val move_cards : board -> card_name -> t -> result
+
+(** [houses st prop] returns the number of houses on [prop] in [st].
+      Raises [UnknownSquare prop] if[prop] is not a valid property *)
+val houses : t -> Board.prop_name -> int
+
+(** [hotels st prop] returns the number of hotels on [prop] in [st].
+      Raises [UnknownSquare prop] if[prop] is not a valid property *)
+val hotels : t -> Board.prop_name -> int
