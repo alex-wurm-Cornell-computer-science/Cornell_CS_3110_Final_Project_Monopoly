@@ -163,3 +163,7 @@ val houses : t -> Board.prop_name -> int
 (** [hotels st prop] returns the number of hotels on [prop] in [st].
       Raises [UnknownSquare prop] if[prop] is not a valid property *)
 val hotels : t -> Board.prop_name -> int
+
+(** [next_card st] returns the card at the top of the pile 
+      Requires: [cards st] is not empty. *)
+val next_card : t -> string 

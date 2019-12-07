@@ -72,7 +72,8 @@ let parse_type s =
 let get_house j = 
   match j |> member "type" |> to_string |> parse_type with 
   | Property -> if ( to_string (member "color" j) = "Railroad")  ||
-                   ( to_string (member "color" j) = "Utility")
+                   ( to_string (member "color" j) = "Utility") 
+
     then None else 
       Some (j |> member "house" |> to_string |> int_of_string)
   | _ -> None 
@@ -90,7 +91,7 @@ let get_hotel j =
 (**[square_of_json json] Parses [json] into a valid monopoly square *)
 let square_of_json json= 
   { 
-    name = json |> member "name" |> to_string;
+    name =  json |> member "name" |> to_string; 
     cost = json |> member "cost" |> to_string |> int_of_string;
     color = json |> member "color" |> to_string |> parse_color;
     squareType = json |> member "type" |> to_string |> parse_type;
@@ -105,11 +106,10 @@ let card_of_json json =
     c_name = json |> member "name" |> to_string;
     description = json |> member "description" |> to_string;
     payment = json |> member "payment" |> to_string |> int_of_string;
-    c_type = match json |> member "type" |> to_string with 
-      | "Money" -> Money
-      | _ -> Location
+    c_type =  let tpe = json |> member "type" |> to_string in 
+      if tpe = "Money" then Money else if tpe = "Location" then Location else 
+        LeaveJail
   }
-
 
 
 (** [opt_match op] Returns the v if [op] is Some v and fails 
@@ -174,7 +174,7 @@ let square_color (b : board) (prop : string) =
 let cards b = 
   List.map (fun x -> x.c_name) b.cards 
 
-let next_card bd = List.hd (cards bd)
+
 
 let card_description b cd = 
   try 

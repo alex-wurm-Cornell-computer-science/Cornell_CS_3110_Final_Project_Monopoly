@@ -91,21 +91,36 @@ let board_tests_valid = [
   "buyable prop" >:: (fun _ -> assert_equal true (is_buyable test_board "Baltic Avenue"));
   "unbuyable prop" >:: (fun _ -> assert_equal false (is_buyable test_board "Chance"));
   "square color" >:: (fun _ -> assert_equal (Some "Dark Blue") (square_color test_board "Park Place"));
+  "card payment" >:: (fun _ -> assert_equal (-100) (card_payment real_board "lose money"));
+  "card type" >:: (fun _ -> assert_equal LeaveJail(card_type real_board "get out"))
 
 ]
 
-let st = init_state real_board 2
-let cash_state = match (earn_cash st (-200)) with 
-    Legal st' -> st' 
-  | _ -> failwith ""
 
 
-let state_tests = [
-  "earning cash " >:: (fun _ -> assert_equal 1300 (List.assoc 1 (wallets cash_state)));
-  "index of location" >:: (fun _ -> assert_equal 0 (List.assoc 1 (locations st) |> fst));
+let state_tests = 
+  let st = init_state real_board 2  in 
+  let cash_state = match (earn_cash st (-200)) with 
+      Legal st' -> st' 
+    | _ -> failwith "" in 
+  let card_shuffle = match move_cards real_board "lose money" st with 
+    | Legal st' -> st'
+    | _ -> failwith "" in 
+  let pick_up_card = match move_cards real_board "get out" st with 
+    | Legal st' -> st'
+    | _ -> failwith "" in 
+  [
+    "earning cash " >:: (fun _ -> assert_equal 1300 (List.assoc 1 (wallets cash_state)));
+    "index of location" >:: (fun _ -> assert_equal 0 (List.assoc 1 (locations st) |> fst));
+    "first card" >:: (fun _ -> assert_equal "lose money" (next_card st));
+    "rearranged deck first card" >:: (fun _ -> assert_equal "gain money" 
+                                         (next_card card_shuffle));
+    "picked up jail card" >:: (fun _ -> assert_equal 
+                                  ["lose money" ; "gain money"; "jail"; "Reading"]
+                                  (cards pick_up_card))
 
 
-]
+  ]
 
 
 let suite =

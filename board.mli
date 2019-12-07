@@ -68,9 +68,6 @@ val rent : board -> string -> int
 (** [cards b] returns a list of the deck of cards in [b]*)
 val cards : board -> string list 
 
-(** [next_card bd] returns the card at the top of the pile 
-      Requires: [cards bd] is not empty. *)
-val next_card : board -> string 
 
 (** [card_description b cd] returns the description of card [cd]
       in board [b]. Raises [Not_Found] if [cd] is not in [b]  *)

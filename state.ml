@@ -523,6 +523,7 @@ let move_cards brd crd st =
     let trimmed = List.remove_assoc st.curr_player st.items in 
     let new_invent = crd :: curr_invent in 
     let new_items = (st.curr_player, new_invent) :: trimmed in 
+    let new_cards = List.filter (fun s -> s <> crd) st.cards in
     Legal {
       curr_player = st.curr_player;
       num_players = num_players st;
@@ -533,6 +534,8 @@ let move_cards brd crd st =
       wallets = wallets st;
       total_assets = total_assets st;
       buildings = st.buildings;
-      cards = cards st;
+      cards = new_cards;
       player_status = player_status st; 
     }
+
+let next_card st = List.hd (cards st)

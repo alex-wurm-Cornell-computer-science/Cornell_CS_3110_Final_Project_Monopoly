@@ -349,6 +349,12 @@
       "description": "Go on a trip. Get out there. See the world. Take the Reading Railroad.",
       "payment": "5",
       "type": "Location"
+    },
+    {
+      "name": "get out",
+      "description": "Get out of jail free",
+      "payment": "0",
+      "type": "LeaveJail"
     }
   ]
 }
