@@ -226,7 +226,18 @@ let check_card pos brd st =
     command is [Illegal] the game prints an error message and asks the user
     for a new command. *)
 let rec interp_command brd res st = 
-  Printf.printf "\nPlayer %d, it's your turn!\n" (State.current_player st);
+  let player_statuses = player_status st in 
+  let trimmed_statuses = List.remove_assoc (current_player st) player_statuses in 
+  let last_one_standing = List.for_all (fun (x,y) -> y = false) trimmed_statuses in 
+  if last_one_standing then 
+        let bank = State.wealthiest_player brd st in 
+        let (a,b) = List.hd bank in 
+        Printf.printf "\n Player %d, you are the last player standing! \
+                     All of your opponents have gone bankrupt. You have accumulated \
+                      a total wealth of $%d! Thank you for playing! \n" a b;
+        exit 0
+  else (
+    Printf.printf "\nPlayer %d, it's your turn!\n" (State.current_player st);
   let command = user_input () in
   match command with
   | Quit -> print_string "\nThank you for playing the Monopoly Game Engine! \
@@ -433,6 +444,11 @@ let rec interp_command brd res st =
     interp_command brd res' st'
 
   | Game -> print_game brd st; interp_command brd res st
+  )
+
+
+
+  
 
 (** [continue_game adv st result] updates the state of the game, prints the
     description, and prompts the user for another command to continue the game. *)
