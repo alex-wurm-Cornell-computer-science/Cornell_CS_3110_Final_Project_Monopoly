@@ -1,20 +1,6 @@
 {
   "squares": [
     {
-      "name": "GO",
-      "color": "None",
-      "cost": "0",
-      "type": "GO",
-      "rent": "0"
-    },
-    {
-      "name": "Chance",
-      "color": "None",
-      "cost": "50",
-      "type": "Card",
-      "rent": "100"
-    },
-    {
       "name": "Mediterranean Avenue",
       "color": "Brown",
       "cost": "0",

@@ -64,6 +64,7 @@ let cmp_demo =
 
 let test_board = from_json (Yojson.Basic.from_file "test_board.json")
 let real_board = from_json (Yojson.Basic.from_file "standard_board.json")
+let test_board2 = from_json (Yojson.Basic.from_file "test_2.json")
 
 let board_tests_valid = [
   "test size" >:: (fun _ -> assert_equal 12 (size test_board));
@@ -72,7 +73,8 @@ let board_tests_valid = [
   "test rent" >:: (fun _ -> assert_equal 100 (rent test_board "Baltic Avenue"));
   "test all squares" >:: (fun _ -> assert_equal true (
       cmp_set_like_lists [ "GO"; "Mediterranean Avenue" ; "Community Chest" ; 
-                           "Baltic Avenue" ; "Income Tax" ; "Chance" ; "Jail" ; "Go To Jail"
+                           "Baltic Avenue" ; "Income Tax" ; "Chance" ; "Jail" ; 
+                           "Go To Jail"
                          ; "Park Place" ; "Boardwalk" ; "Luxury Tax"] 
         (all_squares test_board |> List.sort_uniq compare)
     ));
@@ -84,15 +86,24 @@ let board_tests_valid = [
                              (house_cost test_board "Boardwalk"));
   "test hotel price" >:: (fun _ -> assert_equal (Some 100) 
                              (hotel_cost test_board "Boardwalk"));
-  "test square pos" >:: (fun _ -> assert_equal 4 (square_pos test_board "Income Tax"));
-  "test nth square" >:: (fun _ -> assert_equal "Chance" (nth_square test_board 5));
-  "buildable prop" >:: (fun _ -> assert_equal true (is_buildable test_board "Boardwalk"));
-  "not buildable prop" >:: ( fun _ -> assert_equal false (is_buildable test_board "Chance"));
-  "buyable prop" >:: (fun _ -> assert_equal true (is_buyable test_board "Baltic Avenue"));
-  "unbuyable prop" >:: (fun _ -> assert_equal false (is_buyable test_board "Chance"));
-  "square color" >:: (fun _ -> assert_equal (Some "Dark Blue") (square_color test_board "Park Place"));
-  "card payment" >:: (fun _ -> assert_equal (-100) (card_payment real_board "lose money"));
-  "card type" >:: (fun _ -> assert_equal LeaveJail(card_type real_board "get out"))
+  "test square pos" >:: (fun _ -> assert_equal 4 
+                            (square_pos test_board "Income Tax"));
+  "test nth square" >:: (fun _ -> assert_equal "Chance" 
+                            (nth_square test_board 5));
+  "buildable prop" >:: (fun _ -> assert_equal true 
+                           (is_buildable test_board "Boardwalk"));
+  "not buildable prop" >:: ( fun _ -> assert_equal false 
+                               (is_buildable test_board "Chance"));
+  "buyable prop" >:: (fun _ -> assert_equal true 
+                         (is_buyable test_board "Baltic Avenue"));
+  "unbuyable prop" >:: (fun _ -> assert_equal false 
+                           (is_buyable test_board "Chance"));
+  "square color" >:: (fun _ -> assert_equal (Some "Dark Blue")
+                         (square_color test_board "Park Place"));
+  "card payment" >:: (fun _ -> assert_equal (-100) 
+                         (card_payment real_board "lose money"));
+  "card type" >:: (fun _ -> assert_equal LeaveJail
+                      (card_type real_board "get out"))
 
 ]
 
@@ -109,17 +120,36 @@ let state_tests =
   let pick_up_card = match move_cards real_board "get out" st with 
     | Legal st' -> st'
     | _ -> failwith "" in 
+  let rolled_bought = match roll real_board st with 
+    | Legal st' -> begin 
+        match buy real_board "Mediterranean Avenue" st' with 
+        | Legal st' -> st'
+        | _ -> failwith "" 
+      end  
+    | _ -> failwith "" in 
   [
-    "earning cash " >:: (fun _ -> assert_equal 1300 (List.assoc 1 (wallets cash_state)));
-    "index of location" >:: (fun _ -> assert_equal 0 (List.assoc 1 (locations st) |> fst));
+    "earning cash " >:: (fun _ -> assert_equal 1300 (List.assoc 1 
+                                                       (wallets cash_state)));
+    "index of location" >:: (fun _ -> assert_equal 0 
+                                (List.assoc 1 (locations st) |> fst));
     "first card" >:: (fun _ -> assert_equal "lose money" (next_card st));
     "rearranged deck first card" >:: (fun _ -> assert_equal "gain money" 
                                          (next_card card_shuffle));
     "jail card removed from deck" >:: (fun _ -> assert_equal 
-                                          ["lose money" ; "gain money"; "jail"; "Reading"]
+                                          ["lose money" ; "gain money"; "jail"; 
+                                           "Reading"]
                                           (cards pick_up_card));
-
-
+    "curr player " >:: (fun _ -> assert_equal 1 (current_player st));
+    "num players" >:: (fun _ -> assert_equal 2 (num_players st));
+    "locs1" >:: (fun _ -> assert_equal 0 ( 
+        List.assoc 2 (locations st) |> fst));
+    "property in items when bought" >:: 
+    (fun _ -> assert_equal  "Mediterranean Avenue"
+        (List.hd (curr_player_inventory rolled_bought)));
+    "property paid for" >:: (fun _ -> assert_equal 1440 
+                                (curr_player_wallet rolled_bought));
+    "houses not built" >:: (fun _ -> assert_equal 0 
+                               (houses rolled_bought "Mediterranean Avenue" ))
   ]
 
 

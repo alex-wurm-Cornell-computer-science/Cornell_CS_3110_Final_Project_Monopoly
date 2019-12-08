@@ -158,18 +158,17 @@ let cost (b : board) (prop : string) =
   in cost' b.squares prop
 
 let rent b prop = 
-  let rec rent' squares prop = 
-    match squares with 
-    | [] -> raise (UnknownSquare prop)
-    | h :: t -> if h.name = prop then h.rent else rent' t prop
-  in rent' b.squares prop
+  try 
+    (List.find (fun pr -> pr.name = prop) b.squares).rent 
+  with 
+  | Not_found -> raise (UnknownSquare prop)
+
 
 let square_color (b : board) (prop : string) = 
-  let rec color' squares prop =
-    match squares with 
-    | [] -> raise (UnknownSquare prop)
-    | h :: t -> if h.name = prop then h.color else color' t prop
-  in color' b.squares prop
+  try 
+    (List.find (fun pr -> pr.name = prop) b.squares).color 
+  with 
+  | Not_found -> raise (UnknownSquare prop)
 
 let cards b = 
   List.map (fun x -> x.c_name) b.cards 

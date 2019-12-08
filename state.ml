@@ -217,18 +217,13 @@ let roll brd st =
       })
   ) else Illegal
 
-(** [houses st prop] is the number of houses currently built on the property 
-    corresponding to [prop]. Raises [UnknownSquare] if the given property 
-    [prop] doesn't exist *)
+
 let houses st prop = 
   try 
     List.find (fun s -> (fst s) = prop) (buildings st) |> snd |> fst
   with 
   | Not_found -> 0
 
-(** [hotels st prop] is the number of hotels currently built on the property 
-    corresponding to [prop]. Raises [UnknownSquare] if the given property [prop] 
-    doesn't exist *)
 let hotels st prop = 
   try 
     List.find (fun s -> (fst s) = prop) (buildings st) |> snd |> snd
@@ -251,13 +246,13 @@ let auction prop st =
 let inventory_value brd st = 
   let prop_value p = 
     if is_buildable brd p then 
-      let num_houses = fst (List.assoc p (buildings st)) in
-      let _ = print_string "a" in
+      let num_houses = houses st p in
+      let _ = print_string "a2" in
       let house_costs = match (Board.house_cost brd p) with
         | Some i -> i * num_houses 
         | None -> 0
       in 
-      let num_hotels = snd (List.assoc p (buildings st)) in
+      let num_hotels = hotels st p in
       let _ = print_string "b" in
       let hotel_costs = match (Board.hotel_cost brd p) with 
         | Some i -> i * num_hotels
@@ -318,8 +313,8 @@ let buy bd prop st =
           | Legal st' ->  
             let curr_invent = List.assoc st'.curr_player st'.inventories in 
             let trimmed = List.remove_assoc st'.curr_player st'.inventories in 
-            let new_inv = (st'.curr_player, prop ::curr_invent) :: trimmed in 
-            if List.length (List.assoc st'.curr_player new_inv) > 1 then Win else
+            let new_inv = (st'.curr_player, prop ::curr_invent) :: trimmed in
+            if List.length (List.assoc st'.curr_player new_inv) > 3 then Win else
               Legal {
                 curr_player = st.curr_player;
                 num_players = num_players st';

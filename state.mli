@@ -74,7 +74,7 @@ val total_assets : t -> (int * int) list
 
 (** [buildings st] is an assoc list where the keys are the names of the 
     properties and the values are a tuple of the number of houses and the number
-    of hotels on that property *)
+    of hotels on that property. If there are no buildings, values are 0. *)
 val buildings : t -> (prop_name * ( int * int)) list
 
 (** [cards st] is a list of card names, where the head of the list is the 
@@ -171,11 +171,12 @@ val card_action : board -> card_name -> t -> result
 val move_cards : board -> card_name -> t -> result
 
 (** [houses st prop] returns the number of houses on [prop] in [st].
-      Raises [UnknownSquare prop] if[prop] is not a valid property *)
+      Returns 0 if [prop] is not a valid property or no hotels are built on it
+      Requires there are 3 houses on [prop] *)
 val houses : t -> Board.prop_name -> int
 
 (** [hotels st prop] returns the number of hotels on [prop] in [st].
-      Raises [UnknownSquare prop] if[prop] is not a valid property.
+      Returns 0 if [prop] is not a valid property or no hotels are built on it
       Requires there are 3 houses on [prop] *)
 val hotels : t -> Board.prop_name -> int
 
