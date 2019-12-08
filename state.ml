@@ -83,9 +83,9 @@ let current_location st =
   fst (List.assoc (current_player st) (locations st))
 
 let curr_player_inventory st = 
-  let curr_player = current_player st in
-  let total_inv = inventories st in 
-  List.assoc curr_player total_inv 
+  let _ = print_string "a" in 
+  List.assoc (st.curr_player) (st.inventories)
+
 
 let curr_player_wallet st = 
   let curr_player = current_player st in
@@ -250,17 +250,21 @@ let auction prop st =
 
 let inventory_value brd st = 
   let prop_value p = 
-    let num_houses = fst (List.assoc p (buildings st)) in
-    let house_costs = match (Board.house_cost brd p) with
-      | Some i -> i * num_houses 
-      | None -> 0
-    in 
-    let num_hotels = snd (List.assoc p (buildings st)) in
-    let hotel_costs = match (Board.hotel_cost brd p) with 
-      | Some i -> i * num_hotels
-      | None -> 0
-    in
-    (Board.cost brd p) + house_costs + hotel_costs
+    if is_buildable brd p then 
+      let num_houses = fst (List.assoc p (buildings st)) in
+      let _ = print_string "a" in
+      let house_costs = match (Board.house_cost brd p) with
+        | Some i -> i * num_houses 
+        | None -> 0
+      in 
+      let num_hotels = snd (List.assoc p (buildings st)) in
+      let _ = print_string "b" in
+      let hotel_costs = match (Board.hotel_cost brd p) with 
+        | Some i -> i * num_hotels
+        | None -> 0
+      in
+      (Board.cost brd p) + house_costs + hotel_costs else 
+      cost brd p
   in
 
   let inv_values = List.map prop_value (curr_player_inventory st) in
@@ -277,6 +281,7 @@ let wealthiest_player brd st =
       let curr_wealth = curr_wallet + curr_props in 
       let next_st = {st with inventories = t} in 
       let xs = max_wealth brd next_st in 
+      let _ = print_string "44" in 
       if curr_wealth > snd (List.hd xs) then (current_player st',curr_wealth) :: []
       else if curr_wealth < snd (List.hd xs) then xs
       else (current_player st',curr_wealth) :: xs
