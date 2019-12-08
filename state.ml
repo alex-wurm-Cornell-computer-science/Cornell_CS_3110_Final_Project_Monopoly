@@ -247,13 +247,11 @@ let inventory_value brd st =
   let prop_value p = 
     if is_buildable brd p then 
       let num_houses = houses st p in
-      let _ = print_string "a2" in
       let house_costs = match (Board.house_cost brd p) with
         | Some i -> i * num_houses 
         | None -> 0
       in 
       let num_hotels = hotels st p in
-      let _ = print_string "b" in
       let hotel_costs = match (Board.hotel_cost brd p) with 
         | Some i -> i * num_hotels
         | None -> 0

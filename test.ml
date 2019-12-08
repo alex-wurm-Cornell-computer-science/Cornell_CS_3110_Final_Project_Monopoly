@@ -69,8 +69,15 @@ let test_board2 = from_json (Yojson.Basic.from_file "test_2.json")
 let board_tests_valid = [
   "test size" >:: (fun _ -> assert_equal 12 (size test_board));
   "test cost" >:: (fun _ -> assert_equal 100 (cost test_board "Baltic Avenue"));
-  "test cost 2" >:: (fun _ -> assert_equal 700 (cost real_board "Oriental Avenue"));
+  "test cost 2" >:: (fun _ -> assert_equal 700 
+                        (cost real_board "Oriental Avenue"));
+  "invlid property cost" >:: 
+  ( fun _ -> try let _ = cost real_board "bad room" in assert false
+    with UnknownSquare r -> assert true);
   "test rent" >:: (fun _ -> assert_equal 100 (rent test_board "Baltic Avenue"));
+  "invlid property cost" >:: 
+  ( fun _ -> try let _ = rent real_board "bad room" in assert false
+    with UnknownSquare r -> assert true);
   "test all squares" >:: (fun _ -> assert_equal true (
       cmp_set_like_lists [ "GO"; "Mediterranean Avenue" ; "Community Chest" ; 
                            "Baltic Avenue" ; "Income Tax" ; "Chance" ; "Jail" ; 
@@ -86,8 +93,14 @@ let board_tests_valid = [
                              (house_cost test_board "Boardwalk"));
   "test hotel price" >:: (fun _ -> assert_equal (Some 100) 
                              (hotel_cost test_board "Boardwalk"));
+  "invlid property hotel price" >:: 
+  ( fun _ -> try let _ = hotel_cost real_board "bad room" in assert false
+    with UnknownSquare r -> assert true);
   "test square pos" >:: (fun _ -> assert_equal 4 
                             (square_pos test_board "Income Tax"));
+  "invlid property square pos" >:: 
+  ( fun _ -> try let _ = square_pos real_board "bad room" in assert false
+    with UnknownSquare r -> assert true);
   "test nth square" >:: (fun _ -> assert_equal "Chance" 
                             (nth_square test_board 5));
   "buildable prop" >:: (fun _ -> assert_equal true 
@@ -103,7 +116,13 @@ let board_tests_valid = [
   "card payment" >:: (fun _ -> assert_equal (-100) 
                          (card_payment real_board "lose money"));
   "card type" >:: (fun _ -> assert_equal LeaveJail
-                      (card_type real_board "get out"))
+                      (card_type real_board "get out"));
+  "invlid card type" >:: 
+  ( fun _ -> try let _ = card_type real_board "bad card" in assert false
+    with UnknownCard r -> assert true);
+  "invlid card payment" >:: 
+  ( fun _ -> try let _ = card_payment real_board "bad card" in assert false
+    with UnknownCard r -> assert true);
 
 ]
 
@@ -149,7 +168,8 @@ let state_tests =
     "property paid for" >:: (fun _ -> assert_equal 1440 
                                 (curr_player_wallet rolled_bought));
     "houses not built" >:: (fun _ -> assert_equal 0 
-                               (houses rolled_bought "Mediterranean Avenue" ))
+                               (houses rolled_bought "Mediterranean Avenue" ));
+
   ]
 
 
