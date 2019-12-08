@@ -198,6 +198,11 @@ let square_type b prop =
 let monopoly_group b col = 
   MonopDict.find col b.monopolies
 
+let monopoly_group_named b prop = 
+  match square_color b prop with 
+  | Some c -> monopoly_group b c
+  | _ -> raise (UnknownSquare prop)
+
 let nth_square bd n = 
   (List.nth bd.squares n).name
 

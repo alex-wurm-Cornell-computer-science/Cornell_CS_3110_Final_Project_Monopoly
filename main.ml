@@ -253,11 +253,8 @@ let rec interp_command brd res st wc =
   let player_statuses = player_status st in 
   let trimmed_statuses = List.remove_assoc (current_player st) player_statuses in 
   let last_one_standing = List.for_all (fun (x,y) -> y = false) trimmed_statuses in 
-  let _ = print_string "22" in
   let current_player_wealth = (curr_player_wallet st) + (inventory_value brd st) in
-  let _ = print_string "23" in 
-  if last_one_standing then 
-    let _ = print_string "24" in
+  if last_one_standing then
     let bank = State.wealthiest_player brd st in 
     let (a,b) = List.hd bank in 
     Printf.printf "\n Player %d, you are the last player standing! \
@@ -295,7 +292,7 @@ let rec interp_command brd res st wc =
         begin 
           if List.hd obj = "houses" then 
             let () = print_string "\nWhere would you like to build on?\n" in 
-            let prop = read_line () in 
+            let prop = String.trim (read_line ()) in 
             let current_houses = try (houses st prop) with 
               | (UnknownSquare prop) -> Printf.printf "\n %s is not a property\n" (prop);
                 interp_command brd (Legal st) st wc in 
@@ -307,14 +304,14 @@ let rec interp_command brd res st wc =
             match res with 
             | Illegal -> print_string "\nYou can't build at the moment, or you entered an invalid command\n";
               interp_command brd (Legal st) st wc 
-            | Legal st1 -> print_string ("\n You've built %d hotels on " ^ prop ^ "\n"); 
+            | Legal st1 -> Printf.printf ("\n You've built %d houses on %s\n") n prop; 
               interp_command brd res st1 wc 
             | Win -> Printf.printf "\nYou won, player %d\n" (current_player st); 
               exit 0;
           else 
           if List.hd obj = "hotels" then 
             let () = print_string "\nWhere would you like to build on?\n" in 
-            let prop = read_line () in 
+            let prop = String.trim (read_line ()) in 
             let current_hotels = try (hotels st prop) with 
               | (UnknownSquare prop) -> Printf.printf "\n %s is not a property\n" (prop);
                 interp_command brd (Legal st) st wc in 
@@ -326,7 +323,7 @@ let rec interp_command brd res st wc =
             match res with 
             | Illegal -> print_string "\nYou can't build at the moment, or you entered an invalid command\n";
               interp_command brd (Legal st) st wc 
-            | Legal st1 -> print_string ("\n You've built %d hotels on " ^ prop ^ "\n"); 
+            | Legal st1 -> Printf.printf ("\n You've built %d hotels on %s\n") n prop; 
               interp_command brd res st1 wc 
             | Win -> Printf.printf "\nYou won, player %d\n" (current_player st); 
               exit 0;

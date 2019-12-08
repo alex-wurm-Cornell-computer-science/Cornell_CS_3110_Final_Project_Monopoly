@@ -89,6 +89,10 @@ let board_tests_valid = [
                           (cmp_set_like_lists ["Mediterranean Avenue" ; 
                                                "Baltic Avenue"] 
                              (monopoly_group test_board "Brown")));
+  "test monopoly2" >:: (fun _ -> assert_equal true 
+                           (cmp_set_like_lists ["Mediterranean Avenue" ; 
+                                                "Baltic Avenue"] 
+                              (monopoly_group test_board2 "Brown")));
   "test house price" >:: (fun _ -> assert_equal (Some 50) 
                              (house_cost test_board "Boardwalk"));
   "test hotel price" >:: (fun _ -> assert_equal (Some 100) 

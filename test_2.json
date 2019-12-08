@@ -1,6 +1,13 @@
 {
   "squares": [
     {
+      "name": "GO",
+      "color": "None",
+      "cost": "0",
+      "type": "GO",
+      "rent": "100"
+    },
+    {
       "name": "Mediterranean Avenue",
       "color": "Brown",
       "cost": "0",
@@ -8,13 +15,6 @@
       "rent": "100",
       "house": "50",
       "hotel": "100"
-    },
-    {
-      "name": "Chance",
-      "color": "None",
-      "cost": "50",
-      "type": "Card",
-      "rent": "100"
     },
     {
       "name": "Baltic Avenue",

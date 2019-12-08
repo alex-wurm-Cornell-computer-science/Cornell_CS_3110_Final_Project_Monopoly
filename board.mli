@@ -77,6 +77,10 @@ val card_description : board -> string -> string
       squares in the board*)
 val size : board -> int 
 
+(** [monopoly_group_named b pr] returns the monopoly group [pr] belongs to. 
+    Raises [UnknownSquare Prop] if [prop] is not in a monopoly group. *)
+val monopoly_group_named : board -> prop_name -> prop_name list
+
 (** [monopoly_group b col] returns the list of properties in the monopoly group
     with color [col] in [b]. A monopoly group is a set of properties
       that when owned together form a monopoly. Raises [UnknownSquare col] if 

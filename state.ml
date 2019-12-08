@@ -82,8 +82,7 @@ let player_status st =
 let current_location st = 
   fst (List.assoc (current_player st) (locations st))
 
-let curr_player_inventory st = 
-  let _ = print_string "a" in 
+let curr_player_inventory st =  
   List.assoc (st.curr_player) (st.inventories)
 
 
@@ -274,7 +273,6 @@ let wealthiest_player brd st =
       let curr_wealth = curr_wallet + curr_props in 
       let next_st = {st with inventories = t} in 
       let xs = max_wealth brd next_st in 
-      let _ = print_string "44" in 
       if curr_wealth > snd (List.hd xs) then (current_player st',curr_wealth) :: []
       else if curr_wealth < snd (List.hd xs) then xs
       else (current_player st',curr_wealth) :: xs
@@ -362,22 +360,17 @@ let sell bd prop st =
 
 let pay_rent bd prop st =  
   let lst = inventories st in 
-  let () = print_string "here3" in
   let rec owner prop lst =
     match lst with
     | [] -> 0
     | h::t -> if List.mem prop (snd h) then fst h else  
         owner prop t
   in
-  let () = print_string "here4" in 
   let pay_to = owner prop lst in
   if pay_to = 0 || pay_to = (current_player st) then Legal st else 
-    let () = print_string "here5" in 
-    let pay_amt = ((rent bd prop) + ((rent bd prop) * ((houses st prop) + (hotels st prop)))) in
+    let pay_amt = (rent bd prop) + ((rent bd prop) * ((houses st prop) + (hotels st prop))) in
     match earn_cash st (-pay_amt) with 
     | Legal st1 -> 
-      let () = print_string "here6 " in 
-      let () = print_int (List.assoc 2 (wallets st1)) in
       let total_cash = wallets st1 in 
       let curr_cash = List.assoc pay_to total_cash in 
       let trimmed = List.remove_assoc pay_to total_cash in 
@@ -399,17 +392,18 @@ let pay_rent bd prop st =
     | _ -> let () = print_string "here7" in Illegal
 
 let build_houses bd st prop n  = 
+  let () = print_string "0" in 
   if is_buildable bd prop then 
-    let monopoly_group = monopoly_group bd prop in 
-    let player_prps = List.assoc st.curr_player st.inventories in 
-    if List.for_all (fun s -> List.mem s player_prps) monopoly_group then 
+    let monopoly_group = monopoly_group_named bd prop in
+    let player_prps = List.assoc st.curr_player st.inventories in     
+    if List.for_all (fun s -> List.mem s player_prps) monopoly_group then  
       let house_cost = match house_cost bd prop with 
         | Some v -> v * n
         | None -> raise (Unbuildable prop) in
-      if not (List.assoc st.curr_player st.wallets >= n * house_cost) then Illegal else
-        let curr_houses = List.assoc prop st.buildings |> fst in 
+      if not (List.assoc st.curr_player st.wallets >= n * house_cost) then Illegal else       
+        let curr_houses = houses st prop in 
         if (curr_houses + n) <= 3 then 
-          let curr_hotels = List.assoc prop st.buildings |> snd in 
+          let curr_hotels = hotels st prop in 
           let trimmed = List.remove_assoc prop st.buildings in 
           let new_buildings = (prop, (curr_houses+n, curr_hotels)) :: trimmed in 
           let st1 = {
@@ -432,14 +426,14 @@ let build_houses bd st prop n  =
 
 let build_hotels bd st prop n  = 
   if is_buildable bd prop then 
-    if List.assoc prop st.buildings |> fst = 3 then 
+    if houses st prop = 3 then 
       let hotel_cost = match (hotel_cost bd prop) with 
         | Some v -> n * v 
         | None -> raise (Unbuildable prop) in  
       if not (List.assoc st.curr_player st.wallets >= n * hotel_cost) then Illegal else
-        let curr_hotels = List.assoc prop st.buildings |> snd in
+        let curr_hotels = hotels st prop in
         if (curr_hotels + n) <= 3 then 
-          let curr_houses = List.assoc prop st.buildings |> fst in 
+          let curr_houses = houses st prop in 
           let trimmed = List.remove_assoc prop st.buildings in 
           let new_buildings = (prop, (curr_houses-3, curr_hotels+n)) :: trimmed in 
           let st1 = {
