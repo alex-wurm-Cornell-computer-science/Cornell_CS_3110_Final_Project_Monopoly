@@ -346,44 +346,51 @@ let rec interp_command brd res st wc =
                | Win -> Printf.printf "\nYou won, player %d\n" (current_player st); 
                  exit 0;
                | Legal st0 ->         
-                 let res2 = pay_rent brd (nth_square brd (current_location st0)) st0 in                  
+                 let res2 = pay_rent brd (nth_square brd (current_location st0)) st0 in  
                  match res2 with 
                  | Illegal -> Printf.printf "\nTry again, player %d\n" 
-                                (current_player st0);
-                   interp_command brd (Legal st) st wc ;
+                                (current_player st0);interp_command brd (Legal st) st wc ;
                  | Win -> Printf.printf "\nYou won, player %d\n" 
                             (current_player st0); exit 0;
-                 | Legal st' -> 
-                   if (nth_square brd (current_location st') <> "Jail") 
-                   then (
-                     if nth_square brd (current_location st) =  "Jail" then 
-                       Printf.printf "\nYou got out of Jail with a double!\n";
-                     let moved = if (current_location st' - current_location st) > 0
-                       then current_location st' - current_location st
-                       else Board.size brd + 
-                            (current_location st' - current_location st) 
-                     in 
-                     if (current_location st' - current_location st) <= 0 then (
-                       Printf.printf "\nYou rolled %d\n" moved;
-                       Printf.printf "\nYou are at %s\n" 
-                         (Board.nth_square brd (current_location st'));
-                       Printf.printf "\nYou've passed GO, player %d!\n" 
-                         (current_player st');
-                       let res' = earn_cash st' 200 in 
-                       let st'' = update_state st' res' in 
-                       let res' = check_card (current_location st') brd st in
-                       interp_command brd res' st'' wc 
+                 | Legal st1 -> 
+                   let res3 = check_card (current_location st1) brd st1 in                
+                   match res3 with 
+                   | Illegal -> Printf.printf "\nTry again, player %d\n" 
+                                  (current_player st0);
+                     interp_command brd (Legal st) st wc ;
+                   | Win -> Printf.printf "\nYou won, player %d\n" 
+                              (current_player st0); exit 0;
+                   | Legal st' -> 
+                     if (nth_square brd (current_location st') <> "Jail") 
+                     then (
+                       if nth_square brd (current_location st) =  "Jail" then 
+                         Printf.printf "\nYou got out of Jail with a double!\n";
+                       let moved = if (current_location st' - current_location st) > 0
+                         then current_location st' - current_location st
+                         else Board.size brd + 
+                              (current_location st' - current_location st) 
+                       in 
+                       if (current_location st' - current_location st) <= 0 then (
+                         Printf.printf "\nYou rolled %d\n" moved;
+                         Printf.printf "\nYou are at %s\n" 
+                           (Board.nth_square brd (current_location st'));
+                         Printf.printf "\nYou've passed GO, player %d!\n" 
+                           (current_player st');
+                         let res' = earn_cash st' 200 in 
+                         let st'' = update_state st' res' in 
+                         let res' = check_card (current_location st') brd st in
+                         interp_command brd res' st'' wc 
+                       ) else (
+                         Printf.printf "\nYou rolled %d\n" moved;
+                         Printf.printf "\nYou are at %s\n" 
+                           (Board.nth_square brd (current_location st'));
+                         let res' = check_card (current_location st') brd st in
+                         interp_command brd res' st' wc 
+                       )
                      ) else (
-                       Printf.printf "\nYou rolled %d\n" moved;
-                       Printf.printf "\nYou are at %s\n" 
-                         (Board.nth_square brd (current_location st'));
-                       let res' = check_card (current_location st') brd st in
-                       interp_command brd res' st' wc 
-                     )
-                   ) else (
-                     Printf.printf "\nYou need to roll a double or use a Get Out of Jail Free card to leave Jail\n";
-                     interp_command brd res st' wc 
-                   ) 
+                       Printf.printf "\nYou need to roll a double or use a Get Out of Jail Free card to leave Jail\n";
+                       interp_command brd res st' wc 
+                     ) 
               )
     | Inventory -> print_string "\nYou own the following properties:\n";
       disp_inventories st;  

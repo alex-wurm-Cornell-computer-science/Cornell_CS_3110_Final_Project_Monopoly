@@ -8,6 +8,13 @@
       "rent": "0"
     },
     {
+      "name": "Chance",
+      "color": "None",
+      "cost": "50",
+      "type": "Card",
+      "rent": "100"
+    },
+    {
       "name": "Mediterranean Avenue",
       "color": "Brown",
       "cost": "0",
@@ -15,6 +22,13 @@
       "rent": "100",
       "house": "50",
       "hotel": "100"
+    },
+    {
+      "name": "Chance",
+      "color": "None",
+      "cost": "50",
+      "type": "Card",
+      "rent": "100"
     },
     {
       "name": "Baltic Avenue",
@@ -32,6 +46,12 @@
       "description": "Sometime ago you started a ponzi scheme. It is very profitable. Collect $100",
       "payment": "100",
       "type": "Money"
+    },
+    {
+      "name": "move",
+      "description": "gotta go",
+      "payment": "2",
+      "type": "Location"
     }
   ]
 }
