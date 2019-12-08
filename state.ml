@@ -408,7 +408,7 @@ let build_houses bd st prop n  =
       let house_cost = match house_cost bd prop with 
         | Some v -> v * n
         | None -> raise (Unbuildable prop) in
-      if not (List.assoc st.curr_player st.wallets >= house_cost) then Illegal else
+      if not (List.assoc st.curr_player st.wallets >= n * house_cost) then Illegal else
         let curr_houses = List.assoc prop st.buildings |> fst in 
         if (curr_houses + n) <= 3 then 
           let curr_hotels = List.assoc prop st.buildings |> snd in 
@@ -438,7 +438,7 @@ let build_hotels bd st prop n  =
       let hotel_cost = match (hotel_cost bd prop) with 
         | Some v -> n * v 
         | None -> raise (Unbuildable prop) in  
-      if not (List.assoc st.curr_player st.wallets >= hotel_cost) then Illegal else
+      if not (List.assoc st.curr_player st.wallets >= n * hotel_cost) then Illegal else
         let curr_hotels = List.assoc prop st.buildings |> snd in
         if (curr_hotels + n) <= 3 then 
           let curr_houses = List.assoc prop st.buildings |> fst in 

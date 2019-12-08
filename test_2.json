@@ -1,0 +1,37 @@
+{
+  "squares": [
+    {
+      "name": "GO",
+      "color": "None",
+      "cost": "0",
+      "type": "GO",
+      "rent": "0"
+    },
+    {
+      "name": "Mediterranean Avenue",
+      "color": "Brown",
+      "cost": "0",
+      "type": "Property",
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
+    },
+    {
+      "name": "Baltic Avenue",
+      "color": "Brown",
+      "cost": "100",
+      "type": "Property",
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
+    }
+  ],
+  "cards": [
+    {
+      "name": "gain money",
+      "description": "Sometime ago you started a ponzi scheme. It is very profitable. Collect $100",
+      "payment": "100",
+      "type": "Money"
+    }
+  ]
+}

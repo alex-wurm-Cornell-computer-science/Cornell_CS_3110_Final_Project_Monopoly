@@ -93,5 +93,12 @@
       "hotel": "100"
     }
   ],
-  "cards": []
+  "cards": [
+    {
+      "name": "gain money",
+      "description": "Sometime ago you started a ponzi scheme. It is very profitable. Collect $100",
+      "payment": "100",
+      "type": "Money"
+    }
+  ]
 }
