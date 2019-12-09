@@ -71,12 +71,10 @@ let jail_board = from_json (Yojson.Basic.from_file "test_goojf.json")
 let tax_board = from_json (Yojson.Basic.from_file "tax_board.json")
 
 (** Tests for functions in [Board.ml]. For the purposes of testing these functions
-we generated [test_board] and the smaller [test_board2]. We also hard-coded the roll
-function to roll a 1 each time the player rolls the dice. This strategy allowed us
-to save time with constructing states by initializing states from each test board
-and moving quickly to the relevant space we wanted to test actions on. You can
-hard-code the roll option by commenting out lines ## in State.ml and uncommenting
-lines ##. Make sure to revert this change before playing the game regularly.*)
+    we generated [test_board] and the smaller [test_board2]. We tested every function 
+    in [Board.mli] using a combination of black box and glass box testing. A smaller 
+    board, test_board, was created to make testing easier. It is a truncated version
+    of real_board, which is a standard monopoly board. *)
 let board_tests_valid = [
   "test size" >:: (fun _ -> assert_equal 12 (size test_board));
   "test cost" >:: (fun _ -> assert_equal 100 (cost test_board "Baltic Avenue"));
@@ -163,12 +161,12 @@ let board_tests_valid = [
 ]
 
 (** Tests for functions in [State.ml]. For the purposes of testing these functions
-we generated [test_goojf], [jail_board], and [tax_board]. We also hard-coded the roll
-function to roll a 1 each time the player rolls the dice. This strategy allowed us
-to save time with constructing states by initializing states from each test board
-and moving quickly to the relevant space we wanted to test actions on. You can
-hard-code the roll option by commenting out lines ## in State.ml and uncommenting
-lines ##. Make sure to revert this change before playing the game regularly.*)
+    we generated [test_goojf], [jail_board], and [tax_board]. We also hard-coded the roll
+    function to roll a 1 each time the player rolls the dice. This strategy allowed us
+    to save time with constructing states by initializing states from each test board
+    and moving quickly to the relevant space we wanted to test actions on. You can
+    hard-code the roll option by commenting out lines ## in State.ml and uncommenting
+    lines ##. Make sure to revert this change before playing the game regularly.*)
 let state_tests = 
   let st = init_state real_board 2 in 
   let cash_state = match (earn_cash st (-200)) with 
@@ -278,8 +276,9 @@ let state_tests =
   ]
 
 (** The test suite encapsulates all test groups generated in [test.ml]. To add a new
-group of tests to runs when using the make test command, enter the name of that test
-in the brackets below. *)
+    group of tests to runs when using the make test command, enter the name of that test
+    in the brackets below. The main module was tested through playtesting. Its
+    function rely on direct player input, so we did not test them with an OUnit suite *)
 let suite =
   "test suite for A2"  >::: List.flatten [
     board_tests_valid;
