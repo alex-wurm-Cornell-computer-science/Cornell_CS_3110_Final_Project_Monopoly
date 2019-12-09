@@ -557,10 +557,11 @@ let get_out_of_jail brd st =
                        square_pos brd) + 1 in 
         let trimmed_locs = List.remove_assoc (st.curr_player) st.locations in 
         let loc_list = (st.curr_player, (new_loc, true)) :: trimmed_locs in 
-        let pl_items =  List.filter (fun c -> c = card) (curr_player_items st) in 
+        let pl_items =  List.filter (fun c -> c <> card) (curr_player_items st) in 
         let trimmed_items = List.remove_assoc st.curr_player st.items in 
         let new_items = (st.curr_player, pl_items) :: trimmed_items in 
-        let st1 = {
+        let new_cards = (cards st) @ [card] in 
+        Legal {
           curr_player = st.curr_player;
           num_players = num_players st;
           locations = loc_list;
@@ -570,10 +571,9 @@ let get_out_of_jail brd st =
           wallets = wallets st;
           total_assets = total_assets st;
           buildings = st.buildings;
-          cards = cards st;
+          cards = new_cards;
           player_status = player_status st; 
-        } in 
-        move_cards brd card st1
+        }  
     end 
   | _ -> Illegal
 

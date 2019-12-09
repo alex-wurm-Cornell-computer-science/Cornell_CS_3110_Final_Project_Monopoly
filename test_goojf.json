@@ -50,6 +50,12 @@
       "description": "Get out of jail free",
       "payment": "0",
       "type": "LeaveJail"
+    },
+    {
+      "name": "gain money",
+      "description": "Sometime ago you started a ponzi scheme. It is very profitable. Collect $100",
+      "payment": "100",
+      "type": "Money"
     }
   ]
 }

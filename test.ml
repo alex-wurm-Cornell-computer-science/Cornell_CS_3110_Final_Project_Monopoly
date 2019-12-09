@@ -235,6 +235,7 @@ let state_tests =
     "get out of jail card in items" >:: (fun _ -> assert_equal ["get out"] (curr_player_items pickup_goojf1));
     "get out of jail to next space" >:: (fun _ -> assert_equal "Boardwalk" ((current_location get_out) |> nth_square jail_board));
     "get out of jail card is used" >:: (fun _ -> assert_equal [] (curr_player_items get_out));
+    "get out of jail card is returned" >:: (fun _ -> assert_equal ["gain money";"get out"] (cards get_out));
   ]
 
 let suite =
