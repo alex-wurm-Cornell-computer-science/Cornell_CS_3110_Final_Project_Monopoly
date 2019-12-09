@@ -12,16 +12,9 @@
       "color": "Brown",
       "cost": "0",
       "type": "Property",
-      "rent": "100",
+      "rent": "500",
       "house": "50",
       "hotel": "100"
-    },
-    {
-      "name": "Community Chest",
-      "color": "None",
-      "cost": "0",
-      "type": "Card",
-      "rent": "100"
     },
     {
       "name": "Baltic Avenue",
