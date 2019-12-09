@@ -151,7 +151,7 @@ let state_tests =
       end  
     | _ -> failwith "" in 
   [
-    "earning cash " >:: (fun _ -> assert_equal 1300 (List.assoc 1 
+    "earning cash" >:: (fun _ -> assert_equal 1300 (List.assoc 1 
                                                        (wallets cash_state)));
     "index of location" >:: (fun _ -> assert_equal 0 
                                 (List.assoc 1 (locations st) |> fst));
@@ -162,7 +162,18 @@ let state_tests =
                                           ["lose money" ; "gain money"; "jail"; 
                                            "Reading"]
                                           (cards pick_up_card));
-    "curr player " >:: (fun _ -> assert_equal 1 (current_player st));
+    "curr player" >:: (fun _ -> assert_equal 1 (current_player st));
+    "next player" >:: (fun _ -> assert_equal 2 (let st1 = match roll real_board (init_state real_board 2) with
+                                                | Legal sti -> sti
+                                                | Illegal -> failwith "" 
+                                                | Win -> failwith ""
+                                                in 
+                                                let st2 = match next_turn st1 with 
+                                                | Legal stn -> stn
+                                                | Illegal -> failwith ""
+                                                | Win -> failwith ""
+                                                in 
+                                                current_player st2));
     "num players" >:: (fun _ -> assert_equal 2 (num_players st));
     "locs1" >:: (fun _ -> assert_equal 0 ( 
         List.assoc 2 (locations st) |> fst));
@@ -173,9 +184,10 @@ let state_tests =
                                 (curr_player_wallet rolled_bought));
     "houses not built" >:: (fun _ -> assert_equal 0 
                                (houses rolled_bought "Mediterranean Avenue" ));
-
+    "hotels not built" >:: (fun _ -> assert_equal 0 
+                               (hotels rolled_bought "Mediterranean Avenue" ));
+    "wealth same after buying" >:: (fun _ -> assert_equal 60 (inventory_value real_board rolled_bought));
   ]
-
 
 let suite =
   "test suite for A2"  >::: List.flatten [
