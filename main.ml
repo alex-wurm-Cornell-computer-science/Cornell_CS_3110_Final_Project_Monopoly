@@ -52,7 +52,7 @@ let rec most_money () =
   in 
   if mon < 1700 || mon > 20580 then begin
     print_string "\nInvalid quantity of money to win the game. \ 
-    Please select a quantity between 1700 and 205890. \n";
+    Please select a quantity between 1700 and 20580. \n";
     most_money ()
   end
   else mon
@@ -481,6 +481,13 @@ let rec interp_command brd res st wc =
       interp_command brd res' st' wc 
 
     | Game -> print_game brd st; interp_command brd res st wc 
+    | Use -> let new_st = (match get_out_of_jail brd st with
+             | Legal st' -> print_string "\nYou got out of jail using your \
+             Get Out of Jail Free Card! \n"; st'
+             | Illegal -> print_string "\nYou can't get out of jail right now!\n"; st 
+             | Win -> print_string "\nLooks like you've cheated, try again!\n"; st)
+             in 
+             interp_command brd (Legal new_st) new_st wc
   )
 
 (** [continue_game adv st result] updates the state of the game, prints the
