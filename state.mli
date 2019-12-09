@@ -183,3 +183,8 @@ val hotels : t -> Board.prop_name -> int
 (** [next_card st] returns the card at the top of the pile 
       Requires: [cards st] is not empty. *)
 val next_card : t -> string 
+
+(** [get_out_of_jail brd st] allows the current player to leave jail, returning 
+      a new state, [Legal st']. Return [Illegal] if the player cannot use the 
+      card to leave jail.] *)
+val get_out_of_jail : board -> t -> result

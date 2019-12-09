@@ -537,3 +537,45 @@ let move_cards brd crd st =
     }
 
 let next_card st = List.hd (cards st)
+
+(** [has_jail_card st] returns [Some crd] if the current player has a get out 
+    of jail card, where crd is the name of the card and None otherwise.  *)
+let has_jail_card brd st =  
+  try  
+    Some (List.find (fun card -> card_type brd card = LeaveJail) 
+            (curr_player_items st));
+  with 
+  | _ -> None
+
+
+
+let get_out_of_jail brd st = 
+  match current_location st |> nth_square brd |> square_type brd  with 
+  | Jail -> begin 
+      match  (has_jail_card brd st) with 
+      | None -> Illegal
+      | Some card -> 
+        let new_loc = (current_location st |> nth_square brd |> 
+                       square_pos brd) + 1 in 
+        let trimmed_locs = List.remove_assoc (st.curr_player) st.locations in 
+        let loc_list = (st.curr_player, (new_loc, true)) :: trimmed_locs in 
+        let pl_items =  List.filter (fun c -> c = card) (curr_player_items st) in 
+        let trimmed_items = List.remove_assoc st.curr_player st.items in 
+        let new_items = (st.curr_player, pl_items) :: trimmed_items in 
+        let st1 = {
+          curr_player = st.curr_player;
+          num_players = num_players st;
+          locations = loc_list;
+          inventories = inventories st;
+          doubles_rolled = st.doubles_rolled;
+          items = new_items;
+          wallets = wallets st;
+          total_assets = total_assets st;
+          buildings = st.buildings;
+          cards = cards st;
+          player_status = player_status st; 
+
+        } in 
+        move_cards brd card st1
+    end 
+  | _ -> Illegal
