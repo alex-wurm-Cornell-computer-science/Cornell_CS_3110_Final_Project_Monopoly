@@ -174,8 +174,6 @@ let square_color (b : board) (prop : string) =
 let cards b = 
   List.map (fun x -> x.c_name) b.cards 
 
-
-
 let card_description b cd = 
   try 
     let card = List.find (fun k -> k.c_name = cd) b.cards in 
@@ -242,7 +240,6 @@ let is_buildable bd prop =
   with 
   | Not_found -> raise (UnknownSquare prop)
 
-
 let is_buyable bd prop = 
   try 
     let p = List.find (fun s -> s.name = prop) bd.squares in 
@@ -258,7 +255,6 @@ let card_type bd cd =
     card.c_type
   with 
   | exn -> raise (UnknownCard cd)
-
 
 let card_payment bd cd = 
   try 

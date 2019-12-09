@@ -106,15 +106,12 @@ let update_state old_st res =
   | Win -> old_st
 
 let rec next_turn st = 
-  let curr_player = current_player st in 
-  let total_loc = locations st in 
-  let total_status = player_status st in 
-  let curr_loc = List.assoc curr_player total_loc in 
-  let curr_status = List.assoc curr_player total_status in 
-  if (curr_status) then (
-    if (snd curr_loc) then (
-      let trimmed = List.remove_assoc curr_player total_loc in 
-      let new_loc = (curr_player, (fst curr_loc,false))::trimmed in 
+  let curr_loc = List.assoc st.curr_player (locations st) in 
+  let curr_status = List.assoc st.curr_player (player_status st) in 
+  if curr_status then (
+    if snd curr_loc then (
+      let trimmed = List.remove_assoc st.curr_player st.locations in 
+      let new_loc = (st.curr_player, (fst curr_loc,false))::trimmed in 
       Legal {
         curr_player = ((current_player st) mod (num_players st)) + 1;
         num_players = num_players st;
@@ -258,7 +255,6 @@ let inventory_value brd st =
       (Board.cost brd p) + house_costs + hotel_costs else 
       cost brd p
   in
-
   let inv_values = List.map prop_value (curr_player_inventory st) in
   List.fold_left (fun acc x -> acc + x) 0 inv_values
 
@@ -576,8 +572,6 @@ let get_out_of_jail brd st =
         }  
     end 
   | _ -> Illegal
-
-
 
 let pay_tax brd st n = 
   let sq_name = current_location st |> nth_square brd in 

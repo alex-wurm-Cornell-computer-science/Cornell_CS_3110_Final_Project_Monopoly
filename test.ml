@@ -227,17 +227,19 @@ let state_tests =
                                            "Reading"]
                                           (cards pick_up_card));
     "curr player" >:: (fun _ -> assert_equal 1 (current_player st));
-    "next player" >:: (fun _ -> assert_equal 2 (let st1 = match roll real_board (init_state real_board 2) with
-        | Legal sti -> sti
-        | Illegal -> failwith "" 
-        | Win -> failwith ""
-       in 
-       let st2 = match next_turn st1 with 
-         | Legal stn -> stn
-         | Illegal -> failwith ""
-         | Win -> failwith ""
-       in 
-       current_player st2));
+    "next player" >:: (fun _ -> assert_equal 2 
+                          (let st1 = match roll real_board 
+                                             (init_state real_board 2) with
+                           | Legal sti -> sti
+                           | Illegal -> failwith "" 
+                           | Win -> failwith ""
+                           in 
+                           let st2 = match next_turn st1 with 
+                             | Legal stn -> stn
+                             | Illegal -> failwith ""
+                             | Win -> failwith ""
+                           in 
+                           current_player st2));
     "num players" >:: (fun _ -> assert_equal 2 (num_players st));
     "locs1" >:: (fun _ -> assert_equal 0 ( 
         List.assoc 2 (locations st) |> fst));
