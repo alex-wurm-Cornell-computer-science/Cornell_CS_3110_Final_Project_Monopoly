@@ -38,6 +38,7 @@ type command =
   | Next
   | Build of object_phrase
   | Game 
+  | Use
 
 (** Raised when an empty command is parsed. *)
 exception Empty
