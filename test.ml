@@ -62,22 +62,31 @@ let cmp_demo =
    use them, too.  Any .json files in this directory will be included
    by [make zip] as part of your CMS submission. *)
 
+
+(** Boards for unit tests. *)
 let test_board = from_json (Yojson.Basic.from_file "test_board.json")
 let real_board = from_json (Yojson.Basic.from_file "standard_board.json")
 let test_board2 = from_json (Yojson.Basic.from_file "test_2.json")
 let jail_board = from_json (Yojson.Basic.from_file "test_goojf.json")
 let tax_board = from_json (Yojson.Basic.from_file "tax_board.json")
 
+(** Tests for functions in [Board.ml]. For the purposes of testing these functions
+we generated [test_board] and the smaller [test_board2]. We also hard-coded the roll
+function to roll a 1 each time the player rolls the dice. This strategy allowed us
+to save time with constructing states by initializing states from each test board
+and moving quickly to the relevant space we wanted to test actions on. You can
+hard-code the roll option by commenting out lines ## in State.ml and uncommenting
+lines ##. Make sure to revert this change before playing the game regularly.*)
 let board_tests_valid = [
   "test size" >:: (fun _ -> assert_equal 12 (size test_board));
   "test cost" >:: (fun _ -> assert_equal 100 (cost test_board "Baltic Avenue"));
   "test cost 2" >:: (fun _ -> assert_equal 700 
                         (cost real_board "Oriental Avenue"));
-  "invlid property cost" >:: 
+  "invalid property cost" >:: 
   ( fun _ -> try let _ = cost real_board "bad room" in assert false
     with UnknownSquare r -> assert true);
   "test rent" >:: (fun _ -> assert_equal 100 (rent test_board "Baltic Avenue"));
-  "invlid property rent" >:: 
+  "invalid property rent" >:: 
   ( fun _ -> try let _ = rent real_board "bad room" in assert false
     with UnknownSquare r -> assert true);
   "test all squares" >:: (fun _ -> assert_equal true (
@@ -102,17 +111,17 @@ let board_tests_valid = [
                              (house_cost test_board "Boardwalk"));
   "test hotel price" >:: (fun _ -> assert_equal (Some 100) 
                              (hotel_cost test_board "Boardwalk"));
-  "invlid property hotel price" >:: 
+  "invalid property hotel price" >:: 
   ( fun _ -> try let _ = hotel_cost real_board "bad room" in assert false
     with UnknownSquare r -> assert true);
   "test square pos" >:: (fun _ -> assert_equal 4 
                             (square_pos test_board "Income Tax"));
-  "invlid property square pos" >:: 
+  "invalid property square pos" >:: 
   ( fun _ -> try let _ = square_pos real_board "bad room" in assert false
     with UnknownSquare r -> assert true);
   "test nth square" >:: (fun _ -> assert_equal "Chance" 
                             (nth_square test_board 5));
-  "invlid nth square" >:: 
+  "invalid nth square" >:: 
   ( fun _ -> try let _ = nth_square real_board 9000 in assert false
     with UnknownSquare r -> assert true);
   "buildable prop" >:: (fun _ -> assert_equal true 
@@ -138,10 +147,10 @@ let board_tests_valid = [
                          (card_payment real_board "lose money"));
   "card type" >:: (fun _ -> assert_equal LeaveJail
                       (card_type real_board "get out"));
-  "invlid card type" >:: 
+  "invalid card type" >:: 
   ( fun _ -> try let _ = card_type real_board "bad card" in assert false
     with UnknownCard r -> assert true);
-  "invlid card payment" >:: 
+  "invalid card payment" >:: 
   ( fun _ -> try let _ = card_payment real_board "bad card" in assert false
     with UnknownCard r -> assert true);
   "monopoly_group_named" >:: 
@@ -153,8 +162,13 @@ let board_tests_valid = [
       in assert false with UnknownSquare r -> assert true);
 ]
 
-
-
+(** Tests for functions in [State.ml]. For the purposes of testing these functions
+we generated [test_goojf], [jail_board], and [tax_board]. We also hard-coded the roll
+function to roll a 1 each time the player rolls the dice. This strategy allowed us
+to save time with constructing states by initializing states from each test board
+and moving quickly to the relevant space we wanted to test actions on. You can
+hard-code the roll option by commenting out lines ## in State.ml and uncommenting
+lines ##. Make sure to revert this change before playing the game regularly.*)
 let state_tests = 
   let st = init_state real_board 2 in 
   let cash_state = match (earn_cash st (-200)) with 
@@ -263,6 +277,9 @@ let state_tests =
     "tax is paid" >:: (fun _ -> assert_equal 1450 (curr_player_wallet tax_paid));
   ]
 
+(** The test suite encapsulates all test groups generated in [test.ml]. To add a new
+group of tests to runs when using the make test command, enter the name of that test
+in the brackets below. *)
 let suite =
   "test suite for A2"  >::: List.flatten [
     board_tests_valid;
