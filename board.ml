@@ -204,7 +204,9 @@ let monopoly_group_named b prop =
   | _ -> raise (UnknownSquare prop)
 
 let nth_square bd n = 
-  (List.nth bd.squares n).name
+  try (List.nth bd.squares n).name
+  with 
+  | exn -> raise (UnknownSquare "not a valid index in board")
 
 let square_pos b p = 
   let rec pos' squares prop acc = 

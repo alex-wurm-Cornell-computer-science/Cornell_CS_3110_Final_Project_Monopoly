@@ -107,6 +107,9 @@ let board_tests_valid = [
     with UnknownSquare r -> assert true);
   "test nth square" >:: (fun _ -> assert_equal "Chance" 
                             (nth_square test_board 5));
+  "invlid nth square" >:: 
+  ( fun _ -> try let _ = nth_square real_board 9000 in assert false
+    with UnknownSquare r -> assert true);
   "buildable prop" >:: (fun _ -> assert_equal true 
                            (is_buildable test_board "Boardwalk"));
   "not buildable prop" >:: ( fun _ -> assert_equal false 
@@ -117,6 +120,9 @@ let board_tests_valid = [
                            (is_buyable test_board "Chance"));
   "square color" >:: (fun _ -> assert_equal (Some "Dark Blue")
                          (square_color test_board "Park Place"));
+  "invalid square color " >:: 
+  ( fun _ -> try let _ = square_color real_board "bad square" in assert false
+    with UnknownSquare r -> assert true);
   "card payment" >:: (fun _ -> assert_equal (-100) 
                          (card_payment real_board "lose money"));
   "card type" >:: (fun _ -> assert_equal LeaveJail
@@ -134,6 +140,7 @@ let board_tests_valid = [
 
 let state_tests = 
   let st = init_state real_board 2  in 
+  let legal_res = earn_cash st (-200) in 
   let cash_state = match (earn_cash st (-200)) with 
       Legal st' -> st' 
     | _ -> failwith "" in 
@@ -173,6 +180,8 @@ let state_tests =
                                 (curr_player_wallet rolled_bought));
     "houses not built" >:: (fun _ -> assert_equal 0 
                                (houses rolled_bought "Mediterranean Avenue" ));
+    "update state Illegal" >:: (fun _ -> assert_equal st
+                                   (update_state st Illegal));
 
   ]
 

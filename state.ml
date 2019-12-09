@@ -547,8 +547,6 @@ let has_jail_card brd st =
   with 
   | _ -> None
 
-
-
 let get_out_of_jail brd st = 
   match current_location st |> nth_square brd |> square_type brd  with 
   | Jail -> begin 
@@ -574,7 +572,6 @@ let get_out_of_jail brd st =
           buildings = st.buildings;
           cards = cards st;
           player_status = player_status st; 
-
         } in 
         move_cards brd card st1
     end 

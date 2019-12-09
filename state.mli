@@ -108,7 +108,7 @@ val curr_player_items : t -> card_name list
 val current_status : t -> bool
 
 (** [update_state st res] is [st] from [result] if [result] is 
-    [Legal st], otherwise if [result] is [Illegal] it's [old_state].*)
+    [Legal st], otherwise if [result] is [Illegal] it's [st].*)
 val update_state : t -> result -> t 
 
 (** [next_turn st] is Legal st', where st' has an incremented value for the 

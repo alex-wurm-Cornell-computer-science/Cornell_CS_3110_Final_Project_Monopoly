@@ -52,7 +52,7 @@ let rec most_money () =
   in 
   if mon < 1700 || mon > 20580 then begin
     print_string "\nInvalid quantity of money to win the game. \n 
-    Please select a quantity between 1700 and 205890. \n";
+    Please select a quantity between 1700 and 20580. \n";
     most_money ()
   end
   else mon
@@ -400,7 +400,7 @@ let rec interp_command brd res st wc =
       interp_command brd res st wc     
     | Buy -> if nth_square brd (current_location st) <> "Jail" then (
         print_string "\nAre you sure you would like to buy this property?\n";
-        let confirmation = read_line() in 
+        let confirmation = String.trim (read_line()) in 
         if confirmation = "yes" then
           (let prop = (State.current_location st) |> Board.nth_square brd in 
            let res = State.buy brd prop st in
@@ -434,7 +434,7 @@ let rec interp_command brd res st wc =
        else print_string "\n Invalid response, please try again. \n"; *)
     | Sell p -> if nth_square brd (current_location st) <> "Jail" then (
         print_string "\nAre you sure you would like to sell this property?\n";
-        let confirmation = read_line() in 
+        let confirmation = String.trim (read_line()) in 
         if confirmation = "yes" then
           (let prop = parse_obj_phrase p in 
            let res = State.sell brd prop st in
