@@ -242,6 +242,22 @@ let check_card pos brd st =
     end
   | _ -> Legal st
 
+(** NEED TO CHECK BANKRUPTCY*)
+let rec check_tax brd st = 
+  let sq_name = current_location st |> nth_square brd in 
+  match square_type brd sq_name with 
+  | Tax -> 
+    let () = print_string "\n You landed on a tax square. Time to pay! The dice are being rolled!" in 
+    let mult = (Random.int 5) + (Random.int 5) + 2 in 
+    begin 
+      match pay_tax brd st mult with 
+      | Legal st' -> st'
+      | _ -> st
+    end 
+  | _ -> st
+
+
+
 (** [interp_command brd st command] allows the user to play the game by
     printing an exit message if the input command is [Quit] or by inspecting a 
     [Go] message to determine what action to perform. If the command is [Legal]
@@ -342,7 +358,8 @@ let rec interp_command brd res st wc =
                | Win -> Printf.printf "\nYou won, player %d\n" (current_player st); 
                  exit 0;
                | Legal st0 ->         
-                 let res2 = pay_rent brd (nth_square brd (current_location st0)) st0 in  
+                 let st1 = check_tax brd st in 
+                 let res2 = pay_rent brd (nth_square brd (current_location st1)) st1 in  
                  match res2 with 
                  | Illegal -> Printf.printf "\nTry again, player %d\n" 
                                 (current_player st0);interp_command brd (Legal st) st wc ;

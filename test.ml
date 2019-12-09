@@ -139,8 +139,7 @@ let board_tests_valid = [
 
 
 let state_tests = 
-  let st = init_state real_board 2  in 
-  let legal_res = earn_cash st (-200) in 
+  let st = init_state real_board 2  in  
   let cash_state = match (earn_cash st (-200)) with 
       Legal st' -> st' 
     | _ -> failwith "" in 

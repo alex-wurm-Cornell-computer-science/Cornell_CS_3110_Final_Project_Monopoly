@@ -188,3 +188,6 @@ val next_card : t -> string
       a new state, [Legal st']. Return [Illegal] if the player cannot use the 
       card to leave jail.] *)
 val get_out_of_jail : board -> t -> result
+
+(** [pay_tax brd st] pays the tax given by landing on a tax square. *)
+val pay_tax : board -> t -> int -> result
