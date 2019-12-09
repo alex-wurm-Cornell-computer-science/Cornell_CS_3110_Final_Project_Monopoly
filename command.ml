@@ -20,6 +20,10 @@ exception Empty
 
 exception Malformed
 
+(** [format_command lst] matches a list of strings from a parsed user input
+with one of the user commands of [type command]. If the string is formed correctly,
+meaning the keyword is/is not followed by an [object_phrase] where required, then
+the function returns that command. Else, the function raises a [Malformed] error.*)
 let format_command lst = 
   match lst with 
   | [] -> raise (Empty)
