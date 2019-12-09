@@ -240,8 +240,12 @@ let rec interp_command brd res st wc =
                               (current_player st0);interp_command brd (Legal st) st wc ;
                | Win -> Printf.printf "\nYou won, player %d\n" 
                           (current_player st0); exit 0;
-               | Legal st1 -> 
-                 let res3 = check_card (current_location st1) brd st1 in                
+               | Legal stb -> 
+                 if (curr_player_wallet stb < curr_player_wallet st1) then
+                   let rent_paid = (curr_player_wallet st1 - curr_player_wallet stb) in 
+                   Printf.printf "\nYou paid %d in rent.\n" rent_paid; 
+                 else ();
+                 let res3 = check_card (current_location stb) brd stb in                
                  match res3 with 
                  | Illegal -> Printf.printf "\nTry again, player %d\n" 
                                 (current_player st0);
@@ -280,7 +284,7 @@ let rec interp_command brd res st wc =
                      interp_command brd res st' wc 
                    ) 
             )
-  | Inventory -> print_string "\nYou own the following properties:\n";
+  | Inventory -> print_string "\nThe following properties are owned:\n";
     disp_inventories st;  
     interp_command brd res st wc 
   | Wallet -> print_string "\nYou currently have the following in cash.\n";
@@ -486,7 +490,7 @@ let play_game f =
   let brd = get_board f in
   print_string "\nPlease enter a valid number of players for this game. \n";
   let n = number_of_players () in 
-  print_string "\nPlease enter a the amount of wealth a player must accumulate \
+  print_string "\nPlease enter the amount of wealth a player must accumulate \
                 to win the game\n";
   let w = most_money () in 
   let st = init_state brd n in
@@ -504,10 +508,8 @@ let rec main () =
   | exception End_of_file -> ()
   | file_name -> try play_game file_name with 
       e ->
-      let msg = Printexc.to_string e
-      and stack = Printexc.get_backtrace () in
-      Printf.eprintf "there was an error: %s%s\n" msg stack;
-      raise e
+      print_string "\nInvalid board provided. Please try again.\n";
+      main ()
 
 (* Execute the game engine. *)
 let () = main ()
