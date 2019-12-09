@@ -27,6 +27,7 @@ type t = {
   buildings : (prop_name * ( int * int)) list;
   cards : card_name list;
   player_status : (int * bool) list;
+  in_jail : (int * bool) list;
 }
 
 
@@ -187,3 +188,6 @@ val get_out_of_jail : board -> t -> result
 
 (** [pay_tax brd st] pays the tax given by landing on a tax square. *)
 val pay_tax : board -> t -> int -> result
+
+(** [is_in_jail st] returns [true] if the current player is in jail, false otherwise *)
+val is_in_jail : t -> bool

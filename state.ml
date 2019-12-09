@@ -20,6 +20,7 @@ type t = {
   buildings : (prop_name * ( int * int)) list;
   cards : card_name list;
   player_status : (int * bool) list;
+  in_jail : (int * bool) list 
 }
 
 type result = Legal of t | Illegal | Win
@@ -44,10 +45,14 @@ let init_state brd n =
     buildings = [];
     cards = cards brd;
     player_status = init_lists (n) true [];
+    in_jail = init_lists (n) false []
   } 
 
 let current_player st =
   st.curr_player
+
+let is_in_jail st = 
+  List.assoc st.curr_player st.in_jail
 
 let num_players st = 
   st.num_players
@@ -124,6 +129,7 @@ let rec next_turn st =
         buildings = buildings st;
         cards = cards st;
         player_status = player_status st; 
+        in_jail = st.in_jail
       }
     ) else (
       Legal st
@@ -141,6 +147,7 @@ let rec next_turn st =
       buildings = buildings st;
       cards = cards st;
       player_status = player_status st; 
+      in_jail = st.in_jail
     } in 
     next_turn next_st
   ) else (
@@ -148,8 +155,8 @@ let rec next_turn st =
   )
 
 let roll brd st = 
-  let die1 = 0 in 
-  let die2 = 1 in 
+  let die1 = 10 in 
+  let die2 = 0 in 
   (* let die1 = 3 in 
      let die2 = 3 in  *)
   let curr_player = current_player st in 
@@ -162,6 +169,8 @@ let roll brd st =
     if die1 = die2 then (
       if (doubles_rolled st = 2) then (
         let new_loc = (curr_player, (Board.square_pos brd "Jail",true))::trimmed in 
+        let old_jail = List.remove_assoc curr_player st.in_jail in 
+        let new_jail = (curr_player, true) :: old_jail in 
         Legal {
           curr_player = curr_player;
           num_players = num_players st;
@@ -174,10 +183,14 @@ let roll brd st =
           buildings = buildings st;
           cards = cards st;
           player_status = total_status; 
+          in_jail = new_jail
         }) else (
-        let new_loc = if (nth_square brd ((fst curr_loc + die1 + die2) mod Board.size brd) = "Go To Jail") 
+        let square = nth_square brd ((fst curr_loc + die1 + die2) mod Board.size brd) in 
+        let new_loc = if ( square_type brd square = GoToJail)
           then Board.square_pos brd "Jail" else ((fst curr_loc + die1 + die2) mod Board.size brd) in 
         let new_loc_lst = (curr_player, (new_loc,false))::trimmed in 
+        let old_jail = List.remove_assoc curr_player st.in_jail in 
+        let new_jail = (curr_player, true) :: old_jail in 
         Legal {
           curr_player = curr_player;
           num_players = num_players st;
@@ -190,13 +203,17 @@ let roll brd st =
           buildings = buildings st;
           cards = cards st;
           player_status = total_status;
+          in_jail = new_jail
         }
       )
     ) else (
-      let new_loc = if (nth_square brd ((fst curr_loc) mod Board.size brd) = "Jail") then ((fst curr_loc) mod Board.size brd)
-        else if (nth_square brd ((fst curr_loc + die1 + die2) mod Board.size brd) = "Go To Jail") 
-        then Board.square_pos brd "Jail" 
-        else ((fst curr_loc + die1 + die2) mod Board.size brd) in 
+      let new_loc, new_jail = if is_in_jail st then ((fst curr_loc) mod Board.size brd), st.in_jail
+        else if (square_type brd (nth_square brd ((fst curr_loc + die1 + die2) mod Board.size brd)) = GoToJail) 
+        then 
+          let old_jail = List.remove_assoc curr_player st.in_jail in
+          let new_jail = (curr_player, true) :: old_jail in 
+          Board.square_pos brd "Jail" , new_jail
+        else ((fst curr_loc + die1 + die2) mod Board.size brd), st.in_jail in 
       let new_loc_lst = (curr_player, (new_loc,true))::trimmed in 
       Legal {
         curr_player = curr_player;
@@ -210,6 +227,7 @@ let roll brd st =
         buildings = buildings st;
         cards = cards st;
         player_status = total_status;
+        in_jail = new_jail
       })
   ) else Illegal
 
@@ -291,10 +309,11 @@ let earn_cash st amt =
       buildings = buildings st;
       cards = cards st;
       player_status = player_status st; 
+      in_jail = st.in_jail
     } 
 
 let buy bd prop st = 
-  if is_buyable bd prop then 
+  if is_buyable bd prop && not (is_in_jail st) then 
     if (prop_available prop st) && (enough_funds bd prop st) then
       match (current_location st = square_pos bd prop) with 
       | false -> Illegal 
@@ -317,6 +336,7 @@ let buy bd prop st =
                 buildings = st.buildings;
                 cards = cards st;
                 player_status = player_status st; 
+                in_jail = st.in_jail
               }
           | Illegal -> Illegal
           | Win -> Win
@@ -325,7 +345,7 @@ let buy bd prop st =
   else Illegal
 
 let sell bd prop st = 
-  if is_buyable bd prop then
+  if is_buyable bd prop && not (is_in_jail st) then
     if (List.mem prop (List.assoc st.curr_player st.inventories)) then 
       match (earn_cash st (cost bd prop)) with 
       | Legal st' -> 
@@ -345,6 +365,7 @@ let sell bd prop st =
           buildings = st.buildings;
           cards = cards st;
           player_status = player_status st; 
+          in_jail = st.in_jail
         }
       | _ -> Illegal 
 
@@ -380,14 +401,15 @@ let pay_rent bd prop st =
         total_assets = total_assets st1;
         buildings = st1.buildings;
         cards = cards st1;
-        player_status = player_status st1; 
+        player_status = player_status st1;
+        in_jail = st.in_jail 
       } ;
 
     | _ -> let () = print_string "here7" in Illegal
 
 let build_houses bd st prop n  = 
   let () = print_string "0" in 
-  if is_buildable bd prop then 
+  if is_buildable bd prop  && not (is_in_jail st) then 
     let monopoly_group = monopoly_group_named bd prop in
     let player_prps = List.assoc st.curr_player st.inventories in     
     if List.for_all (fun s -> List.mem s player_prps) monopoly_group then  
@@ -412,6 +434,7 @@ let build_houses bd st prop n  =
             buildings = new_buildings;
             cards = cards st;
             player_status = player_status st; 
+            in_jail = st.in_jail
           } in 
           earn_cash st1 (-n * house_cost) 
         else Illegal
@@ -419,7 +442,7 @@ let build_houses bd st prop n  =
   else Illegal
 
 let build_hotels bd st prop n  = 
-  if is_buildable bd prop then 
+  if is_buildable bd prop && not (is_in_jail st) then 
     if houses st prop = 3 then 
       let hotel_cost = match (hotel_cost bd prop) with 
         | Some v -> n * v 
@@ -441,7 +464,8 @@ let build_hotels bd st prop n  =
             total_assets = total_assets st;
             buildings = new_buildings;
             cards = cards st;
-            player_status = player_status st; 
+            player_status = player_status st;
+            in_jail = st.in_jail 
           } in 
           match house_cost bd prop with 
           | None -> raise (UnknownCard prop)
@@ -459,7 +483,11 @@ let card_action bd cd st =
     let new_loc = card_payment bd cd in 
     let curr_loc = List.assoc st.curr_player st.locations in 
     let trimmed = List.remove_assoc st.curr_player st.locations in
-    let new_locations = (st.curr_player, (new_loc,false)) :: trimmed in 
+    let new_locations = (st.curr_player, (new_loc,false)) :: trimmed in
+    let jail = 
+      if new_loc|> nth_square bd |> square_type bd = Jail then 
+        let old_jail = List.remove_assoc st.curr_player st.in_jail in 
+        (st.curr_player, true) :: old_jail else st.in_jail in 
     let st1 = {
       curr_player = st.curr_player;
       num_players = num_players st;
@@ -472,12 +500,15 @@ let card_action bd cd st =
       buildings = st.buildings;
       cards = cards st;
       player_status = player_status st; 
+      in_jail = jail
     } in 
     if fst curr_loc > new_loc then earn_cash st1 200 else Legal st1
   | LeaveJail -> 
     let curr_items = List.assoc st.curr_player st.items in 
     let trimmed = List.remove_assoc st.curr_player st.items in 
     let new_items = (st.curr_player, cd :: curr_items) :: trimmed in 
+    let old_jail = List.remove_assoc st.curr_player st.in_jail in 
+    let new_jail = (st.curr_player, false) :: old_jail in 
     Legal {
       curr_player = st.curr_player;
       num_players = num_players st;
@@ -489,7 +520,8 @@ let card_action bd cd st =
       total_assets = total_assets st;
       buildings = st.buildings;
       cards = cards st;
-      player_status = player_status st; 
+      player_status = player_status st;
+      in_jail = new_jail
     }
 
 let move_cards brd crd st = 
@@ -509,6 +541,7 @@ let move_cards brd crd st =
       buildings = st.buildings;
       cards = new_cards;
       player_status = player_status st; 
+      in_jail = st.in_jail
     }
   | LeaveJail -> 
     let curr_invent = List.assoc st.curr_player st.items in 
@@ -527,7 +560,8 @@ let move_cards brd crd st =
       total_assets = total_assets st;
       buildings = st.buildings;
       cards = new_cards;
-      player_status = player_status st; 
+      player_status = player_status st;
+      in_jail = st.in_jail 
     }
 
 let next_card st = List.hd (cards st)
@@ -555,6 +589,8 @@ let get_out_of_jail brd st =
         let trimmed_items = List.remove_assoc st.curr_player st.items in 
         let new_items = (st.curr_player, pl_items) :: trimmed_items in 
         let new_cards = (cards st) @ [card] in 
+        let old_jail = List.remove_assoc (st.curr_player) st.in_jail in 
+        let new_jail = (st.curr_player, false) :: old_jail in 
         Legal {
           curr_player = st.curr_player;
           num_players = num_players st;
@@ -567,6 +603,7 @@ let get_out_of_jail brd st =
           buildings = st.buildings;
           cards = new_cards;
           player_status = player_status st; 
+          in_jail = new_jail
         }  
     end 
   | _ -> Illegal
@@ -588,4 +625,6 @@ let pay_tax brd st n =
     buildings = st.buildings;
     cards = cards st;
     player_status = player_status st; 
+    in_jail = st.in_jail
   }
+

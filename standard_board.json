@@ -341,7 +341,7 @@
     {
       "name": "jail",
       "description": "Life isn't always fair. Life in jail is never fair. Good luck in jail!",
-      "payment": "30",
+      "payment": "10",
       "type": "Location"
     },
     {
