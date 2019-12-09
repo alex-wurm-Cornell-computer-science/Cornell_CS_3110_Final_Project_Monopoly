@@ -76,7 +76,7 @@ let board_tests_valid = [
   ( fun _ -> try let _ = cost real_board "bad room" in assert false
     with UnknownSquare r -> assert true);
   "test rent" >:: (fun _ -> assert_equal 100 (rent test_board "Baltic Avenue"));
-  "invlid property cost" >:: 
+  "invlid property rent" >:: 
   ( fun _ -> try let _ = rent real_board "bad room" in assert false
     with UnknownSquare r -> assert true);
   "test all squares" >:: (fun _ -> assert_equal true (
@@ -94,6 +94,9 @@ let board_tests_valid = [
                            (cmp_set_like_lists ["Mediterranean Avenue" ; 
                                                 "Baltic Avenue"] 
                               (monopoly_group test_board2 "Brown")));
+  "invalid monopoly group" >:: 
+  ( fun _ -> try let _ = monopoly_group real_board "bad room" in assert false
+    with UnknownSquare r -> assert true);
   "test house price" >:: (fun _ -> assert_equal (Some 50) 
                              (house_cost test_board "Boardwalk"));
   "test hotel price" >:: (fun _ -> assert_equal (Some 100) 
@@ -115,8 +118,14 @@ let board_tests_valid = [
                            (is_buildable test_board "Boardwalk"));
   "not buildable prop" >:: ( fun _ -> assert_equal false 
                                (is_buildable test_board "Chance"));
+  "buildable bad prop" >:: 
+  ( fun _ -> try let _ = is_buildable test_board "bad square" in assert false
+    with UnknownSquare r -> assert true);
   "buyable prop" >:: (fun _ -> assert_equal true 
                          (is_buyable test_board "Baltic Avenue"));
+  "buyable bad prop" >:: 
+  ( fun _ -> try let _ = is_buyable test_board "bad square" in assert false
+    with UnknownSquare r -> assert true);
   "unbuyable prop" >:: (fun _ -> assert_equal false 
                            (is_buyable test_board "Chance"));
   "square color" >:: (fun _ -> assert_equal (Some "Dark Blue")
@@ -134,7 +143,13 @@ let board_tests_valid = [
   "invlid card payment" >:: 
   ( fun _ -> try let _ = card_payment real_board "bad card" in assert false
     with UnknownCard r -> assert true);
-
+  "monopoly_group_named" >:: 
+  (fun _ -> assert_equal true (cmp_set_like_lists 
+                                 ["Mediterranean Avenue" ; "Baltic Avenue"] 
+                                 (monopoly_group_named test_board "Baltic Avenue")));
+  "bad monopoly named" >:: 
+  ( fun _ -> try let _ = (monopoly_group_named real_board "bad prop") 
+      in assert false with UnknownSquare r -> assert true);
 ]
 
 
@@ -170,7 +185,7 @@ let state_tests =
   let move21 = match (roll jail_board turn2) with 
     | Legal st4 -> st4
     | _ -> failwith "" in 
-   let pickup_goojf2 = match move_cards jail_board "get out" move21 with
+  let pickup_goojf2 = match move_cards jail_board "get out" move21 with
     | Legal st5 -> st5
     | _ -> failwith "" in
   let turn3 = match (next_turn pickup_goojf2) with

@@ -197,7 +197,10 @@ let square_type b prop =
   | exn -> raise (UnknownSquare prop)
 
 let monopoly_group b col = 
-  MonopDict.find col b.monopolies
+  try 
+    MonopDict.find col b.monopolies
+  with 
+  | Not_found -> raise (UnknownSquare "not a color in the board")
 
 let monopoly_group_named b prop = 
   match square_color b prop with 
