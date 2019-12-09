@@ -66,6 +66,7 @@ let test_board = from_json (Yojson.Basic.from_file "test_board.json")
 let real_board = from_json (Yojson.Basic.from_file "standard_board.json")
 let test_board2 = from_json (Yojson.Basic.from_file "test_2.json")
 let jail_board = from_json (Yojson.Basic.from_file "test_goojf.json")
+let tax_board = from_json (Yojson.Basic.from_file "tax_board.json")
 
 let board_tests_valid = [
   "test size" >:: (fun _ -> assert_equal 12 (size test_board));
@@ -206,7 +207,13 @@ let state_tests =
   let get_out = match (get_out_of_jail jail_board turn5) with
     | Legal st11 -> st11 
     | _ -> failwith "" in
-
+  let tax_st = init_state tax_board 2 in 
+  let move_tax = match (roll tax_board tax_st) with 
+    | Legal st' -> st'
+    | _ -> failwith "" in
+  let tax_paid = match (pay_tax tax_board move_tax 5) with
+    | Legal st'' -> st''
+    | _ -> failwith "" in
   [
     "earning cash" >:: (fun _ -> assert_equal 1300 (List.assoc 1 
                                                       (wallets cash_state)));
@@ -251,6 +258,7 @@ let state_tests =
     "get out of jail to next space" >:: (fun _ -> assert_equal "Boardwalk" ((current_location get_out) |> nth_square jail_board));
     "get out of jail card is used" >:: (fun _ -> assert_equal [] (curr_player_items get_out));
     "get out of jail card is returned" >:: (fun _ -> assert_equal ["gain money";"get out"] (cards get_out));
+    "tax is paid" >:: (fun _ -> assert_equal 1450 (curr_player_wallet tax_paid));
   ]
 
 let suite =
