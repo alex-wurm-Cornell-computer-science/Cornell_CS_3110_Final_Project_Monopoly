@@ -249,6 +249,8 @@ let rec check_tax brd st =
   | Tax -> 
     let () = print_string "\n You landed on a tax square. Time to pay! The dice are being rolled!" in 
     let mult = (Random.int 5) + (Random.int 5) + 2 in 
+    let () = print_string ("\nYour tax roll was " ^ (string_of_int mult) ^ "\n") 
+    in let () = Printf.printf "\nPay %d\n" (mult * (rent brd sq_name)) in 
     begin 
       match pay_tax brd st mult with 
       | Legal st' -> st'
@@ -358,7 +360,7 @@ let rec interp_command brd res st wc =
                | Win -> Printf.printf "\nYou won, player %d\n" (current_player st); 
                  exit 0;
                | Legal st0 ->         
-                 let st1 = check_tax brd st in 
+                 let st1 = check_tax brd st0 in 
                  let res2 = pay_rent brd (nth_square brd (current_location st1)) st1 in  
                  match res2 with 
                  | Illegal -> Printf.printf "\nTry again, player %d\n" 

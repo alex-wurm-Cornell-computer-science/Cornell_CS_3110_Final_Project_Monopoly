@@ -66,7 +66,8 @@ let parse_type s =
   if s = "GoToJail" then GoToJail else 
   if s = "Property" then Property else 
   if s = "Card" then Card else 
-    Tax
+  if s = "Tax" then Tax else failwith ("RI Violated: " ^ s)
+
 
 (** [get_house j] returns the house field of the given json square [j] *)
 let get_house j = 
