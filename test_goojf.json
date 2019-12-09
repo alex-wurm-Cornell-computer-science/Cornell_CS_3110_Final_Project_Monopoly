@@ -1,0 +1,49 @@
+{
+  "squares": [
+    {
+      "name": "GO",
+      "color": "None",
+      "cost": "0",
+      "type": "GO",
+      "rent": "100"
+    },
+    {
+      "name": "Chance",
+      "color": "None",
+      "cost": "0",
+      "type": "Card",
+      "rent": "100"
+    },
+    {
+      "name": "Go To Jail",
+      "color": "None",
+      "cost": "50",
+      "type": "GoToJail",
+      "rent": "100"
+    },
+    {
+      "name": "Jail",
+      "color": "None",
+      "cost": "0",
+      "type": "Jail",
+      "rent": "100"
+    },
+    {
+      "name": "Boardwalk",
+      "color": "Dark Blue",
+      "cost": "50",
+      "type": "Property",
+      "rent": "100",
+      "house": "50",
+      "hotel": "100"
+    }   
+  ],
+  "cards": [
+    {
+      "name": "get out",
+      "description": "Get out of jail free",
+      "payment": "0",
+      "type": "LeaveJail"
+    }
+  ]
+}

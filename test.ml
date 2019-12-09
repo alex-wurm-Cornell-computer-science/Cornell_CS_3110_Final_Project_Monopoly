@@ -65,6 +65,7 @@ let cmp_demo =
 let test_board = from_json (Yojson.Basic.from_file "test_board.json")
 let real_board = from_json (Yojson.Basic.from_file "standard_board.json")
 let test_board2 = from_json (Yojson.Basic.from_file "test_2.json")
+let jail_board = from_json (Yojson.Basic.from_file "test_goojf.json")
 
 let board_tests_valid = [
   "test size" >:: (fun _ -> assert_equal 12 (size test_board));
@@ -139,8 +140,7 @@ let board_tests_valid = [
 
 
 let state_tests = 
-  let st = init_state real_board 2  in 
-  let legal_res = earn_cash st (-200) in 
+  let st = init_state real_board 2 in 
   let cash_state = match (earn_cash st (-200)) with 
       Legal st' -> st' 
     | _ -> failwith "" in 
@@ -157,6 +157,16 @@ let state_tests =
         | _ -> failwith "" 
       end  
     | _ -> failwith "" in 
+  let jail_st = init_state jail_board 2 in 
+  let move11 = match (roll jail_board jail_st) with 
+    | Legal st1 -> st1 
+    | _ -> failwith "" in
+  let pickup_goojf = match move_cards jail_board "get out" move11 with
+    | Legal st2 -> st2
+    | _ -> failwith "" in
+  (* let turn2 = 
+  let move21 = match (roll jail_board pickup_goojf) *)
+
   [
     "earning cash" >:: (fun _ -> assert_equal 1300 (List.assoc 1 
                                                       (wallets cash_state)));
@@ -197,6 +207,7 @@ let state_tests =
     "hotels not built" >:: (fun _ -> assert_equal 0 
                                (hotels rolled_bought "Mediterranean Avenue" ));
     "wealth same after buying" >:: (fun _ -> assert_equal 60 (inventory_value real_board rolled_bought));
+    "get out of jail card in items" >:: (fun _ -> assert_equal ["get out"] (curr_player_items pickup_goojf));
   ]
 
 let suite =
