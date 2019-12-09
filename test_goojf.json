@@ -44,6 +44,12 @@
       "description": "Get out of jail free",
       "payment": "0",
       "type": "LeaveJail"
+    },
+    {
+      "name": "get out",
+      "description": "Get out of jail free",
+      "payment": "0",
+      "type": "LeaveJail"
     }
   ]
 }

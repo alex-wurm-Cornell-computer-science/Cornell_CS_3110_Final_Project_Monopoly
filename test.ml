@@ -140,11 +140,7 @@ let board_tests_valid = [
 
 
 let state_tests = 
-<<<<<<< HEAD
   let st = init_state real_board 2 in 
-=======
-  let st = init_state real_board 2  in  
->>>>>>> fd51ae41f700fb7e8dc272e919599021fe7a8893
   let cash_state = match (earn_cash st (-200)) with 
       Legal st' -> st' 
     | _ -> failwith "" in 
@@ -165,11 +161,36 @@ let state_tests =
   let move11 = match (roll jail_board jail_st) with 
     | Legal st1 -> st1 
     | _ -> failwith "" in
-  let pickup_goojf = match move_cards jail_board "get out" move11 with
+  let pickup_goojf1 = match move_cards jail_board "get out" move11 with
     | Legal st2 -> st2
     | _ -> failwith "" in
-  (* let turn2 = 
-  let move21 = match (roll jail_board pickup_goojf) *)
+  let turn2 = match (next_turn pickup_goojf1) with
+    | Legal st3 -> st3
+    | _ -> failwith "" in 
+  let move21 = match (roll jail_board turn2) with 
+    | Legal st4 -> st4
+    | _ -> failwith "" in 
+   let pickup_goojf2 = match move_cards jail_board "get out" move21 with
+    | Legal st5 -> st5
+    | _ -> failwith "" in
+  let turn3 = match (next_turn pickup_goojf2) with
+    | Legal st6 -> st6
+    | _ -> failwith "" in 
+  let move12 = match (roll jail_board turn3) with 
+    | Legal st7 -> st7
+    | _ -> failwith "" in
+  let turn4 = match (next_turn move12) with
+    | Legal st8 -> st8
+    | _ -> failwith "" in 
+  let move22 = match (roll jail_board turn4) with 
+    | Legal st9 -> st9
+    | _ -> failwith "" in
+  let turn5 = match (next_turn move22) with
+    | Legal st10 -> st10
+    | _ -> failwith "" in 
+  let get_out = match (get_out_of_jail jail_board turn5) with
+    | Legal st11 -> st11 
+    | _ -> failwith "" in
 
   [
     "earning cash" >:: (fun _ -> assert_equal 1300 (List.assoc 1 
@@ -211,7 +232,9 @@ let state_tests =
     "hotels not built" >:: (fun _ -> assert_equal 0 
                                (hotels rolled_bought "Mediterranean Avenue" ));
     "wealth same after buying" >:: (fun _ -> assert_equal 60 (inventory_value real_board rolled_bought));
-    "get out of jail card in items" >:: (fun _ -> assert_equal ["get out"] (curr_player_items pickup_goojf));
+    "get out of jail card in items" >:: (fun _ -> assert_equal ["get out"] (curr_player_items pickup_goojf1));
+    "get out of jail to next space" >:: (fun _ -> assert_equal "Boardwalk" ((current_location get_out) |> nth_square jail_board));
+    "get out of jail card is used" >:: (fun _ -> assert_equal [] (curr_player_items get_out));
   ]
 
 let suite =
