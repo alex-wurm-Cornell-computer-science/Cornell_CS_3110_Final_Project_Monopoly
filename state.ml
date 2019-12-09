@@ -576,3 +576,24 @@ let get_out_of_jail brd st =
         move_cards brd card st1
     end 
   | _ -> Illegal
+
+
+
+let pay_tax brd st n = 
+  let sq_name = current_location st |> nth_square brd in 
+  let trimmed = List.remove_assoc st.curr_player st.wallets in 
+  let new_money = (curr_player_wallet st) - (n *(rent brd sq_name)) in 
+  let new_wallets = (st.curr_player, new_money) :: trimmed in 
+  Legal {
+    curr_player = st.curr_player;
+    num_players = num_players st;
+    locations = st.locations;
+    inventories = inventories st;
+    doubles_rolled = st.doubles_rolled;
+    items = st.items;
+    wallets = new_wallets;
+    total_assets = total_assets st;
+    buildings = st.buildings;
+    cards = cards st;
+    player_status = player_status st; 
+  }
