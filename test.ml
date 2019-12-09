@@ -140,11 +140,7 @@ let board_tests_valid = [
 
 
 let state_tests = 
-<<<<<<< HEAD
-  let st = init_state real_board 2 in 
-=======
   let st = init_state real_board 2  in  
->>>>>>> fd51ae41f700fb7e8dc272e919599021fe7a8893
   let cash_state = match (earn_cash st (-200)) with 
       Legal st' -> st' 
     | _ -> failwith "" in 
@@ -169,7 +165,7 @@ let state_tests =
     | Legal st2 -> st2
     | _ -> failwith "" in
   (* let turn2 = 
-  let move21 = match (roll jail_board pickup_goojf) *)
+     let move21 = match (roll jail_board pickup_goojf) *)
 
   [
     "earning cash" >:: (fun _ -> assert_equal 1300 (List.assoc 1 

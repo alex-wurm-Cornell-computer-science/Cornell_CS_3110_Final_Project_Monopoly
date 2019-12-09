@@ -1,0 +1,26 @@
+{
+  "squares": [
+    {
+      "name": "GO",
+      "color": "None",
+      "cost": "0",
+      "type": "GO",
+      "rent": "0"
+    },
+    {
+      "name": "Luxury Tax",
+      "color": "None",
+      "cost": "100",
+      "type": "Tax",
+      "rent": "10"
+    }
+  ],
+  "cards": [
+    {
+      "name": "gain money",
+      "description": "Sometime ago you started a ponzi scheme. It is very profitable. Collect $100",
+      "payment": "100",
+      "type": "Money"
+    }
+  ]
+}
