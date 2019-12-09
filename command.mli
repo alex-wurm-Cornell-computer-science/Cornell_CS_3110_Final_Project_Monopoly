@@ -34,7 +34,6 @@ type command =
   | Buy (* Used to purchase a property that you are currently on. *) 
   | Sell of object_phrase (* Used to sell any properties in the current inventory. *)
   | Items (* Used to see what special cards the player holds. *)
-  | Auction of object_phrase (* Used to participate in property auctions. *)
   | Next
   | Build of object_phrase
   | Game 

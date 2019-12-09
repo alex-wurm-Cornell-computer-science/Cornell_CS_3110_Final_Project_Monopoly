@@ -10,7 +10,6 @@ type command =
   | Buy (* Used to purchase a property that you are currently on. *) 
   | Sell of object_phrase (* Used to sell any properties in the current inventory. *)
   | Items (* Used to see what special cards the player holds. *)
-  | Auction of object_phrase (* Used to participate in property auctions. *)
   | Next 
   | Build of object_phrase
   | Game 
@@ -21,9 +20,9 @@ exception Empty
 exception Malformed
 
 (** [format_command lst] matches a list of strings from a parsed user input
-with one of the user commands of [type command]. If the string is formed correctly,
-meaning the keyword is/is not followed by an [object_phrase] where required, then
-the function returns that command. Else, the function raises a [Malformed] error.*)
+    with one of the user commands of [type command]. If the string is formed correctly,
+    meaning the keyword is/is not followed by an [object_phrase] where required, then
+    the function returns that command. Else, the function raises a [Malformed] error.*)
 let format_command lst = 
   match lst with 
   | [] -> raise (Empty)
@@ -34,7 +33,6 @@ let format_command lst =
   | h::t when h = "buy" -> if t = [] then Buy else raise (Malformed)
   | h::t when h = "sell" -> if t = [] then raise (Malformed) else Sell t
   | h::t when h = "items" -> if t = [] then Items else raise (Malformed)
-  | h::t when h = "auction" -> if t = [] then raise (Malformed) else Auction t
   | h::t when h = "next" -> if t = [] then Next else raise (Malformed)
   | h::t when h = "build" -> if t = [] then raise (Malformed) else Build t
   | h::t when h = "game" -> if t = [] then Game else raise Malformed

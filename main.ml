@@ -291,13 +291,6 @@ let rec interp_command brd res st wc =
     interp_command brd res st wc     
   | Buy -> buy_helper brd res st wc 
   | Sell p -> sell_helper brd res st wc p
-  | Auction p -> if nth_square brd (current_location st) <> "Jail" then 
-      (print_string "\nAre you sure you would like to participate in
-                               the auction for this property?\n";
-       interp_command brd res st wc )
-    else (Printf.printf "\nUh oh! You're in Jail, so you can't perform this action\n"; 
-          interp_command brd (Legal st) st wc 
-         )
   | Next -> next_helper brd res st wc
   | Game -> print_game brd st; interp_command brd res st wc 
   | Use -> use_helper brd res st wc

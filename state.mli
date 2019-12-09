@@ -123,10 +123,6 @@ val next_turn : t -> result
     the current player hasn't rolled yet. Otherwise is Illegal.*)
 val roll : Board.board -> t -> result
 
-(** [auction prop st] auctions the property [prop] if the current player of [st]
-    lands on it and chooses not to buy it *)
-val auction : prop_name -> t -> result 
-
 (** [inventory_value brd st] is an integer representing the total value of the 
     properties owned by the current player in [st], combined with the values of 
     any houses and/or hotels on that property *)

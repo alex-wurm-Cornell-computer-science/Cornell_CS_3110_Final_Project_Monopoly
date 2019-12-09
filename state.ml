@@ -236,8 +236,6 @@ let prop_available prop st =
 let enough_funds bd prop st = 
   let price = cost bd prop in (List.assoc (current_player st) (wallets st)) > price
 
-let auction prop st = 
-  failwith ("Unimplemented")
 
 let inventory_value brd st = 
   let prop_value p = 
