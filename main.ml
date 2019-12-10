@@ -43,9 +43,9 @@ let rec number_of_players () =
   end 
 
 (** [rec most_money ()] prompts the user for an input of a number between 1700
-and 20580. If they enter a valid response it converts the string to the 
-corresponding int and returns that value. If they enter an invalid response 
-it re-prompts them for a valid input.*)
+    and 20580. If they enter a valid response it converts the string to the 
+    corresponding int and returns that value. If they enter an invalid response 
+    it re-prompts them for a valid input.*)
 let rec most_money () =
   print_string " > ";
   let ui = read_line () in 
@@ -92,7 +92,7 @@ let rec print_int_list l =
   | h::t -> Printf.printf "%d, " h; print_int_list t
 
 (** [disp_wallet wals] prints the amount of cash in [wals] that each player has 
-at the time the function is called. *)
+    at the time the function is called. *)
 let rec disp_wallet st = 
   match wallets st with 
   | [] -> print_string "\n";
@@ -101,8 +101,8 @@ let rec disp_wallet st =
     disp_wallet st'
 
 (** [disp_inventories st] prints the properties owned by all players at the time
-the function is called as well as the number of houses and hotels on each
-property. *)
+    the function is called as well as the number of houses and hotels on each
+    property. *)
 let rec disp_inventories st = 
   match inventories st with
   | [] -> print_string "\n";
@@ -118,7 +118,7 @@ let rec disp_inventories st =
     let st' = {st with inventories = t} in disp_inventories st'
 
 (** [disp_items st] prints the items held by all players at the time the 
-function is called. *)
+    function is called. *)
 let rec disp_items st = 
   match items st with
   | [] -> print_string "\n";
@@ -127,15 +127,15 @@ let rec disp_items st =
     let st' = {st with items = t} in disp_items st'
 
 (** [parse_obj_phrase lst] takes an input object phrase (a string list of an 
-input with multiple words, such as a property name) and converts it into an 
-single string. *)
+    input with multiple words, such as a property name) and converts it into an 
+    single string. *)
 let parse_obj_phrase lst = 
   let new_str = List.fold_left (fun p n -> p ^ " " ^ n) "" lst in
   String.trim new_str
 
 (** [roll_dice brd st] is the result of a player rolling on their turn. The 
-function also prints a useful message regarding the number of doubles the 
-player has rolled and which indicates if they are going to jail. *)
+    function also prints a useful message regarding the number of doubles the 
+    player has rolled and which indicates if they are going to jail. *)
 let rec roll_dice brd st = 
   let res = roll brd st in 
   match res with 
@@ -162,8 +162,8 @@ let pass_go st =
   State.earn_cash st 200
 
 (** [next_move res st] is the result of the current player attempting to move 
-onto the next player's turn. The function prints a warning if the current 
-player's turn is not yet over. *)
+    onto the next player's turn. The function prints a warning if the current 
+    player's turn is not yet over. *)
 let next_move res st =
   match res with
   | Win -> Win
@@ -175,7 +175,7 @@ let next_move res st =
     | Win -> Win
 
 (** [format_board brd locs] prints the current locations of all players
-in the game at the time the function is called.*)
+    in the game at the time the function is called.*)
 let format_board brd locs = 
   let new_locs = List.map (fun (a,b) -> (a, fst b)) locs in 
   let rec format' brd locs = 
@@ -188,15 +188,15 @@ let format_board brd locs =
   format' brd new_locs
 
 (** [print_game brd st] prints all information about all players in the game.
-These prints include the properties, wallets, and locations of the players.*)
+    These prints include the properties, wallets, and locations of the players.*)
 let print_game brd st = 
   disp_inventories st;
   disp_wallet st;
   format_board brd (locations st); ()
 
 (** [check_card post brd st] checks to see if the player's current position
-is a square where you pick up a card. If it is, then it performs the card action
-but if it isn't it returns the original state unchanged. *)
+    is a square where you pick up a card. If it is, then it performs the card action
+    but if it isn't it returns the original state unchanged. *)
 let check_card pos brd st = 
   match (square_type brd (nth_square brd pos)) with 
   | Card -> 
@@ -212,9 +212,9 @@ let check_card pos brd st =
   | _ -> Legal st
 
 (** [rec check_tax brd st] checks to see if the player's current position
-is a square where you pay a tax. If it is, then it collects the tax, but if
-it isn't it returns the original state unchanged. It also prints a 
-corresponding error message if a tax is paid. *)
+    is a square where you pay a tax. If it is, then it collects the tax, but if
+    it isn't it returns the original state unchanged. It also prints a 
+    corresponding error message if a tax is paid. *)
 let rec check_tax brd st = 
   let sq_name = current_location st |> nth_square brd in 
   match square_type brd sq_name with 
@@ -224,9 +224,10 @@ let rec check_tax brd st =
                            your tax.\n" in 
     let mult = (Random.int 5) + (Random.int 5) + 2 in 
     let () = print_string ("\nYour tax roll was " ^ (string_of_int mult) ^ "\n") 
-    in let () = Printf.printf "\nPay %d\n" (mult * (rent brd sq_name)) in 
+    in let tax = mult * (rent brd sq_name)
+    in let () = Printf.printf "\nPay %d\n" tax in 
     begin 
-      match pay_tax brd st mult with 
+      match earn_cash st (-tax) with 
       | Legal st' -> st'
       | _ -> st
     end 
@@ -523,7 +524,7 @@ and sell_helper brd res st wc p =
         (Printf.printf "\nInvalid response, please try again.\n";
          interp_command brd (Legal st) st wc ))
     else 
-      let () =  print_string "\nYou're in jail teehee\n" in 
+      let () =  print_string "\nYou can't sell this\n" in 
       interp_command brd res st wc
   with 
     UnknownSquare prop -> (Printf.printf "\nInvalid response, \
