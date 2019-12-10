@@ -5,6 +5,9 @@
 ### How to Install
 1. Download our code
 
+### How to Test
+1. See comment in Test.ml, lines 38-46
+
 ### How to Build
 _Note: The actions needed to run and interact with our code are extremely similar
 to those of A2 and A3_
@@ -28,11 +31,10 @@ on the value of the roll
   * Must be performed before moving onto the next player
 * buy
   * Used to purchase an unowned property that the player is currently located on
-  * _Not implemented_
+  * Player will be prompted to confirm the purchase. Type "yes" or "no".
 * sell `<phrase>`
   * Used to sell the specified property so long as it's in the current player's inventory
-* auction
-  * Used to auction off any property that is landed on by a player but not bought by that player
+  * Player will be prompted to confirm the purchase. Type "yes" or "no".
 * next
   * Used to end the current player's turn
   * Must've been preceded by at least a roll command
@@ -41,4 +43,11 @@ on the value of the roll
 * wallet
   * Prints the amount of cash being held by the current player
 * items
-  * Prints the properties owned by all players
+  * Prints the cards every player possesses.
+* build `<phrase>`
+  * Used to specify the property to build houses/hotels on.
+  * To build houses, type "build houses". To build hotels, type "build hotels"
+  * Enter the name of the property to build on.
+  * Enter the number of houses/hotels to build
+* inventories
+  * Prints the properties owned by all the players

@@ -35,7 +35,18 @@ open State
     allowed us to debug them individually, and then testing multiple components 
     ensured that the results of one component did not impact the other components.
 
+    INSTRUCTIONS FOR TESTING: 
+    Because we created truncated boards for running tests, testing will require a 
+    minor change to the released game. In State.ml, function Roll (Line 157),
+    The lines [(* let die1 = (Random.int 5) + 1 in 
+     let die2 = (Random.int 5) + 1 in *)
+    (* let die1 = 3 in 
+     let die2 = 3 in  *)] (158-161) must be commented. Lines [let die1 = 0 in 
+    let die2 = 1 in  ] must be uncommented (162-163). This hard codes the dice roll
+    to 1, allowing the test boards to work.
+
 *)
+
 
 (********************************************************************
    Here are some helper functions for your testing of set-like lists. 
