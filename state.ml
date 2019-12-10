@@ -247,13 +247,14 @@ let hotels st prop =
 
 (** [prop_available prop st] returns false if [prop] is already owned *)
 let prop_available prop st = 
-  let all_owned = List.fold_left (fun acc (a,b) -> b @ acc) [] (inventories st) in 
-  not (List.mem prop all_owned) 
+  let all_owned = List.fold_left (fun acc (a,b) -> b @ acc) [] (inventories st)
+  in not (List.mem prop all_owned) 
 
 (** [enough_funds prop st] returns true if the current player has enough money 
     to buy [prop] in [bd] *)
 let enough_funds bd prop st = 
-  let price = cost bd prop in (List.assoc (current_player st) (wallets st)) > price
+  let price = cost bd prop in (List.assoc (current_player st) (wallets st)) 
+                              > price
 
 
 let inventory_value brd st = 
@@ -314,8 +315,8 @@ let buy bd prop st =
               let curr_invent = List.assoc st'.curr_player st'.inventories in 
               let trimmed = List.remove_assoc st'.curr_player st'.inventories in 
               let new_inv = (st'.curr_player, prop ::curr_invent) :: trimmed in
-              if List.length (List.assoc st'.curr_player new_inv) > 3 then Win else
-                Legal {
+              if List.length (List.assoc st'.curr_player new_inv) > 3 then Win
+              else Legal {
                   curr_player = st.curr_player;
                   num_players = num_players st';
                   locations = locations st';
@@ -487,8 +488,8 @@ let get_out_of_jail brd st =
                        square_pos brd) + 1 in 
         let trimmed_locs = List.remove_assoc (st.curr_player) st.locations in 
         let loc_list = (st.curr_player, (new_loc, true)) :: trimmed_locs in 
-        let pl_items =  List.filter (fun c -> c <> card) (curr_player_items st) in 
-        let trimmed_items = List.remove_assoc st.curr_player st.items in 
+        let pl_items =  List.filter (fun c -> c <> card) (curr_player_items st)
+        in let trimmed_items = List.remove_assoc st.curr_player st.items in 
         let new_items = (st.curr_player, pl_items) :: trimmed_items in 
         let new_cards = (cards st) @ [card] in 
         let old_jail = List.remove_assoc (st.curr_player) st.in_jail in 
