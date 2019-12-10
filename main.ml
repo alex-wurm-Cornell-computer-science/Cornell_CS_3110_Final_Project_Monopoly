@@ -148,8 +148,16 @@ let rec roll_dice brd st =
         (current_player t); 
       res) 
     else if dubs > 0 && dubs <= 2 then (
-      Printf.printf "\nPlayer %d rolled %d pair(s) of doubles\n" 
-        (current_player t) (doubles_rolled t); 
+      let moved = 
+          if (current_location t - current_location st) >= 0
+          then current_location t - current_location st
+          else size brd + 
+               (current_location t - current_location st) 
+        in 
+      Printf.printf "\nPlayer %d rolled %d pair(s) of doubles and moved \
+                    %d spaces.\n" (current_player t) (doubles_rolled t) moved; 
+      let space_name = (current_location st) |> nth_square brd in
+      Printf.printf "\nYou are now at %s.\n" space_name;
       print_string "\nYou can perform actions, but you have to roll again.\n";
       res
     ) else (
@@ -488,7 +496,7 @@ and buy_helper brd res st wc =
     interp_command brd res st wc
   | false -> (print_string "\nAre you sure you would like to \
                             buy this property?\n";
-              Printf.printf "You'd spend $%d.\n" 
+              Printf.printf "\n spend $%d.\n" 
                 (cost brd (nth_square brd (current_location st)));
               print_string " > ";
               let confirmation = String.trim (read_line()) in 
