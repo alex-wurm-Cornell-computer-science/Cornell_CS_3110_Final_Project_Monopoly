@@ -10,10 +10,10 @@ type command =
   | Buy (* Used to purchase a property that you are currently on. *) 
   | Sell of object_phrase (* Used to sell any properties in the current inventory. *)
   | Items (* Used to see what special cards the player holds. *)
-  | Next 
-  | Build of object_phrase
-  | Game 
-  | Use 
+  | Next (* Used to move on to the next player's turn. *)
+  | Build of object_phrase (* Used to build houses or hotels on an owned property. *)
+  | Game (* Used to see an update of the gamestate for all players. *)
+  | Use (* Used to use a Get Out of Jail Free Card. *)
 
 exception Empty
 
