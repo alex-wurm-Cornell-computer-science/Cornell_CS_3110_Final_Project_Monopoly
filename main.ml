@@ -317,7 +317,7 @@ and build_houses_helper brd res st wc prop =
       | (UnknownSquare prop) -> Printf.printf "\n%s is not a property\n" (prop);
         interp_command brd (Legal st) st wc in 
    let () = print_string 
-       ("\n" ^ prop ^ " currently has" ^ (string_of_int current_houses) 
+       ("\n" ^ prop ^ " currently has " ^ (string_of_int current_houses) 
         ^ " houses on it\n") in 
    let () = print_string "\nHow many would you like to build?\n" in 
    let n = try (
@@ -520,7 +520,7 @@ and buy_helper brd res st wc =
 and sell_helper brd res st wc p = 
   try 
     let prop = parse_obj_phrase p in 
-    let can_buy = is_buyable brd prop in 
+    let can_buy = is_buyable brd prop && prop_available prop st in 
     if can_buy && not (is_in_jail st) then (
       print_string "\nAre you sure you would like to sell this property?\n";
       Printf.printf "You'd earn $%d.\n" (cost brd prop);

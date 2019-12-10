@@ -184,6 +184,9 @@ val houses : t -> Board.prop_name -> int
       Requires there are 3 houses on [prop] *)
 val hotels : t -> Board.prop_name -> int
 
+(** [prop_available prop st] returns false if [prop] is already owned *)
+val prop_available : Board.prop_name -> t -> bool
+
 (** [next_card st] returns the card at the top of the pile 
       Requires: [cards st] is not empty. *)
 val next_card : t -> string 
