@@ -24,6 +24,8 @@ type cardType =
 
 (** The type of property names *)
 type prop_name = string
+
+(** The type of card names *)
 type card_name = string
 
 (** Raised when an unknown square is encountered. *)

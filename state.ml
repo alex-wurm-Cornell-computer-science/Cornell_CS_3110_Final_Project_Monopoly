@@ -139,12 +139,12 @@ let rec next_turn st =
   )
 
 let roll brd st = 
-  (*let die1 = (Random.int 5) + 1 in 
-    let die2 = (Random.int 5) + 1 in*)
-  (* let die1 = 3 in 
-     let die2 = 3 in  *)
-  let die1 = 0 in 
-  let die2 = 1 in 
+  (* let die1 = (Random.int 5) + 1 in 
+     let die2 = (Random.int 5) + 1 in *)
+  let die1 = 3 in 
+  let die2 = 3 in 
+  (* let die1 = 0 in 
+     let die2 = 1 in  *)
   let curr_player = current_player st in 
   let total_loc = locations st in 
   let total_status = player_status st in 
@@ -152,7 +152,8 @@ let roll brd st =
   let trimmed = List.remove_assoc curr_player total_loc in
   if snd curr_loc = false then (
     if die1 = die2 then (
-      if (doubles_rolled st >= 2) then (
+      if (doubles_rolled st >= 2 || 
+          (nth_square brd (current_location st) =  "Go To Jail")) then (
         let new_loc = (curr_player, (square_pos brd "Jail",true))::trimmed in 
         let old_jail = List.remove_assoc curr_player (in_jail st) in 
         let new_jail = (curr_player, true) :: old_jail in 
@@ -164,9 +165,10 @@ let roll brd st =
               }
       ) else (
         let new_loc = ((fst curr_loc + die1 + die2) mod Board.size brd) in 
-        let new_loc_lst = (curr_player, (new_loc,false))::trimmed in 
+        let now_in_jail = nth_square brd (current_location st) = "Go To Jail" in 
+        let new_loc_lst = (curr_player, (new_loc,now_in_jail))::trimmed in 
         let old_jail = List.remove_assoc curr_player (in_jail st) in 
-        let new_jail = (curr_player, false) :: old_jail in 
+        let new_jail = (curr_player,now_in_jail) :: old_jail in 
         Legal {st with 
                locations = new_loc_lst;
                doubles_rolled = doubles_rolled st + 1;
@@ -283,15 +285,7 @@ let buy bd prop st =
               in
               if List.length (List.assoc (current_player st') new_inv) > 3 
               then Win else
-                Legal {st' with 
-                       curr_player = (current_player st);
-                       doubles_rolled = doubles_rolled st;
-                       inventories = new_inv;
-                       buildings = buildings st;
-                       cards = cards st;
-                       player_status = player_status st; 
-                       in_jail = in_jail st
-                      }
+                Legal {st' with inventories = new_inv;}
             | Illegal -> Illegal
             | Win -> Win
           end
