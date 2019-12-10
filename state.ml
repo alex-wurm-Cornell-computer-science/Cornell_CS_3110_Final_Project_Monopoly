@@ -191,7 +191,7 @@ let roll brd st =
         let new_loc = ((fst curr_loc + die1 + die2) mod Board.size brd) in 
         let new_loc_lst = (curr_player, (new_loc,false))::trimmed in 
         let old_jail = List.remove_assoc curr_player st.in_jail in 
-        let new_jail = (curr_player, true) :: old_jail in 
+        let new_jail = (curr_player, false) :: old_jail in 
         Legal {
           curr_player = curr_player;
           num_players = num_players st;
