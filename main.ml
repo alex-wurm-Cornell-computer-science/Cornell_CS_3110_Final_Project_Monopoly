@@ -21,10 +21,9 @@ let format_assoc_list format_key format_val fmt lst =
 let rec user_input _ = 
   print_string " > ";
   try parse (read_line ()) with
-  | Empty -> print_string "\nNo command was entered, please try again. \
-                           \n\n";
+  | Empty -> print_string "\nNo command was entered, please try again.\n";
     user_input()
-  | Malformed -> print_string "\nCommand unclear, please try again. \n\n"; 
+  | Malformed -> print_string "\nCommand unclear, please try again.\n"; 
     user_input()
 
 (** [number_of_players] prompts the user for input. If the input isn't an 
@@ -38,21 +37,22 @@ let rec number_of_players () =
   else if n = "5" then 5
   else if n = "6" then 6
   else begin 
-    print_string "\nInvalid number of players entered. 
-    Monopoly works with 2 to 6 players. Please try again!\n";
+    print_string "\nInvalid number of players entered. \
+                  Monopoly works with 2 to 6 players. Please try again!\n";
     number_of_players ()
   end 
 
 let rec most_money () =
-  print_string "\n";
+  print_string " > ";
   let ui = read_line () in 
   let mon = try int_of_string ui with Failure int_of_string -> 
-    print_string "\nInvalid value, please enter a number between 1700 and 20580.\n";
+    print_string "\nInvalid value, please enter a number \
+                  between 1700 and 20580.\n";
     most_money ()
   in 
   if mon < 1700 || mon > 20580 then begin
-    print_string "\nInvalid quantity of money to win the game. 
-    Please select a quantity between 1700 and 20580. \n";
+    print_string "\nInvalid quantity of money to win the game. \
+                  Please select a quantity between 1700 and 20580.\n";
     most_money ()
   end
   else mon
@@ -61,9 +61,10 @@ let rec most_money () =
     are raised from the conversion, the game will notify the player and ask for
     a new file name input. *)
 let rec get_board f = 
-  if f = "quit" then (print_string "\nGoodbye! \n\n"; Stdlib.exit 0)
+  if f = "quit" then (print_string "\nGoodbye!\n"; Stdlib.exit 0)
   else try f |> Yojson.Basic.from_file |> from_json with
-    | Not_found -> print_string "Invalid adventure. Try again. \n";
+    | Not_found -> print_string "\nInvalid board. Try again.\n";
+      print_string " > ";
       get_board (read_line ())  
 
 (** [to_list f acc l] is the accumulator result [acc] from applying [f] to list 
@@ -89,42 +90,36 @@ let rec print_int_list l =
 (** [disp_wallet wals] prints the amount of cash in [wals] that each player has *)
 let rec disp_wallet st = 
   match wallets st with 
-  | [] -> print_endline "\n";
-  | (a,b) :: t -> Printf.printf "Player %d has $%d." a b; print_endline "\n";
+  | [] -> print_string "\n";
+  | (a,b) :: t -> Printf.printf "\nPlayer %d has $%d.\n" a b;
     let st' = {st with wallets = t} in
     disp_wallet st'
 
 let rec disp_inventories st = 
   match inventories st with
-  | [] -> print_endline "\n";
-  | (a,b) :: t -> Printf.printf "Player %d has the following properties:" a; 
+  | [] -> print_string "\n";
+  | (a,b) :: t -> Printf.printf "\nPlayer %d has the following properties:\n" a; 
     let rec disp_buildings props = 
       match props with
-      | [] -> print_endline "\n";
+      | [] -> ();
       | h :: t -> let (hou,hot) = (houses st h, hotels st h) in 
-        Printf.printf "\n%s with %d houses and %d hotels \n" h hou hot;
+        Printf.printf "\n%s with %d houses and %d hotels\n" h hou hot;
         disp_buildings t
     in
-    disp_buildings b; print_endline "\n"; 
+    disp_buildings b;
     let st' = {st with inventories = t} in disp_inventories st'
 
 
 let rec disp_items st = 
-  print_endline "\n";
   match items st with
-  | [] -> print_endline "\n";
-  | (a,b) :: t -> Printf.printf "Player %d has the following cards:" a;
-    print_string_list b; print_endline "\n"; 
+  | [] -> print_string "\n";
+  | (a,b) :: t -> Printf.printf "\nPlayer %d has the following cards:\n" a;
+    print_string_list b;
     let st' = {st with items = t} in disp_items st'
 
 let parse_obj_phrase lst = 
   let new_str = List.fold_left (fun p n -> p ^ " " ^ n) "" lst in
   String.trim new_str
-
-let disp_inv st = 
-  print_string "\n"; 
-  (* List.iter print_endline (st |> curr_player_inventory); //NEED TO GET PROPERTY NAMES, NOT PROPERTY OBJ*) 
-  print_string "\n"
 
 let rec roll_dice brd st = 
   let res = roll brd st in 
@@ -132,8 +127,9 @@ let rec roll_dice brd st =
   | Illegal -> print_string "\nIllegal movement, please try again\n"; res
   | Legal t -> (let dubs = doubles_rolled t in  
                 if dubs = 3 then (
-                  Printf.printf "\nPlayer %d rolled 3 pairs of doubles, 
-                  which is an illegal movement\n" (State.current_player t); 
+                  Printf.printf "\nPlayer %d rolled 3 pairs of doubles, \
+                                 which is an illegal movement\n" 
+                    (State.current_player t); 
                   res
                 ) else if dubs > 0 && dubs <= 2 then (
                   Printf.printf "\nPlayer %d rolled %d pair(s) of doubles\n" 
@@ -147,7 +143,7 @@ let rec roll_dice brd st =
                     (State.current_location t); res
                 )
                )
-  | Win -> Printf.printf "\nYou've already won!"; res
+  | Win -> Printf.printf "\nYou've already won!\n"; res
 
 
 let pass_go st = 
@@ -158,7 +154,8 @@ let next_move res st =
   | Win -> Win
   | _ -> 
     match (State.next_turn st) with 
-    | Illegal -> Printf.printf "\nYou are not done with your turn. Please roll!\n"; Illegal
+    | Illegal -> Printf.printf "\nYou are not done with your turn. \
+                                Please roll!\n"; Illegal
     | Legal t -> State.next_turn st
     (* State.update_state t res' *)
     | Win -> Win
@@ -170,7 +167,7 @@ let format_board brd locs =
     match locs with 
     | [] -> () 
     | h :: t -> 
-      Printf.printf "\nPlayer %d is at position: \n" (fst h);
+      Printf.printf "\nPlayer %d is at position:\n" (fst h);
       print_string (nth_square brd (snd h));
       format' brd t in 
   format' brd new_locs
@@ -186,11 +183,12 @@ let check_card pos brd st =
   match (square_type brd (nth_square brd pos)) with 
   | Card -> 
     let crd = next_card st in
-    print_string ("\nYou have found this card:\n" ^ (card_description brd crd));
+    print_string ("\nYou have found this card:\n" ^ 
+                  (card_description brd crd) ^ "\n");
     let res = move_cards brd crd st in 
     begin match res with 
       | Legal st' -> card_action brd crd st'  
-      | _ -> failwith "shouldnt't happen"
+      | _ -> failwith "shouldn't happen"
     end
   | _ -> Legal st
 
@@ -199,7 +197,9 @@ let rec check_tax brd st =
   let sq_name = current_location st |> nth_square brd in 
   match square_type brd sq_name with 
   | Tax -> 
-    let () = print_string "\n You landed on a tax square. Time to pay! The dice are being rolled!" in 
+    let () = print_string "\nYou landed on a tax square. \
+                           Time to pay! Dice are being rolled to calculate \
+                           your tax.\n" in 
     let mult = (Random.int 5) + (Random.int 5) + 2 in 
     let () = print_string ("\nYour tax roll was " ^ (string_of_int mult) ^ "\n") 
     in let () = Printf.printf "\nPay %d\n" (mult * (rent brd sq_name)) in 
@@ -220,7 +220,7 @@ let rec check_tax brd st =
     for a new command. *)
 let rec interp_command brd res st wc = 
   let _ = check_wc brd res st wc in 
-  Printf.printf "\n\nPlayer %d, it's your turn!\n" (current_player st);
+  Printf.printf "\nPlayer %d, it's your turn!\n" (current_player st);
   let command = user_input () in
   match command with
   | Quit -> quit_helper brd res st wc
@@ -230,19 +230,23 @@ let rec interp_command brd res st wc =
              | Illegal ->  Printf.printf "\nYou've already rolled, player %d!\n" 
                              (current_player st); 
                interp_command brd (Legal st) st wc 
-             | Win -> Printf.printf "\nYou won, player %d\n" (current_player st); 
+             | Win -> Printf.printf "\nYou won, player %d\n" 
+                        (current_player st); 
                exit 0;
              | Legal st0 ->         
                let st1 = check_tax brd st0 in 
-               let res2 = pay_rent brd (nth_square brd (current_location st1)) st1 in  
+               let res2 = pay_rent brd 
+                   (nth_square brd (current_location st1)) st1 in  
                match res2 with 
                | Illegal -> Printf.printf "\nTry again, player %d\n" 
-                              (current_player st0);interp_command brd (Legal st) st wc ;
+                              (current_player st0);
+                 interp_command brd (Legal st) st wc ;
                | Win -> Printf.printf "\nYou won, player %d\n" 
                           (current_player st0); exit 0;
                | Legal stb -> 
-                 if (curr_player_wallet stb < curr_player_wallet st1) then
-                   let rent_paid = (curr_player_wallet st1 - curr_player_wallet stb) in 
+                 if (curr_player_wallet stb < curr_player_wallet st1) 
+                 then let rent_paid = 
+                        (curr_player_wallet st1 - curr_player_wallet stb) in 
                    Printf.printf "\nYou paid %d in rent.\n" rent_paid; 
                  else ();
                  let res3 = check_card (current_location stb) brd stb in                
@@ -257,7 +261,8 @@ let rec interp_command brd res st wc =
                    then (
                      if is_in_jail st then 
                        Printf.printf "\nYou got out of Jail with a double!\n";
-                     let moved = if (current_location st' - current_location st) >= 0
+                     let moved = 
+                       if (current_location st' - current_location st) >= 0
                        then current_location st' - current_location st
                        else Board.size brd + 
                             (current_location st' - current_location st) 
@@ -280,7 +285,8 @@ let rec interp_command brd res st wc =
                        interp_command brd res' st' wc 
                      )
                    ) else (
-                     Printf.printf "\nYou need to roll a double or use a Get Out of Jail Free card to leave Jail\n";
+                     Printf.printf "\nYou need to roll a double or use a \
+                                    Get Out of Jail Free card to leave Jail\n";
                      interp_command brd res st' wc 
                    ) 
             )
@@ -305,10 +311,15 @@ and build_houses_helper brd res st wc prop =
       | (UnknownSquare prop) -> Printf.printf "\n%s is not a property\n" (prop);
         interp_command brd (Legal st) st wc in 
    let () = print_string 
-       (prop ^ " currently has" ^ (string_of_int current_houses) ^ " houses on it") in 
+       ("\n" ^ prop ^ " currently has" ^ (string_of_int current_houses) 
+        ^ " houses on it\n") in 
    let () = print_string "\nHow many would you like to build?\n" in 
-   let n = try int_of_string (read_line ())
-     with | _ ->  print_string "Not a valid number" ; interp_command brd res st wc in  
+   let n = try (
+     print_string " > ";
+     int_of_string (read_line ())
+   )
+     with | _ ->  print_string "\nNot a valid number\n"; 
+       interp_command brd res st wc in  
    (build_houses brd st prop n, n))
 
 
@@ -319,10 +330,15 @@ and build_hotels_helper brd res st wc prop =
     | (UnknownSquare prop) -> Printf.printf "\n%s is not a property\n" (prop);
       interp_command brd (Legal st) st wc in 
   let () = print_string 
-      (prop ^ " currently has" ^ (string_of_int current_hotels) ^ " hotels on it") in
+      ("\n" ^ prop ^ " currently has" ^ 
+       (string_of_int current_hotels) ^ " hotels on it\n") in
   let () = print_string "\nHow many would you like to build?\n" in 
-  let n = try int_of_string (read_line ())
-    with | _ ->  print_string "Not a valid number" ; interp_command brd res st wc in 
+  let n = try (
+    print_string " > ";
+    int_of_string (read_line ())
+  )
+    with | _ ->  print_string "\nNot a valid number\n" ; 
+      interp_command brd res st wc in 
   (build_hotels brd st prop n, n)
 
 
@@ -332,14 +348,17 @@ and build_helper brd res st wc obj =
   try 
     if not (is_in_jail st) then (
       let () = print_string "\nWhere would you like to build on?\n" in 
+      print_string " > ";
       let prop = String.trim (read_line ()) in 
       begin 
         if List.hd obj = "houses" then 
           let  res' = (build_houses_helper brd res st wc prop) in 
           match fst res' with 
-          | Illegal -> print_string "\nYou can't build at the moment, or you entered an invalid command\n";
+          | Illegal -> print_string "\nYou can't build at the moment, \
+                                     or you entered an invalid command\n";
             interp_command brd (Legal st) st wc 
-          | Legal st1 -> Printf.printf ("\nYou've built %d houses on %s\n") (snd res') prop; 
+          | Legal st1 -> Printf.printf ("\nYou've built %d houses on %s\n") 
+                           (snd res') prop; 
             interp_command brd (fst res') st1 wc 
           | Win -> Printf.printf "\nYou won, player %d\n" (current_player st); 
             exit 0;
@@ -347,61 +366,67 @@ and build_helper brd res st wc obj =
         if List.hd obj = "hotels" then 
           let res' = (build_hotels_helper brd res st wc prop) in 
           match fst res' with 
-          | Illegal -> print_string "\nYou can't build at the moment, or you entered an invalid command\n";
+          | Illegal -> print_string "\nYou can't build at the moment, \
+                                     or you entered an invalid command\n";
             interp_command brd (Legal st) st wc 
-          | Legal st1 -> Printf.printf ("\nYou've built %d hotels on %s\n") (snd res') prop; 
+          | Legal st1 -> Printf.printf ("\nYou've built %d hotels on %s\n") 
+                           (snd res') prop; 
             interp_command brd (fst res') st1 wc 
           | Win -> Printf.printf "\nYou won, player %d\n" (current_player st); 
             exit 0;
         else 
-          let _ = print_string "\nTry again!\n" in interp_command brd (Legal st ) st wc 
+          let _ = print_string "\nTry again!\n" in 
+          interp_command brd (Legal st ) st wc 
       end 
     ) else (
-      Printf.printf "\nUh oh! You're in Jail, so you can't perform 
-    this action\n"; 
+      Printf.printf "\nUh oh! You're in Jail, so you can't perform \
+                     this action\n"; 
       interp_command brd (Legal st) st wc 
     )
   with 
-  | UnknownSquare prop -> print_string (prop ^ " Is not a property"); 
+  | UnknownSquare prop -> print_string ("\n" ^ prop ^ " is not a property\n"); 
     interp_command brd res st wc
 
 (** [check_wc brd res st wc] checks if a player has satisfied the win 
     condition of the game*)
 and check_wc brd res st wc = 
   let player_statuses = player_status st in 
-  let trimmed_statuses = List.remove_assoc (current_player st) player_statuses in 
-  let last_one_standing = List.for_all (fun (x,y) -> y = false) trimmed_statuses in 
-  let current_player_wealth = (curr_player_wallet st) + (inventory_value brd st) in
+  let trimmed_statuses = List.remove_assoc 
+      (current_player st) player_statuses in 
+  let last_one_standing = List.for_all (fun (x,y) -> y = false) 
+      trimmed_statuses in 
+  let current_player_wealth = 
+    (curr_player_wallet st) + (inventory_value brd st) in
   if last_one_standing then
     let bank = State.wealthiest_player brd st in 
     let (a,b) = List.hd bank in 
     Printf.printf "\nPlayer %d, you are the last player standing! \
-                   All of your opponents have gone bankrupt. You have accumulated \
-                   a total wealth of $%d! Thank you for playing! \n" a b;
+                   All of your opponents have gone bankrupt. 
+                   You have accumulated a total wealth of $%d! \
+                   Thank you for playing!\n" a b;
     exit 0
   else if current_player_wealth >= wc then
     let bank = State.wealthiest_player brd st in 
     let (a,b) = List.hd bank in 
     Printf.printf "\nPlayer %d, you have accumulated the amount of wealth \
-                   voted on as sufficient to win the game! You have accumulated \
-                   a total wealth of $%d! Thank you for playing! \n" a b;
+                   voted on as sufficient to win the game! 
+                   You have accumulated a total wealth of $%d! \
+                   Thank you for playing!\n" a b;
     exit 0
   else ()
 
 (** [quit_helper brd res st wc] quits the game loop *)
 and quit_helper brd res st wc = 
-  print_string "\nThank you for playing the Monopoly Game Engine! \
-                \n\n";
+  print_string "\nThank you for playing the Monopoly Game Engine!\n";
   let lst = State.wealthiest_player brd st in 
   if List.length lst = 1 then let (x,y) = List.hd lst in 
-    Printf.printf "Player %d, you were winning the game \
+    Printf.printf "\nPlayer %d, you were winning the game \
                    at the time it ended with a total accumulated wealth \
-                   of $%d! \n" x y;
-  else Printf.printf "\nThere was a tie between the \
-                      following players: \n";
+                   of $%d!\n" x y;
+  else Printf.printf "\nThere was a tie between the following players:\n";
   let rec print_winners = function
-    | [] -> Printf.printf "\n\n"
-    | (pl,wlt)::t -> Printf.printf "\nPlayer %d : $%d \n" pl wlt;
+    | [] -> ();
+    | (pl,wlt)::t -> Printf.printf "\nPlayer %d : $%d\n" pl wlt;
       print_winners t
   in
   print_winners lst;
@@ -412,28 +437,34 @@ and quit_helper brd res st wc =
     the current player is on *)
 and buy_helper brd res st wc = 
   match is_in_jail st with
-  | true -> print_string "\nYou're in jail, no\n"; interp_command brd res st wc
+  | true -> print_string "\nUh oh! You're in Jail, so you can't perform \
+                          this action\n"; 
+    interp_command brd res st wc
   | false -> 
     (
       print_string "\nAre you sure you would like to buy this property?\n";
+      print_string " > ";
       let confirmation = String.trim (read_line()) in 
       if confirmation = "yes" then
         (let prop = (State.current_location st) |> Board.nth_square brd in 
          let res = State.buy brd prop st in
          (match res with 
-          | Illegal -> Printf.printf "\nUnfortunately this property cannot
-                           be purchased at this time.\n"; interp_command brd (Legal st) st wc 
+          | Illegal -> Printf.printf "\nUnfortunately this property cannot \
+                                      be purchased at this time.\n"; 
+            interp_command brd (Legal st) st wc 
           | Legal st' -> Printf.printf "\nCongratulations! You are \
-                                        the owner of %s." prop; 
-            let _ = print_string "try2" in interp_command brd (Legal st') st' wc 
+                                        the owner of %s.\n" prop; 
+            interp_command brd (Legal st') st' wc 
           | Win -> let () = 
-                     Printf.printf "\nPlayer %d you have won the game! You were the \
-                                    first player to acquire multiple properties!\n" (current_player st) in exit 0))
+                     Printf.printf "\nPlayer %d you have won the game! \
+                                    You were the first player to acquire \
+                                    multiple properties!\n" 
+                       (current_player st) in exit 0))
       else if confirmation = "no" then
-        (Printf.printf "Okay, what would you like to do instead?\n"; 
+        (Printf.printf "\nOkay, what would you like to do instead?\n"; 
          interp_command brd (Legal st) st wc )
       else 
-        (Printf.printf "\nInvalid response, please try again. \n";
+        (Printf.printf "\nInvalid response, please try again.\n";
          interp_command brd (Legal st) st wc )) 
 
 (** [use_helper brd res st wc] executes the get out of jail card *)
@@ -441,39 +472,51 @@ and use_helper brd res st wc =
   if is_in_jail st then 
     let new_st = (match get_out_of_jail brd st with
         | Legal st' -> print_string "\nYou got out of jail using your \
-                                     Get Out of Jail Free Card! \n"; st'
+                                     Get Out of Jail Free Card!\n"; st'
         | Illegal -> print_string "\nYou can't get out of jail right now!\n"; st 
         | Win -> print_string "\nLooks like you've cheated, try again!\n"; st)
     in 
     interp_command brd (Legal new_st) new_st wc
   else 
-    let () = print_string "You're not in jail!" in interp_command brd res st wc
+    let () = print_string "\nInvalid action—you're not in jail!\n" in 
+    interp_command brd res st wc
 
 (** [sell_helper brd res st wc p] executes the sale of [p] *)
 and sell_helper brd res st wc p = 
-  if not (is_in_jail st) then (
-    print_string "\nAre you sure you would like to sell this property?\n";
-    let confirmation = String.trim (read_line()) in 
-    if confirmation = "yes" then
-      (let prop = parse_obj_phrase p in 
-       let res = State.sell brd prop st in
-       match res with
-       | Illegal -> Printf.printf "\nUnfortunately this property cannot
-                           be sold at this time.\n"; interp_command brd (Legal st) st wc 
-       | Legal st' -> Printf.printf "\nCongratulations! You have successfully \
-                                     sold %s." prop; interp_command brd (Legal st') st' wc 
-       | Win -> Printf.printf "\nPlayer %d you seem to have won the game... \n but I suspect you may have cheated.\n" 
-                  (State.current_player st); 
+  try 
+    let prop = parse_obj_phrase p in 
+    let can_buy = is_buyable brd prop in 
+    if can_buy && not (is_in_jail st) then (
+      print_string "\nAre you sure you would like to sell this property?\n";
+      print_string " > ";
+      let confirmation = String.trim (read_line()) in 
+      if confirmation = "yes" then
+        (let res = State.sell brd prop st in
+         match res with
+         | Illegal -> Printf.printf "\nUnfortunately this property cannot \
+                                     be sold at this time.\n"; 
+           interp_command brd (Legal st) st wc 
+         | Legal st' -> Printf.printf "\nCongratulations! You have successfully \
+                                       sold %s.\n" prop; 
+           interp_command brd (Legal st') st' wc 
+         | Win -> Printf.printf "\nPlayer %d you seem to have won the game... \
+                                 but we suspect you may have cheated.\n" 
+                    (State.current_player st); 
+           interp_command brd (Legal st) st wc )
+      else if confirmation = "no" then
+        (Printf.printf "\nOkay, what would you like to do instead?\n"; 
          interp_command brd (Legal st) st wc )
-    else if confirmation = "no" then
-      (Printf.printf "Okay, what would you like to do instead?\n"; 
-       interp_command brd (Legal st) st wc )
+      else 
+        (Printf.printf "\nInvalid response, please try again.\n";
+         interp_command brd (Legal st) st wc ))
     else 
-      (Printf.printf "\nInvalid response, please try again. \n";
-       interp_command brd (Legal st) st wc ))
-  else 
-    let () =  print_string "You're in jail hahahahaha"in interp_command brd res st wc
-
+      let () =  print_string "\nYou're in jail teehee\n" in 
+      interp_command brd res st wc
+  with 
+    UnknownSquare prop -> (Printf.printf "\nInvalid response, \
+                                          please try again.\n";
+                           interp_command brd (Legal st) st wc 
+                          )
 
 
 (** [next_helper brd res st wc] ends the current players turn and starts the next 
@@ -488,7 +531,7 @@ and next_helper brd res st wc =
 let play_game f =
   Random.self_init ();
   let brd = get_board f in
-  print_string "\nPlease enter a valid number of players for this game. \n";
+  print_string "\nPlease enter a valid number of players for this game.\n";
   let n = number_of_players () in 
   print_string "\nPlease enter the amount of wealth a player must accumulate \
                 to win the game\n";
@@ -501,9 +544,9 @@ let play_game f =
 (** [main ()] prompts for the game to play, then starts it. *)
 let rec main () =
   print_string 
-    "\n\nWelcome to the 3110 Monopoly Game Engine.\n";
+    "\nWelcome to the 3110 Monopoly Game Engine.\n";
   print_endline "Please enter the name of the board file you want to load.\n";
-  print_string  "> ";
+  print_string  " > ";
   match read_line () with
   | exception End_of_file -> ()
   | file_name -> try play_game file_name with 
@@ -513,5 +556,3 @@ let rec main () =
 
 (* Execute the game engine. *)
 let () = main ()
-
-

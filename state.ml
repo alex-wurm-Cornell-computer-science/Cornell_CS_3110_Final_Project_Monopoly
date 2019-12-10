@@ -155,12 +155,12 @@ let rec next_turn st =
   )
 
 let roll brd st = 
-  (* let die1 = (Random.int 5) + 1 in 
-     let die2 = (Random.int 5) + 1 in *)
+  let die1 = (Random.int 5) + 1 in 
+  let die2 = (Random.int 5) + 1 in
   (* let die1 = 3 in 
      let die2 = 3 in  *)
-  let die1 = 0 in 
-  let die2 = 1 in 
+  (* let die1 = 0 in 
+     let die2 = 1 in  *)
   let curr_player = current_player st in 
   let total_loc = locations st in 
   let total_status = player_status st in 
@@ -169,7 +169,7 @@ let roll brd st =
   let trimmed = List.remove_assoc curr_player total_loc in
   if snd curr_loc = false then (
     if die1 = die2 then (
-      if (doubles_rolled st = 2) then (
+      if (doubles_rolled st >= 2) then (
         let new_loc = (curr_player, (Board.square_pos brd "Jail",true))::trimmed in 
         let old_jail = List.remove_assoc curr_player st.in_jail in 
         let new_jail = (curr_player, true) :: old_jail in 
@@ -186,10 +186,9 @@ let roll brd st =
           cards = cards st;
           player_status = total_status; 
           in_jail = new_jail
-        }) else (
-        let square = nth_square brd ((fst curr_loc + die1 + die2) mod Board.size brd) in 
-        let new_loc = if ( square_type brd square = GoToJail)
-          then Board.square_pos brd "Jail" else ((fst curr_loc + die1 + die2) mod Board.size brd) in 
+        }
+      ) else (
+        let new_loc = ((fst curr_loc + die1 + die2) mod Board.size brd) in 
         let new_loc_lst = (curr_player, (new_loc,false))::trimmed in 
         let old_jail = List.remove_assoc curr_player st.in_jail in 
         let new_jail = (curr_player, true) :: old_jail in 
@@ -315,36 +314,40 @@ let earn_cash st amt =
     } 
 
 let buy bd prop st = 
-  if is_buyable bd prop && not (is_in_jail st) then 
-    if (prop_available prop st) && (enough_funds bd prop st) then
-      match (current_location st = square_pos bd prop) with 
-      | false -> Illegal 
-      | true -> begin 
-          match (earn_cash st (-(cost bd prop))) with 
-          | Legal st' ->  
-            let curr_invent = List.assoc st'.curr_player st'.inventories in 
-            let trimmed = List.remove_assoc st'.curr_player st'.inventories in 
-            let new_inv = (st'.curr_player, prop ::curr_invent) :: trimmed in
-            if List.length (List.assoc st'.curr_player new_inv) > 3 then Win else
-              Legal {
-                curr_player = st.curr_player;
-                num_players = num_players st';
-                locations = locations st';
-                doubles_rolled = doubles_rolled st;
-                inventories = new_inv;
-                items = items st';
-                wallets = wallets st';
-                total_assets = total_assets st';
-                buildings = st.buildings;
-                cards = cards st;
-                player_status = player_status st; 
-                in_jail = st.in_jail
-              }
-          | Illegal -> Illegal
-          | Win -> Win
-        end
+  try 
+    let can_buy = is_buyable bd prop in 
+    if can_buy && not (is_in_jail st) then 
+      if (prop_available prop st) && (enough_funds bd prop st) then
+        match (current_location st = square_pos bd prop) with 
+        | false -> Illegal 
+        | true -> begin 
+            match (earn_cash st (-(cost bd prop))) with 
+            | Legal st' ->  
+              let curr_invent = List.assoc st'.curr_player st'.inventories in 
+              let trimmed = List.remove_assoc st'.curr_player st'.inventories in 
+              let new_inv = (st'.curr_player, prop ::curr_invent) :: trimmed in
+              if List.length (List.assoc st'.curr_player new_inv) > 3 then Win else
+                Legal {
+                  curr_player = st.curr_player;
+                  num_players = num_players st';
+                  locations = locations st';
+                  doubles_rolled = doubles_rolled st;
+                  inventories = new_inv;
+                  items = items st';
+                  wallets = wallets st';
+                  total_assets = total_assets st';
+                  buildings = st.buildings;
+                  cards = cards st;
+                  player_status = player_status st; 
+                  in_jail = st.in_jail
+                }
+            | Illegal -> Illegal
+            | Win -> Win
+          end
+      else Illegal
     else Illegal
-  else Illegal
+  with
+    UnknownSquare prop -> Illegal
 
 let sell bd prop st = 
   if is_buyable bd prop && not (is_in_jail st) then
