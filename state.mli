@@ -83,8 +83,13 @@ val cards : t -> card_name list
 (** [player_status st] is an association list where the keys are players and the 
     values are booleans representing their validity in the game (true means the 
     player is still a valid player, and false means the player is no longer a 
-    valid player *)
+    valid player) *)
 val player_status : t -> (int * bool) list 
+
+(** [in_jail] is an association list where the keys are players and the values
+    are booleans representing whether or not the player is in Jail (true means 
+    the player is in Jail, false means otherwise) *)
+val in_jail : t -> (int * bool) list
 
 (** [is_in_jail st] is a boolean that represents whether the current player of 
     state [st] is in Jail *)
