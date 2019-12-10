@@ -125,7 +125,7 @@ let rec next_turn st =
              doubles_rolled = 0;
             }
     ) else (
-      Legal st
+      Illegal
     )
   ) else if (not curr_status) then (
     let next_st = {st with 
@@ -139,10 +139,10 @@ let rec next_turn st =
   )
 
 let roll brd st = 
-  (* let die1 = (Random.int 5) + 1 in 
-     let die2 = (Random.int 5) + 1 in *)
-  let die1 = 3 in 
-  let die2 = 3 in 
+  let die1 = (Random.int 5) + 1 in 
+  let die2 = (Random.int 5) + 1 in
+  (* let die1 = 3 in 
+     let die2 = 3 in  *)
   (* let die1 = 0 in 
      let die2 = 1 in  *)
   let curr_player = current_player st in 

@@ -110,7 +110,7 @@ let rec disp_inventories st =
     let rec disp_buildings props = 
       if (List.length b) == 0 then print_string " owns no properties\n" else 
         match props with
-        | [] -> print_string "\n";
+        | [] -> ();
         | h :: t -> let (hou,hot) = (houses st h, hotels st h) in 
           Printf.printf "\n%s with %d houses and %d hotels\n" h hou hot;
           disp_buildings t
@@ -172,7 +172,8 @@ let next_move res st =
   | _ -> 
     match (next_turn st) with 
     | Illegal -> Printf.printf "\nYou are not done with your turn. \
-                                Please roll!\n"; Illegal
+                                Please roll!\n"; 
+      Illegal
     | Legal t -> next_turn st
     | Win -> Win
 
@@ -273,65 +274,70 @@ and roll_helper brd res st wc =
   | Win -> Printf.printf "\nYou won, player %d\n" 
              (current_player st); 
     exit 0;
-  | Legal st0 ->         
-    let st1 = check_tax brd st0 in 
-    let res2 = pay_rent brd 
-        (nth_square brd (current_location st1)) st1 in  
-    match res2 with 
-    | Illegal -> Printf.printf "\nTry again, player %d\n" 
-                   (current_player st1);
-      interp_command brd (Legal st1) st1 wc ;
-    | Win -> Printf.printf "\nYou won, player %d\n" 
-               (current_player st1); exit 0;
-    | Legal stb -> 
-      if (curr_player_wallet stb < curr_player_wallet st1) 
-      then let rent_paid = 
-             (curr_player_wallet st1 - curr_player_wallet stb) in 
-        Printf.printf "\nYou paid %d in rent.\n" rent_paid; 
-      else ();
-      let res3 = check_card (current_location stb) brd stb in                
-      match res3 with 
-      | Illegal -> Printf.printf "\nTry again, player %d\n" 
-                     (current_player stb);
-        interp_command brd (Legal stb) stb wc ;
-      | Win -> Printf.printf "\nYou won, player %d\n" 
-                 (current_player stb); exit 0;
-      | Legal st' -> 
-        if not (is_in_jail st') 
-        then (
-          if is_in_jail st then (
-            Printf.printf "\nYou got out of Jail with a double!\n";
-            let moved = 
-              if (current_location st' - current_location st) >= 0
-              then current_location st' - current_location st
-              else size brd + 
-                   (current_location st' - current_location st) 
-            in 
-            if (current_location st' - current_location st) < 0 then (
-              Printf.printf "\nYou rolled %d\n" moved;
-              Printf.printf "\nYou are at %s\n" 
-                (nth_square brd (current_location st'));
-              Printf.printf "\nYou've passed GO, player %d!\n" 
-                (current_player st');
-              let res' = earn_cash st' 200 in 
-              let st'' = update_state st' res' in 
-              let res' = check_card (current_location st') brd st in
-              interp_command brd res' st'' wc 
-            ) else (
-              Printf.printf "\nYou rolled %d\n" moved;
-              Printf.printf "\nYou are at %s\n" 
-                (nth_square brd (current_location st'));
-              let res' = check_card (current_location st') brd st in
-              interp_command brd res' st' wc 
-            )
-          ) else if not (is_in_jail st) then (
-            interp_command brd res st' wc 
-          ) else interp_command brd res st' wc 
+  | Legal st' -> pay_on_square brd res st' wc    
+
+and pay_on_square brd res st wc = 
+  let st' = check_tax brd st in 
+  let res' = pay_rent brd 
+      (nth_square brd (current_location st')) st' in  
+  match res' with 
+  | Illegal -> Printf.printf "\nTry again, player %d\n" 
+                 (current_player st');
+    interp_command brd (Legal st') st' wc ;
+  | Win -> Printf.printf "\nYou won, player %d\n" 
+             (current_player st'); exit 0;
+  | Legal st'' -> 
+    if (curr_player_wallet st'' < curr_player_wallet st') 
+    then let rent_paid = 
+           (curr_player_wallet st' - curr_player_wallet st'') in 
+      Printf.printf "\nYou paid %d in rent.\n" rent_paid; 
+    else ();
+    landed_on_square brd res' st'' wc 
+
+and landed_on_square brd res st wc = 
+  let res' = check_card (current_location st) brd st in                
+  match res' with 
+  | Illegal -> Printf.printf "\nTry again, player %d\n" 
+                 (current_player st);
+    interp_command brd (Legal st) st wc ;
+  | Win -> Printf.printf "\nYou won, player %d\n" 
+             (current_player st); exit 0;
+  | Legal st' -> 
+    if not (is_in_jail st') 
+    then (
+      if is_in_jail st then (
+        Printf.printf "\nYou got out of Jail with a double!\n";
+        let moved = 
+          if (current_location st' - current_location st) >= 0
+          then current_location st' - current_location st
+          else size brd + 
+               (current_location st' - current_location st) 
+        in 
+        if (current_location st' - current_location st) < 0 then (
+          Printf.printf "\nYou rolled %d\n" moved;
+          Printf.printf "\nYou are at %s\n" 
+            (nth_square brd (current_location st'));
+          Printf.printf "\nYou've passed GO, player %d!\n" 
+            (current_player st');
+          let res'' = earn_cash st' 200 in 
+          let st'' = update_state st' res'' in 
+          let res''' = check_card (current_location st'') brd st in
+          interp_command brd res''' st'' wc 
         ) else (
-          Printf.printf "\nYou need to roll a double or use a \
-                         Get Out of Jail Free card to leave Jail\n";
-          interp_command brd res st' wc 
-        ) 
+          Printf.printf "\nYou rolled %d\n" moved;
+          Printf.printf "\nYou are at %s\n" 
+            (nth_square brd (current_location st'));
+          let res'' = check_card (current_location st') brd st in
+          interp_command brd res'' st' wc 
+        )
+      ) else if not (is_in_jail st) then (
+        interp_command brd res st' wc 
+      ) else interp_command brd res st' wc 
+    ) else (
+      Printf.printf "\nYou need to roll a double or use a \
+                     Get Out of Jail Free card to leave Jail\n";
+      interp_command brd res st' wc 
+    ) 
 
 (** [build_houses_helper brd st wc prop] builds houses on [prop]*)
 and build_houses_helper brd res st wc prop =
