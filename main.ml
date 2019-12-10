@@ -239,10 +239,10 @@ let rec interp_command brd res st wc =
                    (nth_square brd (current_location st1)) st1 in  
                match res2 with 
                | Illegal -> Printf.printf "\nTry again, player %d\n" 
-                              (current_player st0);
-                 interp_command brd (Legal st) st wc ;
+                              (current_player st1);
+                 interp_command brd (Legal st1) st1 wc ;
                | Win -> Printf.printf "\nYou won, player %d\n" 
-                          (current_player st0); exit 0;
+                          (current_player st1); exit 0;
                | Legal stb -> 
                  if (curr_player_wallet stb < curr_player_wallet st1) 
                  then let rent_paid = 
@@ -252,10 +252,10 @@ let rec interp_command brd res st wc =
                  let res3 = check_card (current_location stb) brd stb in                
                  match res3 with 
                  | Illegal -> Printf.printf "\nTry again, player %d\n" 
-                                (current_player st0);
-                   interp_command brd (Legal st) st wc ;
+                                (current_player stb);
+                   interp_command brd (Legal stb) stb wc ;
                  | Win -> Printf.printf "\nYou won, player %d\n" 
-                            (current_player st0); exit 0;
+                            (current_player stb); exit 0;
                  | Legal st' -> 
                    if not (is_in_jail st') 
                    then (
