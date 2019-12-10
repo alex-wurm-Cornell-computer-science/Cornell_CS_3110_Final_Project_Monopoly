@@ -283,7 +283,7 @@ let buy bd prop st =
                   (inventories st') in 
               let new_inv = ((current_player st'), prop::curr_invent)::trimmed 
               in
-              if List.length (List.assoc (current_player st') new_inv) > 3 
+              if List.length (List.assoc (current_player st') new_inv) > 10
               then Win else
                 Legal {st' with inventories = new_inv;}
             | Illegal -> Illegal

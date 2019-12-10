@@ -505,7 +505,7 @@ and buy_helper brd res st wc =
                     interp_command brd (Legal st') st' wc 
                   | Win -> Printf.printf "\nPlayer %d you have won the game! \
                                           You were the first player to acquire \
-                                          multiple properties!\n" 
+                                          ten properties!\n" 
                              (current_player st);  
                     exit 0)
                 )
