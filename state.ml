@@ -210,7 +210,6 @@ let hotels st prop =
   with 
   | Not_found -> 0
 
-(** [prop_available prop st] returns false if [prop] is already owned *)
 let prop_available prop st = 
   let all_owned = List.fold_left (fun acc (a,b) -> b @ acc) []
       (inventories st) in 
