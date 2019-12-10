@@ -41,8 +41,8 @@ val init_state : Board.board -> int -> t
 (** [current_player st] is the player whose turn it is in state [st]. *)
 val current_player : t -> int
 
-(** [num_players st] is the number of players in the current game, represented in
-    state [st] *)
+(** [num_players st] is the number of players in the current game, represented 
+    in state [st] *)
 val num_players : t -> int
 
 (** [locations st] is a list of all players, their locations, and a boolean 
@@ -91,9 +91,9 @@ val player_status : t -> (int * bool) list
     the player is in Jail, false means otherwise) *)
 val in_jail : t -> (int * bool) list
 
-(** [is_in_jail st] is a boolean that represents whether the current player of 
-    state [st] is in Jail *)
-val is_in_jail : t -> bool 
+(** [is_in_jail st] is true if the current player is in jail, 
+    false otherwise *)
+val is_in_jail : t -> bool
 
 (** [current_location st] is the integer square corresponding to the current
     player's location in [st] *)
@@ -190,11 +190,8 @@ val next_card : t -> string
 
 (** [get_out_of_jail brd st] allows the current player to leave jail, returning 
       a new state, [Legal st']. Return [Illegal] if the player cannot use the 
-      card to leave jail.] *)
+      card to leave jail. *)
 val get_out_of_jail : board -> t -> result
 
 (** [pay_tax brd st] pays the tax given by landing on a tax square. *)
 val pay_tax : board -> t -> int -> result
-
-(** [is_in_jail st] returns [true] if the current player is in jail, false otherwise *)
-val is_in_jail : t -> bool

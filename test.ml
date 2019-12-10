@@ -5,48 +5,49 @@ open State
 
 
 (** TEST PLAN :
-    Tests for functions in [Board.ml]. For the purposes of testing these functions
-    we generated [test_board] and the smaller [test_board2]. We tested every function 
-    in [Board.mli] using a combination of black box and glass box testing. When a function 
-    was written in a .mli file, tests were created based on the specification. Then,
-    after implementing the function, more tests were add. A smaller 
-    board, test_board, was created to make testing easier. It is a truncated version
-    of real_board, which is a standard monopoly board. The functions we implemented
-    behave the same on all valid boards, so testing on a small board is indicative of
-    performance on a full board. The same methodology was also used when testing [State.ml],
-    with the addition of play testing. For the purposes of testing these functions
-    we generated [test_goojf], [jail_board], and [tax_board], and still used test_board. 
-    These allowed us to separate 
-    the testing of jail functions, rent functions, card functions, and tax functions, ensuring
-    they work independently of each other and that they work together in the full game
-     While doing this, we hard-coded the roll
-    function to roll a 1 each time the player rolls the dice. This strategy allowed us
-    to save time with constructing states by initializing states from each test board
-    and moving quickly to the relevant space we wanted to test actions on. You can
-    hard-code the roll option by commenting out lines ## in State.ml and uncommenting
-    lines ##. Make sure to revert this change before playing the game regularly. Functions in this module
-    , as well as functions in main, rely extensively on user input. Thus, we play tested all functions
-    with valid inputs, adding addition test cases to Board and State when finding bugs,
-    and inputting invalid inputs to ensure they did not break the system. In sum,
-    we constructed unit tests for board and state functions, and playtested state 
-    and main functions. As with a2, this approach allows us to ensure all functions 
-    exposed in .mli files that can be tested are tested, while allowing us to 
-    pass many edge cases to user dependent functions. Separating components (cards, jail, ...)to test
-    allowed us to debug them individually, and then testing multiple components 
-    ensured that the results of one component did not impact the other components.
+    Tests for functions in [Board.ml]. For the purposes of testing these 
+    functions we generated [test_board] and the smaller [test_board2]. We 
+    tested every function in [Board.mli] using a combination of black box and 
+    glass box testing. When a function  was written in a .mli file, tests were 
+    created based on the specification. Then, after implementing the function, 
+    more tests were add. A smaller board, test_board, was created to make 
+    testing easier. It is a truncated version of real_board, which is a standard 
+    monopoly board. The functions we implementedbehave the same on all valid 
+    boards, so testing on a small board is indicative ofperformance on a full 
+    board. The same methodology was also used when testing [State.ml],
+    with the addition of play testing. For the purposes of testing these 
+    functions we generated [test_goojf], [jail_board], and [tax_board], and 
+    still used test_board. These allowed us to separate the testing of jail 
+    functions, rent functions, card functions, and tax functions, ensuring they 
+    work independently of each other and that they work together in the full 
+    game. While doing this, we hard-coded the roll function to roll a 1 each 
+    time the player rolls the dice. This strategy allowed us to save time with 
+    constructing states by initializing states from each test board and moving 
+    quickly to the relevant space we wanted to test actions on. You can 
+    hard-code the roll option by commenting out lines 142-143 in State.ml and 
+    uncommenting lines 146-147. Make sure to revert this change before playing 
+    the game regularly. Functions in this module, as well as functions in main, 
+    rely extensively on user input. Thus, we play tested all functions
+    with valid inputs, adding addition test cases to Board and State when 
+    finding bugs, and inputting invalid inputs to ensure they did not break the 
+    system. In sum, we constructed unit tests for board and state functions, 
+    and playtested state  and main functions. As with a2, this approach allows 
+    us to ensure all functions  exposed in .mli files that can be tested are 
+    tested, while allowing us to  pass many edge cases to user dependent 
+    functions. Separating components (cards, jail, ...)to test allowed us to 
+    debug them individually, and then testing multiple components  ensured that 
+    the results of one component did not impact the other components.
 
     INSTRUCTIONS FOR TESTING: 
-    Because we created truncated boards for running tests, testing will require a 
-    minor change to the released game. In State.ml, function Roll (Line 157),
+    Because we created truncated boards for running tests, testing will require 
+    a minor change to the released game. In State.ml, function Roll (Line 141),
     The lines [(* let die1 = (Random.int 5) + 1 in 
      let die2 = (Random.int 5) + 1 in *)
     (* let die1 = 3 in 
-     let die2 = 3 in  *)] (158-161) must be commented. Lines [let die1 = 0 in 
-    let die2 = 1 in  ] must be uncommented (162-163). This hard codes the dice roll
-    to 1, allowing the test boards to work.
-
+     let die2 = 3 in  *)] (142-145) must be commented. Lines [let die1 = 0 in 
+    let die2 = 1 in  ] must be uncommented (146-147). This hard codes the 
+    dice roll to 1, allowing the test boards to work.
 *)
-
 
 (********************************************************************
    Here are some helper functions for your testing of set-like lists. 
@@ -96,17 +97,9 @@ let cmp_demo =
     *)
   ]
 
-
-
 (********************************************************************
    End helper functions.
  ********************************************************************)
-
-(* You are welcome to add strings containing JSON here, and use them as the
-   basis for unit tests.  Or you can add .json files in this directory and
-   use them, too.  Any .json files in this directory will be included
-   by [make zip] as part of your CMS submission. *)
-
 
 (** Boards for unit tests. *)
 let test_board = from_json (Yojson.Basic.from_file "test_board.json")
@@ -320,15 +313,17 @@ let state_tests =
                                            (curr_player_items get_out));
     "get out of jail card is returned" >:: (fun _ -> 
         assert_equal ["gain money";"get out"] (cards get_out));
-    "tax is paid" >:: (fun _ -> assert_equal 1450 (curr_player_wallet tax_paid));
+    "tax is paid" >:: (fun _ -> assert_equal 1450 
+                          (curr_player_wallet tax_paid));
     "unbuyable not added" >:: (fun _ -> assert_equal tax_paid cant_buy);
     "can't roll twice" >:: (fun _ -> assert_equal tax_paid roll_twice)
   ]
 
-(** The test suite encapsulates all test groups generated in [test.ml]. To add a new
-    group of tests to runs when using the make test command, enter the name of that test
-    in the brackets below. The main module was tested through playtesting. Its
-    function rely on direct player input, so we did not test them with an OUnit suite *)
+(** The test suite encapsulates all test groups generated in [test.ml]. To add 
+    a new group of tests to runs when using the make test command, enter the 
+    name of that test in the brackets below. The main module was tested through 
+    playtesting. Its function relies on direct player input, so we did not test 
+    them with an OUnit suite *)
 let suite =
   "test suite for A2"  >::: List.flatten [
     board_tests_valid;
@@ -336,4 +331,3 @@ let suite =
   ]
 
 let _ = run_test_tt_main suite
-

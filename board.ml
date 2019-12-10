@@ -117,7 +117,8 @@ let opt_match op =
 module MonopDict = Map.Make(String)
 
 (** [init_monopolies sqs] creates a map from colors to property name lists
-    where each color is associated with the properties that are of that color.*)
+    where each color is associated with the properties that are of that 
+    color. *)
 let init_monopolies sqs = 
   let rec init' sqs acc = 
     match sqs with 

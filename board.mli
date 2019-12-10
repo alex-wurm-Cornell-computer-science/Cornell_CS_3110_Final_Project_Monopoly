@@ -1,20 +1,16 @@
 (** 
-   Representation of static board data.
+   Representation of static Monopoly board data.
 
-   This module represents the data stored in adventure files, including
-   the rooms and exits.  It handles loading of that data from JSON as well
+   This module represents the data stored in board files, including
+   the squares and cards.  It handles loading of that data from JSON as well
    as querying the data.
 *)
-
-(* You are free to add more code here. *)
-
 
 (** The abstract type of values representing squares. *)
 type square
 
 (** The abstract type of values representing cards. *)
 type card
-
 
 (** The type representing what cards can do *)
 type cardType = 
@@ -127,5 +123,3 @@ val card_type : board -> card_name -> cardType
 (** [card_payment bd cd] returns the payment value of [cd]. Raises 
       [UnknownCard cd] if [cd] is not in [bd] *)
 val card_payment : board -> card_name -> int
-
-
