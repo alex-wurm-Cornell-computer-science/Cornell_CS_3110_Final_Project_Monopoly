@@ -192,9 +192,10 @@ let board_tests_valid = [
   ( fun _ -> try let _ = card_payment real_board "bad card" in assert false
     with UnknownCard r -> assert true);
   "monopoly_group_named" >:: 
-  (fun _ -> assert_equal true (cmp_set_like_lists 
-                                 ["Mediterranean Avenue" ; "Baltic Avenue"] 
-                                 (monopoly_group_named test_board "Baltic Avenue")));
+  (fun _ -> assert_equal true (
+       cmp_set_like_lists 
+         ["Mediterranean Avenue" ; "Baltic Avenue"] 
+         (monopoly_group_named test_board "Baltic Avenue")));
   "bad monopoly named" >:: 
   ( fun _ -> try let _ = (monopoly_group_named real_board "bad prop") 
       in assert false with UnknownSquare r -> assert true);
@@ -260,6 +261,13 @@ let state_tests =
   let tax_paid = match (pay_tax tax_board move_tax 5) with
     | Legal st'' -> st''
     | _ -> failwith "" in
+  let cant_buy = match (buy tax_board "Luxury Tax" tax_paid) with 
+    | Legal st' -> st'
+    | Illegal -> tax_paid 
+    | _ -> failwith "" in
+  let roll_twice = match roll tax_board tax_paid with 
+    | Illegal -> tax_paid
+    | _ -> failwith "" in 
   [
     "earning cash" >:: (fun _ -> assert_equal 1300 (List.assoc 1 
                                                       (wallets cash_state)));
@@ -301,12 +309,20 @@ let state_tests =
 
     "hotels not built" >:: (fun _ -> assert_equal 0 
                                (hotels rolled_bought "Mediterranean Avenue" ));
-    "wealth same after buying" >:: (fun _ -> assert_equal 60 (inventory_value real_board rolled_bought));
-    "get out of jail card in items" >:: (fun _ -> assert_equal ["get out"] (curr_player_items pickup_goojf1));
-    "get out of jail to next space" >:: (fun _ -> assert_equal "Boardwalk" ((current_location get_out) |> nth_square jail_board));
-    "get out of jail card is used" >:: (fun _ -> assert_equal [] (curr_player_items get_out));
-    "get out of jail card is returned" >:: (fun _ -> assert_equal ["gain money";"get out"] (cards get_out));
+    "wealth same after buying" >:: 
+    (fun _ -> assert_equal 60 (inventory_value real_board rolled_bought));
+    "get out of jail card in items" >:: 
+    (fun _ -> assert_equal ["get out"] (curr_player_items pickup_goojf1));
+    "get out of jail to next space" >:: 
+    (fun _ -> assert_equal "Boardwalk" 
+        ((current_location get_out) |> nth_square jail_board));
+    "get out of jail card is used" >:: (fun _ -> assert_equal [] 
+                                           (curr_player_items get_out));
+    "get out of jail card is returned" >:: (fun _ -> 
+        assert_equal ["gain money";"get out"] (cards get_out));
     "tax is paid" >:: (fun _ -> assert_equal 1450 (curr_player_wallet tax_paid));
+    "unbuyable not added" >:: (fun _ -> assert_equal tax_paid cant_buy);
+    "can't roll twice" >:: (fun _ -> assert_equal tax_paid roll_twice)
   ]
 
 (** The test suite encapsulates all test groups generated in [test.ml]. To add a new

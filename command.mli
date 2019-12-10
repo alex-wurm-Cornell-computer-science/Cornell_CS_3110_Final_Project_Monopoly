@@ -59,11 +59,12 @@ exception Malformed
 
     Raises: [Malformed] if the command is malformed. A command
     is {i malformed} if the verb isn't one of the following: "roll", "quit", 
-    "wallet", "inventory", "buy", "sell", "items", or "auction"
-    or if the verb is "sell" or "auction" and there is a empty object phrase,
-    or if the verb is "roll", "quit", "wallet", "inventory", "buy", or "items"
-    and there is a non-empty object 
-    phrase.*)
+    "wallet", "inventory", "buy", "sell", "items", "next", "build", "game", or
+    "use"
+    or if the verb is "sell" or "build" and there is a empty object phrase,
+    or if the verb is "roll", "quit", "wallet", "inventory", "buy", "items",
+    "next", "game", or "use"
+    and there is a non-empty object phrase.*)
 val parse : string -> command
 
 (* END DO NOT CHANGE
