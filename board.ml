@@ -5,7 +5,6 @@ type prop_name = string
 exception UnknownSquare of prop_name
 exception UnknownCard of card_name
 
-
 type squareType = 
   | Go
   | Jail 
@@ -19,7 +18,6 @@ type cardType =
   | Money 
   | Location 
   | LeaveJail
-
 
 type card = 
   { 
@@ -39,13 +37,11 @@ type square = {
   hotel : int option;
 }
 
-
 type board  =  {
   squares : square list;
   cards : card list;
   monopolies : prop_name list Stdlib__map.Make(String).t
 }
-
 
 (** [uniq lst] is the set-like list composed of the elements from [lst] *)
 let uniq lst =
@@ -68,26 +64,24 @@ let parse_type s =
   if s = "Card" then Card else 
   if s = "Tax" then Tax else failwith ("RI Violated: " ^ s)
 
-
 (** [get_house j] returns the house field of the given json square [j] *)
 let get_house j = 
   match j |> member "type" |> to_string |> parse_type with 
-  | Property -> if ( to_string (member "color" j) = "Railroad")  ||
-                   ( to_string (member "color" j) = "Utility") 
+  | Property -> (if ( to_string (member "color" j) = "Railroad")  ||
+                    ( to_string (member "color" j) = "Utility") 
 
-    then None else 
-      Some (j |> member "house" |> to_string |> int_of_string)
+                 then None else 
+                   Some (j |> member "house" |> to_string |> int_of_string))
   | _ -> None 
 
 (** [get_house j] returns the hotel field of the given json square [j] *)
 let get_hotel j = 
   match j |> member "type" |> to_string |> parse_type with 
-  | Property -> if ( to_string (member "color" j) = "Railroad") ||
-                   ( to_string (member "color" j) = "Utility")
-    then None else 
-      Some (j |> member "hotel" |> to_string |> int_of_string)
+  | Property -> (if ( to_string (member "color" j) = "Railroad") ||
+                    ( to_string (member "color" j) = "Utility")
+                 then None else 
+                   Some (j |> member "hotel" |> to_string |> int_of_string))
   | _ -> None 
-
 
 (**[square_of_json json] Parses [json] into a valid monopoly square *)
 let square_of_json json= 
@@ -98,7 +92,7 @@ let square_of_json json=
     squareType = json |> member "type" |> to_string |> parse_type;
     rent = json |> member "rent" |> to_string |> int_of_string;
     house = get_house json ;
-    hotel = get_hotel json 
+    hotel = get_hotel json ;
   }
 
 (**[card_of_json json] parses [json] into a card type *)
@@ -108,10 +102,9 @@ let card_of_json json =
     description = json |> member "description" |> to_string;
     payment = json |> member "payment" |> to_string |> int_of_string;
     c_type =  let tpe = json |> member "type" |> to_string in 
-      if tpe = "Money" then Money else if tpe = "Location" then Location else 
-        LeaveJail
+      if tpe = "Money" then Money 
+      else if tpe = "Location" then Location else LeaveJail
   }
-
 
 (** [opt_match op] Returns the v if [op] is Some v and fails 
     with Empty otherwise *)
@@ -136,8 +129,6 @@ let init_monopolies sqs =
         init' t (MonopDict.add (opt_match h.color) [h.name] acc) in
   init' sqs MonopDict.empty
 
-
-
 let from_json j = 
   let sqs = j |> member "squares" |> to_list |> List.map square_of_json in 
   {
@@ -149,7 +140,6 @@ let from_json j =
         | Property -> true
         | _ -> false) sqs)
   }
-
 
 let cost (b : board) (prop : string) = 
   let rec cost' squares prop =
@@ -163,7 +153,6 @@ let rent b prop =
     (List.find (fun pr -> pr.name = prop) b.squares).rent 
   with 
   | Not_found -> raise (UnknownSquare prop)
-
 
 let square_color (b : board) (prop : string) = 
   try 
@@ -233,9 +222,10 @@ let is_buildable bd prop =
   try 
     let p = List.find (fun s -> s.name = prop) bd.squares in 
     match p.squareType with 
-    | Property -> if  opt_match p.color <> "Railroad" && 
-                      opt_match p.color <> "Utility" &&
-                      opt_match p.color <> "None" then true else false 
+    | Property -> (if  opt_match p.color <> "Railroad" && 
+                       opt_match p.color <> "Utility" &&
+                       opt_match p.color <> "None" 
+                   then true else false )
     | _ -> false
   with 
   | Not_found -> raise (UnknownSquare prop)
@@ -262,6 +252,3 @@ let card_payment bd cd =
     card.payment
   with 
   | exn -> raise (UnknownCard cd)
-
-
-

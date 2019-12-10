@@ -51,9 +51,6 @@ let init_state brd n =
 let current_player st =
   st.curr_player
 
-let is_in_jail st = 
-  List.assoc st.curr_player st.in_jail
-
 let num_players st = 
   st.num_players
 
@@ -84,12 +81,14 @@ let cards st =
 let player_status st = 
   st.player_status
 
+let is_in_jail st = 
+  List.assoc st.curr_player st.in_jail
+
 let current_location st = 
   fst (List.assoc (current_player st) (locations st))
 
 let curr_player_inventory st =  
   List.assoc (st.curr_player) (st.inventories)
-
 
 let curr_player_wallet st = 
   let curr_player = current_player st in
@@ -155,8 +154,8 @@ let rec next_turn st =
   )
 
 let roll brd st = 
-  (* let die1 = (Random.int 5) + 1 in 
-     let die2 = (Random.int 5) + 1 in *)
+  (*let die1 = (Random.int 5) + 1 in 
+    let die2 = (Random.int 5) + 1 in*)
   (* let die1 = 3 in 
      let die2 = 3 in  *)
   let die1 = 0 in 

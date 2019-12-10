@@ -30,8 +30,6 @@ type t = {
   in_jail : (int * bool) list;
 }
 
-
-
 (** The type representing the result of an attempted movement. *)
 type result = Legal of t | Illegal | Win
 
@@ -87,6 +85,10 @@ val cards : t -> card_name list
     player is still a valid player, and false means the player is no longer a 
     valid player *)
 val player_status : t -> (int * bool) list 
+
+(** [is_in_jail st] is a boolean that represents whether the current player of 
+    state [st] is in Jail *)
+val is_in_jail : t -> bool 
 
 (** [current_location st] is the integer square corresponding to the current
     player's location in [st] *)
