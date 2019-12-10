@@ -105,14 +105,15 @@ let rec disp_wallet st =
     property. *)
 let rec disp_inventories st = 
   match inventories st with
-  | [] -> print_string "\n";
-  | (a,b) :: t -> Printf.printf "\nPlayer %d has the following properties:\n" a; 
+  | [] -> ();
+  | (a,b) :: t -> Printf.printf "\nPlayer %d:" a; 
     let rec disp_buildings props = 
-      match props with
-      | [] -> ();
-      | h :: t -> let (hou,hot) = (houses st h, hotels st h) in 
-        Printf.printf "\n%s with %d houses and %d hotels\n" h hou hot;
-        disp_buildings t
+      if (List.length b) == 0 then print_string "\nNone\n" else 
+        match props with
+        | [] -> ();
+        | h :: t -> let (hou,hot) = (houses st h, hotels st h) in 
+          Printf.printf "\n%s with %d houses and %d hotels\n" h hou hot;
+          disp_buildings t
     in
     disp_buildings b;
     let st' = {st with inventories = t} in disp_inventories st'
@@ -458,17 +459,21 @@ and quit_helper brd res st wc =
     the current player is on *)
 and buy_helper brd res st wc = 
   match is_in_jail st with
-  | true -> print_string "\nUh oh! You're in Jail, so you can't perform \n this action\n"; 
+  | true -> print_string "\nUh oh! You're in Jail, so you can't perform \
+                          this action\n"; 
     interp_command brd res st wc
-  | false -> print_string ("\nAre you sure you would like to buy this property?\n" ^ ">");
+  | false -> print_string ("\nAre you sure you would like to \
+                            buy this property?\n" ^ " > ");
     let confirmation = String.trim (read_line()) in 
     if confirmation = "yes" then
       (let prop = (State.current_location st) |> Board.nth_square brd in 
        let res = State.buy brd prop st in
        (match res with 
-        | Illegal -> Printf.printf "\nUnfortunately this property cannot \n be purchased at this time.\n"; 
+        | Illegal -> Printf.printf "\nUnfortunately this property cannot \
+                                    be purchased at this time.\n"; 
           interp_command brd (Legal st) st wc 
-        | Legal st' -> Printf.printf "\nCongratulations! You are \n the owner of %s.\n" 
+        | Legal st' -> Printf.printf "\nCongratulations! You are the owner \
+                                      of %s.\n" 
                          prop;  interp_command brd (Legal st') st' wc 
         | Win -> let () = 
                    Printf.printf "\nPlayer %d you have won the game! \
