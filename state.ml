@@ -300,7 +300,9 @@ let earn_cash st amt =
   let inc_cash = curr_cash + amt in 
   let new_cash = (st.curr_player,inc_cash)::trimmed in 
   if inc_cash > 2000 then Win else
-    Legal { st with wallets = new_cash } 
+    Legal { 
+      st with wallets = new_cash
+    } 
 
 
 
