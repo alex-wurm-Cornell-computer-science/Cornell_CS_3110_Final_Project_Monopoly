@@ -36,7 +36,9 @@ let format_command lst =
   | h::t when h = "next" -> if t = [] then Next else raise (Malformed)
   | h::t when h = "build" -> if t = [] then raise (Malformed) else Build t
   | h::t when h = "game" -> if t = [] then Game else raise Malformed
-  | h::t when h = "use" -> if t = [] || t = ["card"] || t = ["get";"out";"of";"jail";"free";"card"] then Use else raise Malformed
+  | h::t when h = "use" -> 
+    if t = [] || t = ["card"] || t = ["get";"out";"of";"jail";"free";"card"] 
+    then Use else raise Malformed
   | _ -> raise (Malformed)
 
 let parse str = 

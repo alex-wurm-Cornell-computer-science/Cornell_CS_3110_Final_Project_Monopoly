@@ -3,6 +3,40 @@ open Board
 open Command
 open State
 
+
+(** TEST PLAN :
+    Tests for functions in [Board.ml]. For the purposes of testing these functions
+    we generated [test_board] and the smaller [test_board2]. We tested every function 
+    in [Board.mli] using a combination of black box and glass box testing. When a function 
+    was written in a .mli file, tests were created based on the specification. Then,
+    after implementing the function, more tests were add. A smaller 
+    board, test_board, was created to make testing easier. It is a truncated version
+    of real_board, which is a standard monopoly board. The functions we implemented
+    behave the same on all valid boards, so testing on a small board is indicative of
+    performance on a full board. The same methodology was also used when testing [State.ml],
+    with the addition of play testing. For the purposes of testing these functions
+    we generated [test_goojf], [jail_board], and [tax_board], and still used test_board. 
+    These allowed us to separate 
+    the testing of jail functions, rent functions, card functions, and tax functions, ensuring
+    they work independently of each other and that they work together in the full game
+     While doing this, we hard-coded the roll
+    function to roll a 1 each time the player rolls the dice. This strategy allowed us
+    to save time with constructing states by initializing states from each test board
+    and moving quickly to the relevant space we wanted to test actions on. You can
+    hard-code the roll option by commenting out lines ## in State.ml and uncommenting
+    lines ##. Make sure to revert this change before playing the game regularly. Functions in this module
+    , as well as functions in main, rely extensively on user input. Thus, we play tested all functions
+    with valid inputs, adding addition test cases to Board and State when finding bugs,
+    and inputting invalid inputs to ensure they did not break the system. In sum,
+    we constructed unit tests for board and state functions, and playtested state 
+    and main functions. As with a2, this approach allows us to ensure all functions 
+    exposed in .mli files that can be tested are tested, while allowing us to 
+    pass many edge cases to user dependent functions. Separating components (cards, jail, ...)to test
+    allowed us to debug them individually, and then testing multiple components 
+    ensured that the results of one component did not impact the other components.
+
+*)
+
 (********************************************************************
    Here are some helper functions for your testing of set-like lists. 
  ********************************************************************)
@@ -70,11 +104,6 @@ let test_board2 = from_json (Yojson.Basic.from_file "test_2.json")
 let jail_board = from_json (Yojson.Basic.from_file "test_goojf.json")
 let tax_board = from_json (Yojson.Basic.from_file "tax_board.json")
 
-(** Tests for functions in [Board.ml]. For the purposes of testing these functions
-    we generated [test_board] and the smaller [test_board2]. We tested every function 
-    in [Board.mli] using a combination of black box and glass box testing. A smaller 
-    board, test_board, was created to make testing easier. It is a truncated version
-    of real_board, which is a standard monopoly board. *)
 let board_tests_valid = [
   "test size" >:: (fun _ -> assert_equal 12 (size test_board));
   "test cost" >:: (fun _ -> assert_equal 100 (cost test_board "Baltic Avenue"));
@@ -160,13 +189,7 @@ let board_tests_valid = [
       in assert false with UnknownSquare r -> assert true);
 ]
 
-(** Tests for functions in [State.ml]. For the purposes of testing these functions
-    we generated [test_goojf], [jail_board], and [tax_board]. We also hard-coded the roll
-    function to roll a 1 each time the player rolls the dice. This strategy allowed us
-    to save time with constructing states by initializing states from each test board
-    and moving quickly to the relevant space we wanted to test actions on. You can
-    hard-code the roll option by commenting out lines ## in State.ml and uncommenting
-    lines ##. Make sure to revert this change before playing the game regularly.*)
+(** *)
 let state_tests = 
   let st = init_state real_board 2 in 
   let cash_state = match (earn_cash st (-200)) with 
