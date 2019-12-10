@@ -300,43 +300,39 @@ let earn_cash st amt =
   let inc_cash = curr_cash + amt in 
   let new_cash = (st.curr_player,inc_cash)::trimmed in 
   if inc_cash > 2000 then Win else
-    Legal { st with wallets = new_cash } 
+    Legal { 
+      st with wallets = new_cash
+    } 
+
+
+
+
+(** [buy_helper bd prop st] executes the action of buying a property, within
+    the main buy function. *)
+let buy_helper bd prop st = 
+  let can_buy = is_buyable bd prop in 
+  if can_buy && not (is_in_jail st) && 
+     (prop_available prop st) && (enough_funds bd prop st) then 
+    match (earn_cash st (-(cost bd prop))) with 
+    | Legal st' ->  
+      let curr_invent = List.assoc st'.curr_player st'.inventories in 
+      let trimmed = List.remove_assoc st'.curr_player st'.inventories in 
+      let new_inv = (st'.curr_player, prop ::curr_invent) :: trimmed in
+      if List.length (List.assoc st'.curr_player new_inv) > 3 then Win
+      else Legal {
+          st' with inventories = new_inv
+        }
+    | Illegal -> Illegal
+    | Win -> Win
+  else Illegal
 
 let buy bd prop st = 
   try 
-    let can_buy = is_buyable bd prop in 
-    if can_buy && not (is_in_jail st) then 
-      if (prop_available prop st) && (enough_funds bd prop st) then
-        match (current_location st = square_pos bd prop) with 
-        | false -> Illegal 
-        | true -> begin 
-            match (earn_cash st (-(cost bd prop))) with 
-            | Legal st' ->  
-              let curr_invent = List.assoc st'.curr_player st'.inventories in 
-              let trimmed = List.remove_assoc st'.curr_player st'.inventories in 
-              let new_inv = (st'.curr_player, prop ::curr_invent) :: trimmed in
-              if List.length (List.assoc st'.curr_player new_inv) > 3 then Win
-              else Legal {
-                  curr_player = st.curr_player;
-                  num_players = num_players st';
-                  locations = locations st';
-                  doubles_rolled = doubles_rolled st;
-                  inventories = new_inv;
-                  items = items st';
-                  wallets = wallets st';
-                  total_assets = total_assets st';
-                  buildings = st.buildings;
-                  cards = cards st;
-                  player_status = player_status st; 
-                  in_jail = st.in_jail
-                }
-            | Illegal -> Illegal
-            | Win -> Win
-          end
-      else Illegal
-    else Illegal
-  with
-    UnknownSquare prop -> Illegal
+    match (current_location st = square_pos bd prop) with 
+    | false -> Illegal 
+    | true -> buy_helper bd prop st
+  with 
+  | UnknownSquare prop -> Illegal
 
 
 (** [has_prop prop st] returns true if the current player owns [prop] *)
