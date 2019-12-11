@@ -51,3 +51,7 @@ on the value of the roll
   * Enter the number of houses/hotels to build
 * inventories
   * Prints the properties owned by all the players
+* game
+  * For each player, prints the cash in hand, properties owned, and location on
+    the board
+
